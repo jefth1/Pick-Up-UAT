@@ -1,0 +1,12 @@
+/* Estilos solo del perfil de locales (enfoque celular). */
+.encabezado { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.encabezado .boton { width: auto; padding: 10px 14px; }
+.pestanas { display: flex; border-bottom: 1px solid var(--borde); }
+.pestana { flex: 1; padding: 12px; border: 0; background: none; font: inherit; cursor: pointer; }
+.pestana.activa { border-bottom: 2px solid var(--azul); font-weight: 600; }
+.cuenta-regresiva { font-size: 40px; font-weight: 700; margin: 0; }
+.instrucciones { background: #FFF6E0; border-left: 4px solid var(--oro); padding: 12px; border-radius: 8px; }
+.acciones { display: flex; gap: 8px; }
+.visor-qr { aspect-ratio: 1; display: grid; place-items: center; }
+.boton-central { background: var(--azul); color: #fff !important; padding: 12px 18px; border-radius: 999px; }
+.subir-foto { border: 1px dashed var(--borde); border-radius: var(--radio-grande); padding: 24px; text-align: center; }

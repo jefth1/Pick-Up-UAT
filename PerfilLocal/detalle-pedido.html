@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detalle del pedido · Pick Up UAT</title>
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/local.css">
+  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="js/local.js" defer></script>
+</head>
+<body>
+  <main class="pantalla">
+    <p class="cuenta-regresiva" id="tiempo-restante">—</p>
+    <h1 id="titulo-pedido">Pedido</h1>
+    <ul id="productos-pedido" class="lista"></ul>
+    <p class="instrucciones" id="instrucciones"></p>
+    <div class="acciones">
+      <button class="boton boton-primario" data-accion="aceptar">Aceptar</button>
+      <button class="boton boton-secundario" data-accion="rechazar">Rechazar</button>
+    </div>
+    <nav class="barra-inferior">
+      <a href="pedidos.html">Pedidos</a>
+      <a href="escanear-qr.html" class="boton-central">QR</a>
+      <a href="mi-menu.html">Mi menú</a>
+    </nav>
+  </main>
+</body>
+</html>

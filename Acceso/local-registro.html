@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro de local · Pick Up UAT</title>
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+
+</head>
+<body>
+  <main class="pantalla">
+    <h1>Registra tu local</h1>
+    <form class="formulario">
+      <label>Nombre del negocio <input class="campo" required></label>
+      <label>Encargado <input class="campo" required></label>
+      <fieldset>
+        <legend>Ubicación</legend>
+        <label><input type="radio" name="ubicacion" value="dentro" checked> Dentro de la UAT</label>
+        <label><input type="radio" name="ubicacion" value="fuera"> Fuera de la UAT</label>
+      </fieldset>
+      <label>Dirección o facultad <input class="campo"></label>
+      <label>Horario <input class="campo" placeholder="Lun–Vie 8:00–18:00"></label>
+      <label>Logo <input type="file" accept="image/*"></label>
+      <button class="boton boton-primario">Enviar a revisión</button>
+    </form>
+  </main>
+</body>
+</html>

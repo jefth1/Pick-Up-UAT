@@ -1,0 +1,47 @@
+/* Paleta y componentes base de Pick Up UAT (Figma: página "Pick Up UAT", Guía de estilo). */
+:root {
+  --fondo: #FAFAF8;
+  --tinta: #141414;
+  --tinta-suave: #6B6B6B;
+  --borde: #E5E5E0;
+  --azul: #1B3A6B;   /* único color de acción */
+  --oro: #E8A317;    /* solo avisos y destacados */
+  --rojo: #C62828;
+  --verde: #2E7D32;
+  --radio: 12px;
+  --radio-grande: 16px;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--tinta); }
+a { color: var(--azul); }
+
+.pantalla { max-width: 480px; margin: 0 auto; padding: 24px 16px 96px; display: flex; flex-direction: column; gap: 16px; }
+.texto-suave { color: var(--tinta-suave); }
+
+.boton { display: block; width: 100%; padding: 14px; border-radius: var(--radio); border: 1px solid var(--azul); font: inherit; font-weight: 600; text-align: center; text-decoration: none; cursor: pointer; }
+.boton-primario { background: var(--azul); color: #fff; }
+.boton-secundario { background: transparent; color: var(--azul); }
+
+.campo { width: 100%; padding: 12px; border: 1px solid var(--borde); border-radius: var(--radio); font: inherit; background: #fff; }
+.formulario { display: flex; flex-direction: column; gap: 12px; }
+.formulario label { display: flex; flex-direction: column; gap: 6px; }
+
+.tarjeta { background: #fff; border: 1px solid var(--borde); border-radius: var(--radio-grande); padding: 16px; }
+.lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--borde); background: #fff; font: inherit; cursor: pointer; }
+.chip.activo { border-color: var(--azul); background: var(--azul); color: #fff; }
+
+.estado { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 13px; background: var(--borde); }
+.estado.urgente { background: var(--rojo); color: #fff; }
+.estado.pronto { background: var(--oro); color: var(--tinta); }
+.estado.listo { background: var(--verde); color: #fff; }
+
+.imagen-portada { aspect-ratio: 16 / 9; background: var(--borde); border-radius: var(--radio-grande); }
+.precio { font-weight: 600; }
+
+.barra-inferior { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; align-items: center; padding: 12px; background: #fff; border-top: 1px solid var(--borde); }
+.barra-inferior a { text-decoration: none; color: var(--tinta); }
