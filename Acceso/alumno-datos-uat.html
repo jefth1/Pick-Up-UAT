@@ -5,19 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tus datos UAT · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="../Compartido/js/acceso.js" defer></script>
 
 </head>
 <body>
   <main class="pantalla">
-    <h1>¡Hola!</h1>
+    <h1 id="saludo">¡Hola!</h1>
     <p class="texto-suave">Estos datos vienen de la base de la UAT y no se pueden editar.</p>
-    <dl class="tarjeta datos-solo-lectura">
-      <dt>Nombre</dt><dd>—</dd>
-      <dt>Matrícula</dt><dd>—</dd>
-      <dt>Correo</dt><dd>—</dd>
-      <dt>Facultad</dt><dd>—</dd>
-    </dl>
-    <a class="boton boton-primario" href="../PerfilAlumnos/explorar-locales.html">Confirmar y continuar</a>
+    <dl class="tarjeta datos-solo-lectura" id="datos-alumno"></dl>
+    <a class="boton boton-primario" id="continuar" href="../PerfilAlumnos/explorar-locales.html">Confirmar y continuar</a>
   </main>
 </body>
 </html>
