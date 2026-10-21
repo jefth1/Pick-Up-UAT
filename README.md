@@ -18,15 +18,24 @@ Pick-Up-UAT/
 │   └── js/local.js
 ├── Compartido/           → lo que usan los dos perfiles
 │   ├── css/estilos.css   → paleta y componentes del diseño
-│   ├── js/datos-demo.js  → datos de ejemplo mientras no hay backend
+│   ├── js/supabase.js    → conexión a la base de datos y utilidades
 │   ├── js/estados-pedido.js
 │   └── img/
-└── docs/diagrama.md      → flujo de pantallas y su relación con Figma
+├── supabase/migrations/ → esquema de la base de datos y reglas de seguridad (RLS)
+└── docs/
+    ├── diagrama.md       → flujo de pantallas y su relación con Figma
+    └── supabase.md       → tablas, quién puede ver qué y ajustes del panel
 ```
+
+## Base de datos
+
+Los datos viven en Supabase. Ver [docs/supabase.md](docs/supabase.md).
 
 ## Cómo verlo
 
-Abre `index.html` en el navegador, o sirve la carpeta:
+En línea: https://jefth1.github.io/Pick-Up-UAT/
+
+En tu computadora, sirve la carpeta (abrir `index.html` directo no sirve para iniciar sesión):
 
 ```
 python3 -m http.server 8000

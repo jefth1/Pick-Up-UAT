@@ -3,18 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Confirmación · Pick Up UAT</title>
+  <title>Mis pedidos · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/estados-pedido.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
-    <h1>¡Pedido enviado!</h1>
-    <div class="tarjeta qr">QR</div>
-    <p>Pedido <strong id="numero-pedido">#—</strong> · recoge a las <strong id="hora-recogida">—</strong></p>
-    <span class="estado" id="estado-pedido">Esperando al local</span>
+    <section id="pedido-actual" hidden>
+      <h1>¡Pedido enviado!</h1>
+      <p class="texto-suave">Muestra este código en el local.</p>
+      <div class="tarjeta qr" id="codigo-pedido">—</div>
+      <p>Pedido <strong id="numero-pedido">#—</strong> en <strong id="local-pedido">—</strong> · recoge a las <strong id="hora-recogida">—</strong></p>
+      <span class="estado" id="estado-pedido">Esperando al local</span>
+    </section>
+    <h2>Mis pedidos</h2>
+    <ul id="mis-pedidos" class="lista"><li class="texto-suave">Cargando…</li></ul>
     <nav class="barra-inferior">
       <a href="explorar-locales.html">Explorar</a>
       <a href="carrito.html">Carrito</a>

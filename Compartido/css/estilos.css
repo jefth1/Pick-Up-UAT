@@ -57,3 +57,9 @@ h1 { margin: 0; }
 .agotado { opacity: .5; }
 .perfil-ejemplo .estado { align-self: flex-start; }
 .interruptor { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+fieldset { border: 1px solid var(--borde); border-radius: var(--radio); display: flex; flex-direction: column; gap: 8px; }
+.fila-horas { display: flex; gap: 8px; }
+.fila-horas label { flex: 1; }
+.chip input { display: none; }
+.chip:has(input:checked) { border-color: var(--azul); background: var(--azul); color: #fff; }
+.boton:disabled { opacity: .6; cursor: default; }

@@ -6,7 +6,8 @@
   <title>Producto · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
@@ -14,9 +15,10 @@
     <div class="imagen-portada"></div>
     <h1 id="nombre-producto">Producto</h1>
     <p id="precio-producto" class="precio"></p>
-    <label>Cantidad <input class="campo" type="number" min="1" value="1"></label>
-    <label>Instrucciones para el local <textarea class="campo" placeholder="Sin cebolla, salsa aparte…"></textarea></label>
-    <a class="boton boton-primario" href="carrito.html">Agregar al carrito</a>
+    <p id="descripcion-producto" class="texto-suave"></p>
+    <label>Cantidad <input class="campo" id="cantidad" type="number" min="1" max="20" value="1"></label>
+    <label>Instrucciones para el local <textarea class="campo" id="nota" maxlength="200" placeholder="Sin cebolla, salsa aparte…"></textarea></label>
+    <button class="boton boton-primario" id="agregar">Agregar al carrito</button>
   </main>
 </body>
 </html>

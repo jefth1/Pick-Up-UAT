@@ -1,2 +1,4 @@
 /* Estilos solo del perfil de alumnos. */
 .qr { aspect-ratio: 1; display: grid; place-items: center; font-size: 32px; }
+.fila-carrito { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.quitar { border: 0; background: none; color: var(--rojo); font: inherit; cursor: pointer; }

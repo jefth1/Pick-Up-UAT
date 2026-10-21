@@ -5,24 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Registro de local · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/acceso.js" defer></script>
 
 </head>
 <body>
   <main class="pantalla">
     <h1>Registra tu local</h1>
-    <form class="formulario">
-      <label>Nombre del negocio <input class="campo" required></label>
-      <label>Encargado <input class="campo" required></label>
+    <form class="formulario" id="form-registro">
+      <label>Nombre del negocio <input class="campo" name="nombre" required maxlength="80"></label>
+      <label>Encargado <input class="campo" name="encargado" required maxlength="80"></label>
+      <label>Correo <input class="campo" type="email" name="correo" required autocomplete="email"></label>
+      <label>Contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password"></label>
       <fieldset>
         <legend>Ubicación</legend>
         <label><input type="radio" name="ubicacion" value="dentro" checked> Dentro de la UAT</label>
         <label><input type="radio" name="ubicacion" value="fuera"> Fuera de la UAT</label>
       </fieldset>
-      <label>Dirección o facultad <input class="campo"></label>
-      <label>Horario <input class="campo" placeholder="Lun–Vie 8:00–18:00"></label>
-      <label>Logo <input type="file" accept="image/*"></label>
-      <button class="boton boton-primario">Enviar a revisión</button>
+      <label>Dirección o facultad <input class="campo" name="direccion" maxlength="160"></label>
+      <fieldset>
+        <legend>Horario</legend>
+        <div class="chips" id="dias"></div>
+        <div class="fila-horas">
+          <label>Abre <input class="campo" type="time" name="abre" value="08:00" required></label>
+          <label>Cierra <input class="campo" type="time" name="cierra" value="18:00" required></label>
+        </div>
+      </fieldset>
+      <button class="boton boton-primario">Registrar local</button>
     </form>
+    <p class="texto-suave" id="mensaje" hidden></p>
   </main>
 </body>
 </html>

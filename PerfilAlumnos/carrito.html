@@ -6,16 +6,19 @@
   <title>Carrito y horario · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
     <h1>Tu pedido</h1>
+    <p id="local-carrito" class="texto-suave"></p>
     <ul id="carrito" class="lista"></ul>
+    <p class="precio">Total: <span id="total-carrito">$0</span></p>
     <h2>Hora de recogida</h2>
     <div id="horarios" class="chips"></div>
-    <a class="boton boton-primario" href="pago.html">Continuar al pago</a>
+    <a class="boton boton-primario" id="continuar-pago" href="pago.html">Continuar al pago</a>
     <nav class="barra-inferior">
       <a href="explorar-locales.html">Explorar</a>
       <a href="carrito.html">Carrito</a>
