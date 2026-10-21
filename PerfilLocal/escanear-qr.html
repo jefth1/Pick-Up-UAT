@@ -6,7 +6,8 @@
   <title>Escanear QR · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
@@ -14,8 +15,9 @@
   <main class="pantalla">
     <h1>Entregar pedido</h1>
     <div class="tarjeta visor-qr">Cámara</div>
-    <label>O escribe el código <input class="campo" id="codigo"></label>
-    <button class="boton boton-primario">Marcar como entregado</button>
+    <label>O escribe el código <input class="campo" id="codigo" inputmode="numeric"></label>
+    <button class="boton boton-primario" id="entregar">Marcar como entregado</button>
+    <p class="texto-suave" id="mensaje" hidden></p>
     <nav class="barra-inferior">
       <a href="pedidos.html">Pedidos</a>
       <a href="escanear-qr.html" class="boton-central">QR</a>

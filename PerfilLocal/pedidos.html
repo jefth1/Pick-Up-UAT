@@ -6,7 +6,8 @@
   <title>Pedidos · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
@@ -18,10 +19,10 @@
     </header>
     <div class="pestanas">
       <button class="pestana activa" data-estado="nuevo">Nuevos</button>
-      <button class="pestana" data-estado="preparando">Preparando</button>
+      <button class="pestana" data-estado="aceptado,preparando">Preparando</button>
       <button class="pestana" data-estado="listo">Listos</button>
     </div>
-    <ul id="lista-pedidos" class="lista"></ul>
+    <ul id="lista-pedidos" class="lista"><li class="texto-suave">Cargando…</li></ul>
     <nav class="barra-inferior">
       <a href="pedidos.html">Pedidos</a>
       <a href="escanear-qr.html" class="boton-central">QR</a>

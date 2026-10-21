@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bienvenida · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
 
 </head>
@@ -15,13 +16,6 @@
     <p class="texto-suave">Pide antes, recoge sin fila.</p>
     <a class="boton boton-primario" href="alumno-datos-uat.html">Entrar con cuenta institucional UAT</a>
     <a class="boton boton-secundario" href="local-iniciar-sesion.html">Entrar como local</a>
-
-    <section class="ejemplos">
-      <h2>Perfiles de ejemplo</h2>
-      <p class="texto-suave">Solo para navegar mientras no hay inicio de sesión real.</p>
-      <ul id="ejemplo-alumnos" class="lista"></ul>
-      <ul id="ejemplo-locales" class="lista"></ul>
-    </section>
   </main>
 </body>
 </html>

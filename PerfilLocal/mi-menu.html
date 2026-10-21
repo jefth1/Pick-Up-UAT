@@ -6,7 +6,8 @@
   <title>Mi menú · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
@@ -16,7 +17,9 @@
       <h1>Mi menú</h1>
       <a class="boton boton-primario" href="agregar-producto.html">+ Producto</a>
     </header>
-    <ul id="lista-menu" class="lista"></ul>
+    <ul id="lista-menu" class="lista"><li class="texto-suave">Cargando…</li></ul>
+    <p class="texto-suave" id="datos-local"></p>
+    <a href="#" id="salir">Cerrar sesión</a>
     <nav class="barra-inferior">
       <a href="pedidos.html">Pedidos</a>
       <a href="escanear-qr.html" class="boton-central">QR</a>

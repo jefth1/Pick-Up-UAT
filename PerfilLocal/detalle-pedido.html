@@ -6,7 +6,8 @@
   <title>Detalle del pedido · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
@@ -16,10 +17,9 @@
     <h1 id="titulo-pedido">Pedido</h1>
     <ul id="productos-pedido" class="lista"></ul>
     <p class="instrucciones" id="instrucciones"></p>
-    <div class="acciones">
-      <button class="boton boton-primario" data-accion="aceptar">Aceptar</button>
-      <button class="boton boton-secundario" data-accion="rechazar">Rechazar</button>
-    </div>
+    <p class="precio" id="total-pedido"></p>
+    <span class="estado" id="estado-pedido"></span>
+    <div class="acciones" id="acciones"></div>
     <nav class="barra-inferior">
       <a href="pedidos.html">Pedidos</a>
       <a href="escanear-qr.html" class="boton-central">QR</a>

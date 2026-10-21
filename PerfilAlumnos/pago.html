@@ -6,16 +6,18 @@
   <title>Pago · Pick Up UAT</title>
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
-  <script src="../Compartido/js/datos-demo.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
     <h1>Pago</h1>
+    <p>Total a pagar: <strong class="precio" id="total-pago">$0</strong> · recoges a las <strong id="hora-pago">—</strong></p>
     <h2>Método de pago</h2>
-    <label><input type="radio" name="metodo" checked> Tarjeta</label>
-    <label><input type="radio" name="metodo"> Pago en línea</label>
-    <a class="boton boton-primario" href="confirmacion.html">Pagar</a>
+    <label><input type="radio" name="metodo" checked> Pagar al recoger</label>
+    <p class="texto-suave">El pago en línea todavía no está conectado.</p>
+    <button class="boton boton-primario" id="enviar-pedido">Enviar pedido</button>
   </main>
 </body>
 </html>
