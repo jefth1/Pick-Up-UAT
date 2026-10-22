@@ -50,8 +50,14 @@ En **Authentication**:
    **Redirect URLs** agregar `https://jefth1.github.io/Pick-Up-UAT/**` (y
    `http://localhost:8000/**` para probar en la computadora).
 
+## Fotos
+
+Las fotos de productos y el logo del local se guardan en el bucket público `fotos` de
+Supabase Storage, en la carpeta del local (`fotos/<local_id>/…`). Cualquiera las ve; solo el
+dueño del local puede subirlas o borrarlas. La URL queda en `productos.foto_url` y
+`locales.logo_url` (migración `20261022020000_fotos.sql`).
+
 ## Pendiente
 
 - Cambiar el registro temporal de alumnos por la API de la base de datos de la UAT.
-- Fotos de productos y logo del local (Supabase Storage).
 - Pago en línea; por ahora se paga al recoger.

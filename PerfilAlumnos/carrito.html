@@ -2,29 +2,46 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Carrito y horario · Pick Up UAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tu pedido · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
-    <h1>Tu pedido</h1>
-    <p id="local-carrito" class="texto-suave"></p>
-    <ul id="carrito" class="lista"></ul>
-    <p class="precio">Total: <span id="total-carrito">$0</span></p>
-    <h2>Hora de recogida</h2>
-    <label>¿A qué hora pasas por tu pedido? <input class="campo" type="time" id="hora" step="300" required></label>
-    <p class="texto-suave" id="rango-hora"></p>
-    <a class="boton boton-primario" id="continuar-pago" href="pago.html">Continuar al pago</a>
-    <nav class="barra-inferior">
-      <a href="explorar-locales.html">Explorar</a>
-      <a href="carrito.html">Carrito</a>
-      <a href="confirmacion.html">Mis pedidos</a>
-    </nav>
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" id="volver-carrito" href="explorar-locales.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Tu pedido</h1></div>
+      <p class="texto-suave" id="local-carrito"></p>
+    </header>
+    <ul id="carrito" class="tarjeta lista-carrito"></ul>
+    <section class="seccion-hora" id="seccion-hora" hidden>
+      <div>
+        <h2>Hora de recogida</h2>
+        <p class="texto-tenue">Hoy · elige a qué hora pasas por tu pedido</p>
+      </div>
+      <label class="campo-hora">
+        <span><span class="etiqueta">Hora de recogida</span><span>Toca para elegir</span></span>
+        <input type="time" id="hora" step="300" required>
+      </label>
+      <input type="range" class="rango" id="rango" step="5" aria-label="Hora de recogida">
+      <div class="limites">
+        <span><strong>Ahora</strong><span id="hora-ahora">--:--</span></span>
+        <span><strong>Cierre</strong><span id="hora-cierre">--:--</span></span>
+      </div>
+      <p class="aviso-azul" id="rango-hora">Solo puedes elegir una hora entre la actual y la de cierre del local.</p>
+    </section>
+    <div class="empuje"></div>
+    <div class="totales" id="totales" hidden>
+      <div><span>Subtotal</span><span id="subtotal-carrito">$0</span></div>
+      <div class="total"><span>Total</span><span id="total-carrito">$0</span></div>
+    </div>
+    <a class="boton boton-primario" id="continuar-pago" href="pago.html" hidden>Ir a pagar</a>
   </main>
 </body>
 </html>

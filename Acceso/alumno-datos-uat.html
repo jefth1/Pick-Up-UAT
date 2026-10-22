@@ -2,22 +2,29 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tus datos UAT · Pick Up UAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mi perfil · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/acceso.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
-
 </head>
 <body>
   <main class="pantalla">
-    <h1 id="saludo">¡Hola!</h1>
-    <p class="texto-suave" id="aviso-datos">Cargando tus datos…</p>
+    <span class="icono-exito"><i data-icono="check"></i></span>
+    <header class="encabezado-pantalla">
+      <h1 id="saludo">¡Hola!</h1>
+      <p class="texto-suave" id="aviso-datos">Cargando tus datos…</p>
+    </header>
     <dl class="tarjeta datos-solo-lectura" id="datos-alumno" hidden></dl>
-    <a class="boton boton-primario" id="continuar" href="../PerfilAlumnos/explorar-locales.html" hidden>Confirmar y continuar</a>
-    <a href="#" id="salir">No soy yo, cerrar sesión</a>
-
+    <p class="texto-tenue con-icono"><i data-icono="candado"></i>Estos datos no se pueden editar aquí.</p>
+    <div class="empuje"></div>
+    <a class="boton boton-primario" id="continuar" href="../PerfilAlumnos/explorar-locales.html" hidden>Continuar</a>
+    <a href="#" class="boton boton-secundario" id="salir"><i data-icono="salir"></i>Cerrar sesión</a>
   </main>
 </body>
 </html>

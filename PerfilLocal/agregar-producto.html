@@ -2,25 +2,43 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nuevo producto · Pick Up UAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Producto · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <h1>Nuevo producto</h1>
+  <main class="pantalla-local angosta">
+    <header class="encabezado-local">
+      <h1 id="titulo-producto">Nuevo producto</h1>
+      <a class="atras" href="mi-menu.html" aria-label="Cerrar"><i data-icono="cerrar"></i></a>
+    </header>
     <form class="formulario" id="form-producto">
-      <label>Nombre <input class="campo" name="nombre" required maxlength="80"></label>
-      <label>Precio <input class="campo" name="precio" type="number" min="0" step="0.5" required></label>
-      <label>Categoría <input class="campo" name="categoria" maxlength="40"></label>
-      <label>Descripción <textarea class="campo" name="descripcion" maxlength="300"></textarea></label>
-      <label class="interruptor"><input type="checkbox" name="disponible" checked> Disponible</label>
+      <label class="subir-foto foto-producto" id="subir-foto">
+        <input type="file" name="foto" accept="image/jpeg,image/png,image/webp">
+        <i data-icono="subir"></i><span>Tomar o subir foto</span><span class="texto-tenue">Se verá en el menú del alumno</span>
+      </label>
+      <label class="campo-grupo">Nombre <input class="campo" name="nombre" required maxlength="80" placeholder="Ej. Enchiladas suizas"></label>
+      <div class="fila-campos">
+        <label class="campo-grupo">Precio <input class="campo" name="precio" type="number" min="0" step="0.5" required placeholder="$ 0.00"></label>
+        <label class="campo-grupo">Categoría <input class="campo" name="categoria" maxlength="40" list="categorias" placeholder="Comidas"></label>
+      </div>
+      <datalist id="categorias"></datalist>
+      <label class="campo-grupo">Descripción <textarea class="campo" name="descripcion" maxlength="300" placeholder="Ingredientes o detalles"></textarea></label>
+      <label class="tarjeta fila-disponible">
+        <span><strong>Disponible</strong><span class="texto-tenue">Apágalo cuando se agote</span></span>
+        <span class="interruptor"><input type="checkbox" name="disponible" checked></span>
+      </label>
+      <div class="empuje"></div>
       <button class="boton boton-primario">Guardar y publicar</button>
+      <button type="button" class="boton boton-peligro" id="eliminar" hidden>Eliminar producto</button>
     </form>
   </main>
 </body>

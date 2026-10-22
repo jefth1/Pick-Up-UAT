@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Perfil del local · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/local.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="js/local.js" defer></script>
+</head>
+<body>
+  <main class="pantalla-local angosta">
+    <header class="encabezado-local"><h1>Perfil del local</h1></header>
+    <form class="formulario" id="form-perfil">
+      <label class="subir-foto logo-local" id="subir-logo">
+        <input type="file" name="logo" accept="image/jpeg,image/png,image/webp">
+        <i data-icono="subir"></i><span>Subir logo</span>
+      </label>
+      <label class="campo-grupo">Nombre del negocio <input class="campo" name="nombre" required maxlength="80"></label>
+      <label class="campo-grupo">Encargado <input class="campo" name="encargado" maxlength="80"></label>
+      <div class="campo-grupo">Ubicación
+        <div class="segmentado">
+          <label><input type="radio" name="ubicacion" value="dentro">Dentro de la UAT</label>
+          <label><input type="radio" name="ubicacion" value="fuera">Fuera de la UAT</label>
+        </div>
+      </div>
+      <label class="campo-grupo">Facultad o dirección <input class="campo" name="direccion" maxlength="160"></label>
+      <div class="campo-grupo">Días que abres <div class="chips chips-dias" id="dias"></div></div>
+      <div class="fila-campos">
+        <label class="campo-grupo">Abre <input class="campo" type="time" name="abre" required></label>
+        <label class="campo-grupo">Cierra <input class="campo" type="time" name="cierra" required></label>
+      </div>
+      <p class="mensaje" id="mensaje" hidden></p>
+      <button class="boton boton-primario">Guardar cambios</button>
+    </form>
+    <a href="#" class="boton boton-secundario" id="salir"><i data-icono="salir"></i>Cerrar sesión</a>
+    <nav class="navegacion-local" data-actual="perfil"></nav>
+  </main>
+</body>
+</html>

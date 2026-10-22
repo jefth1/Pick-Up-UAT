@@ -2,27 +2,44 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Escanear QR · Pick Up UAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Escanear pedido · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
-<body>
-  <main class="pantalla">
-    <h1>Entregar pedido</h1>
-    <div class="tarjeta visor-qr">Cámara</div>
-    <label>O escribe el código <input class="campo" id="codigo" inputmode="numeric"></label>
-    <button class="boton boton-primario" id="entregar">Marcar como entregado</button>
-    <p class="texto-suave" id="mensaje" hidden></p>
-    <nav class="barra-inferior">
-      <a href="pedidos.html">Pedidos</a>
-      <a href="escanear-qr.html" class="boton-central">QR</a>
-      <a href="mi-menu.html">Mi menú</a>
-    </nav>
+<body class="oscuro">
+  <main class="pantalla-local angosta escaner">
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" href="pedidos.html" aria-label="Volver"><i data-icono="atras"></i></a><h1 id="titulo-escaner">Escanear pedido</h1></div>
+      <p class="texto-suave" id="">Apunta al código QR del alumno.</p>
+    </header>
+    <div class="visor">
+      <video id="camara" playsinline muted></video>
+      <span class="esquinas"></span><span class="linea"></span>
+      <p class="aviso-camara" id="aviso-camara" hidden></p>
+    </div>
+    <div class="hoja" id="hoja" hidden>
+      <div class="fila-titulo"><strong id="titulo-escaneado"></strong><span class="estado" id="estado-escaneado"></span></div>
+      <p class="texto-suave" id="productos-escaneado"></p>
+      <button class="boton boton-primario" id="entregar">Confirmar entrega</button>
+    </div>
+    <p class="mensaje" id="mensaje" hidden></p>
+    <form class="folio" id="form-folio">
+      <button type="button" class="enlace" id="mostrar-folio">¿No escanea? Escribir folio</button>
+      <div class="fila-campos" id="campo-folio" hidden>
+        <input class="campo" id="codigo" inputmode="numeric" placeholder="Número de pedido" aria-label="Número de pedido">
+        <button class="boton boton-secundario">Buscar</button>
+      </div>
+    </form>
+    <nav class="navegacion-local" data-actual="qr"></nav>
   </main>
 </body>
 </html>

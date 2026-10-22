@@ -2,29 +2,41 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Detalle del pedido · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <p class="cuenta-regresiva" id="tiempo-restante">—</p>
-    <h1 id="titulo-pedido">Pedido</h1>
-    <ul id="productos-pedido" class="lista"></ul>
-    <p class="instrucciones" id="instrucciones"></p>
-    <p class="precio" id="total-pedido"></p>
-    <span class="estado" id="estado-pedido"></span>
+  <main class="pantalla-local angosta">
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" href="pedidos.html" aria-label="Volver"><i data-icono="atras"></i></a><h1 id="titulo-pedido">Pedido</h1></div>
+      <p class="texto-suave" id="alumno-pedido"></p>
+    </header>
+    <div class="cuenta-grande" id="caja-tiempo">
+      <i data-icono="alarma"></i>
+      <div><strong id="tiempo-restante">—</strong><span id="hora-acordada"></span></div>
+    </div>
+    <div class="tarjeta">
+      <span class="etiqueta">Productos</span>
+      <ul class="filas-productos" id="productos-pedido"></ul>
+      <div class="fila-total"><span>Total a cobrar</span><strong id="total-pedido"></strong></div>
+    </div>
+    <div class="instrucciones" id="instrucciones" hidden>
+      <span class="con-icono"><i data-icono="mensaje"></i>Instrucciones del alumno</span>
+      <p id="texto-instrucciones"></p>
+    </div>
+    <div class="empuje"></div>
+    <p class="estado-linea">Estado: <strong id="estado-pedido"></strong></p>
     <div class="acciones" id="acciones"></div>
-    <nav class="barra-inferior">
-      <a href="pedidos.html">Pedidos</a>
-      <a href="escanear-qr.html" class="boton-central">QR</a>
-      <a href="mi-menu.html">Mi menú</a>
-    </nav>
+    <nav class="navegacion-local" data-actual="pedidos"></nav>
   </main>
 </body>
 </html>

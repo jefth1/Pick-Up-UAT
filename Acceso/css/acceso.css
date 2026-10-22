@@ -1,0 +1,18 @@
+/* Estilos solo de la entrada (bienvenida, inicio de sesión y registros). */
+.marca { display: flex; flex-direction: column; gap: 10px; padding-top: 56px; }
+.logo { display: grid; place-items: center; width: 48px; height: 42px; border-radius: 12px; background: var(--azul); color: #fff; font-weight: 700; font-size: 18px; }
+.marca h1 { font-size: 30px; }
+.grupo-acceso { display: flex; flex-direction: column; gap: 10px; }
+.separador { display: flex; align-items: center; gap: 12px; color: var(--tinta-tenue); font-size: 13px; }
+.separador::before, .separador::after { content: ""; flex: 1; height: 1px; background: var(--borde); }
+
+.formulario { flex: 1; }
+.acciones-abajo { margin-top: auto; padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }
+#olvide { font-size: 14px; }
+
+.subir-logo { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); font-size: 14px; font-weight: 500; cursor: pointer; }
+.subir-logo input { display: none; }
+.subir-logo .icono { color: var(--tinta-suave); }
+
+.chips-dias { flex-wrap: wrap; overflow: visible; }
+

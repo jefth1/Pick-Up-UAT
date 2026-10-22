@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ventas · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/local.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="js/local.js" defer></script>
+</head>
+<body>
+  <main class="pantalla-local">
+    <header class="encabezado-local">
+      <div><p class="texto-suave nombre-local">Tu local</p><h1>Ventas de hoy</h1></div>
+    </header>
+    <div class="resumen">
+      <div class="tarjeta"><span class="etiqueta">Vendido</span><strong class="azul" id="vendido">$0</strong></div>
+      <div class="tarjeta"><span class="etiqueta">Pedidos entregados</span><strong id="entregados">0</strong></div>
+      <div class="tarjeta"><span class="etiqueta">Ticket promedio</span><strong id="promedio">$0</strong></div>
+      <div class="tarjeta"><span class="etiqueta">Rechazados o no recogidos</span><strong id="perdidos">0</strong></div>
+    </div>
+    <h2>Más vendidos</h2>
+    <ul class="tarjeta lista-menu" id="mas-vendidos"></ul>
+    <h2>Pedidos entregados</h2>
+    <ul class="tarjeta lista-menu" id="lista-ventas"></ul>
+    <nav class="navegacion-local" data-actual="ventas"></nav>
+  </main>
+</body>
+</html>

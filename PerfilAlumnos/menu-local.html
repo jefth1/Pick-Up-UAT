@@ -2,25 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Menú del local · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <div class="imagen-portada"></div>
-    <h1 id="nombre-local">Local</h1>
-    <p id="horario-local" class="texto-suave"></p>
+  <main class="pantalla con-barra-carrito">
+    <div class="foto imagen-portada" id="portada">
+      <a class="atras-flotante" href="explorar-locales.html" aria-label="Volver"><i data-icono="atras"></i></a>
+      <i data-icono="imagen"></i>
+    </div>
+    <header class="encabezado-pantalla">
+      <h1 id="nombre-local">Cargando…</h1>
+      <p class="meta texto-suave"><span><i data-icono="ubicacion"></i><span id="ubicacion-local"></span></span><span><i data-icono="reloj"></i><span id="horario-local"></span></span></p>
+    </header>
+    <div class="chips" id="categorias"></div>
     <ul id="menu-local" class="lista"></ul>
-    <nav class="barra-inferior">
-      <a href="explorar-locales.html">Explorar</a>
-      <a href="carrito.html">Carrito</a>
-      <a href="confirmacion.html">Mis pedidos</a>
-    </nav>
+    <a class="barra-carrito" id="barra-carrito" href="carrito.html" hidden>
+      <span class="cantidad-carrito" id="cantidad-carrito">0</span><span>Ver carrito</span><span id="total-barra">$0</span>
+    </a>
   </main>
 </body>
 </html>

@@ -2,20 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Bienvenida · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/acceso.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
-
 </head>
 <body>
-  <main class="pantalla">
-    <h1>Pick Up UAT</h1>
-    <p class="texto-suave">Pide antes, recoge sin fila.</p>
-    <a class="boton boton-primario" href="alumno-iniciar-sesion.html">Entrar como alumno</a>
-    <a class="boton boton-secundario" href="local-iniciar-sesion.html">Entrar como local</a>
+  <main class="pantalla bienvenida">
+    <section class="marca">
+      <span class="logo">PU</span>
+      <h1>Pick Up UAT</h1>
+      <p class="texto-suave">Pide antes y recoge sin hacer fila.</p>
+    </section>
+    <div class="empuje"></div>
+    <section class="grupo-acceso">
+      <span class="etiqueta">Alumnos</span>
+      <a class="boton boton-primario" href="alumno-iniciar-sesion.html"><i data-icono="birrete"></i>Iniciar sesión</a>
+      <a class="boton boton-secundario" href="alumno-registro.html">Crear cuenta de alumno</a>
+      <p class="texto-tenue">Pronto podrás entrar directo con tu cuenta institucional UAT.</p>
+    </section>
+    <div class="separador"><span>o</span></div>
+    <section class="grupo-acceso">
+      <span class="etiqueta">Locales</span>
+      <a class="boton boton-secundario" href="local-iniciar-sesion.html"><i data-icono="tienda"></i>Entrar como local</a>
+    </section>
   </main>
 </body>
 </html>

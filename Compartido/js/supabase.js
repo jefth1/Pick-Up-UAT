@@ -21,7 +21,7 @@ function dinero(n) {
 }
 
 function hora(fecha) {
-  return new Date(fecha).toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", timeZone: ZONA });
+  return new Date(fecha).toLocaleTimeString("es-MX", { hour: "numeric", minute: "2-digit", hourCycle: "h23", timeZone: ZONA });
 }
 
 function param(nombre) {
@@ -58,6 +58,20 @@ function ahoraEnTamaulipas() {
   }).formatToParts(new Date()).map((p) => [p.type, p.value]));
   const dia = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(partes.weekday);
   return { dia, minutos: Number(partes.hour) * 60 + Number(partes.minute) };
+}
+
+// Sube una imagen a fotos/<local_id>/ y regresa su URL pública (o null si falla).
+async function subirFoto(localId, archivo) {
+  const extension = { "image/png": "png", "image/webp": "webp" }[archivo.type] || "jpg";
+  const ruta = `${localId}/${crypto.randomUUID()}.${extension}`;
+  const { error } = await db.storage.from("fotos").upload(ruta, archivo, { contentType: archivo.type });
+  if (error) return mostrarError(error), null;
+  return db.storage.from("fotos").getPublicUrl(ruta).data.publicUrl;
+}
+
+// Fondo de imagen para las fotos de productos y logos; sin foto se ve el icono.
+function fondoFoto(url) {
+  return url ? `style="background-image:url('${esc(url)}')"` : "";
 }
 
 async function usuarioActual() {

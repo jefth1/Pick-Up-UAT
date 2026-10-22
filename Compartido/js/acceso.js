@@ -45,7 +45,7 @@ async function entradaAlumno() {
   const datos = document.getElementById("datos-alumno");
   datos.innerHTML = [["Nombre", alumno.nombre], ["Matrícula", alumno.matricula], ["Correo", alumno.correo],
     ["Facultad", alumno.facultad], ["Carrera", alumno.carrera]]
-    .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v || "—")}</dd>`).join("");
+    .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v || "—")}</dd></div>`).join("");
   datos.hidden = false;
   document.getElementById("continuar").hidden = false;
   document.getElementById("salir").addEventListener("click", async (e) => {
@@ -96,6 +96,10 @@ async function registrarLocal() {
   document.getElementById("dias").innerHTML = DIAS
     .map((d, i) => `<label class="chip"><input type="checkbox" name="dia" value="${i}" ${i >= 1 && i <= 5 ? "checked" : ""}>${d}</label>`)
     .join("");
+  const logo = form.logo;
+  logo.addEventListener("change", () => {
+    document.getElementById("texto-logo").textContent = logo.files[0]?.name || "Subir logo del local";
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -122,6 +126,7 @@ async function registrarLocal() {
 
     if (data.session) {
       await crearPerfilPendiente();
+      if (logo.files[0]) await guardarLogo(logo.files[0]);
       location.href = "../PerfilLocal/pedidos.html";
     } else {
       avisarConfirmacion(form);
@@ -145,4 +150,13 @@ async function crearPerfilPendiente() {
       .insert(horarios.map((h) => ({ ...h, local_id: data.id })));
     if (errorHorarios) mostrarError(errorHorarios);
   }
+}
+
+async function guardarLogo(archivo) {
+  const local = await localActual();
+  if (!local) return;
+  const url = await subirFoto(local.id, archivo);
+  if (!url) return;
+  const { error } = await db.from("locales").update({ logo_url: url }).eq("id", local.id);
+  if (error) mostrarError(error);
 }
