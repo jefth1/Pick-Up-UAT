@@ -1,60 +1,70 @@
-// Entrada: datos del alumno, inicio de sesión y registro del local.
+// Entrada: registro e inicio de sesión de alumnos y locales.
 document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("form-registro-alumno")) registrarAlumno();
+  if (document.getElementById("form-entrar-alumno")) entrarAlumno();
   if (document.getElementById("datos-alumno")) entradaAlumno();
   if (document.getElementById("form-entrar")) entrarLocal();
   if (document.getElementById("form-registro")) registrarLocal();
 });
 
-// Mientras no haya inicio de sesión UAT, el alumno usa una sesión anónima de
-// Supabase que queda guardada en su navegador.
-async function entradaAlumno() {
-  const usuario = await usuarioActual();
-  if (!usuario?.is_anonymous) {
-    if (usuario) await db.auth.signOut();
-    const { error } = await db.auth.signInAnonymously();
-    if (error) {
-      document.getElementById("aviso-datos").textContent =
-        "No se pudo entrar. Revisa que los inicios de sesión anónimos estén activos en Supabase.";
-      return mostrarError(error);
-    }
-  }
-
-  const alumno = await alumnoActual();
-  const aviso = document.getElementById("aviso-datos");
-  if (alumno) {
-    document.getElementById("saludo").textContent = `¡Hola, ${alumno.nombre.split(" ")[0]}!`;
-    aviso.textContent = "Revisa que tus datos sean correctos.";
-    const datos = document.getElementById("datos-alumno");
-    datos.innerHTML = [["Nombre", alumno.nombre], ["Matrícula", alumno.matricula], ["Correo", alumno.correo],
-      ["Facultad", alumno.facultad], ["Carrera", alumno.carrera]]
-      .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v || "—")}</dd>`).join("");
-    datos.hidden = false;
-    document.getElementById("continuar").hidden = false;
-    return;
-  }
-
-  aviso.textContent = "Mientras conectamos la cuenta UAT, llena tus datos una sola vez.";
-  const form = document.getElementById("form-alumno");
-  form.hidden = false;
+// Registro temporal de alumnos con correo y contraseña; se reemplazará por la API de la UAT.
+// Los datos viajan en la cuenta y la fila de alumnos se crea al tener sesión.
+function registrarAlumno() {
+  const form = document.getElementById("form-registro-alumno");
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const datos = Object.fromEntries(new FormData(form));
-    const { error } = await db.from("alumnos").insert(datos);
+    const { contrasena, ...alumno } = Object.fromEntries(new FormData(form));
+    form.querySelector("button").disabled = true;
+    const { data, error } = await db.auth.signUp({
+      email: alumno.correo, password: contrasena,
+      options: {
+        data: { registro_alumno: alumno },
+        emailRedirectTo: new URL("alumno-iniciar-sesion.html", location.href).href,
+      },
+    });
+    form.querySelector("button").disabled = false;
     if (error) return mostrarError(error);
-    location.href = "../PerfilAlumnos/explorar-locales.html";
+    if (data.session) {
+      await crearPerfilPendiente();
+      location.href = "alumno-datos-uat.html";
+    } else {
+      avisarConfirmacion(form);
+    }
   });
 }
 
-async function entrarLocal() {
-  const form = document.getElementById("form-entrar");
+function entrarAlumno() {
+  iniciarSesion(document.getElementById("form-entrar-alumno"), "alumno-datos-uat.html");
+}
+
+async function entradaAlumno() {
+  const alumno = await alumnoActual();
+  if (!alumno) return (location.href = "alumno-iniciar-sesion.html");
+  document.getElementById("saludo").textContent = `¡Hola, ${alumno.nombre.split(" ")[0]}!`;
+  document.getElementById("aviso-datos").textContent = "Revisa que tus datos sean correctos.";
+  const datos = document.getElementById("datos-alumno");
+  datos.innerHTML = [["Nombre", alumno.nombre], ["Matrícula", alumno.matricula], ["Correo", alumno.correo],
+    ["Facultad", alumno.facultad], ["Carrera", alumno.carrera]]
+    .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v || "—")}</dd>`).join("");
+  datos.hidden = false;
+  document.getElementById("continuar").hidden = false;
+  document.getElementById("salir").addEventListener("click", async (e) => {
+    e.preventDefault();
+    await db.auth.signOut();
+    location.href = "bienvenida.html";
+  });
+}
+
+// Inicio de sesión con correo y contraseña, igual para alumnos y locales.
+function iniciarSesion(form, destino) {
   const mensaje = document.getElementById("mensaje");
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const { correo, contrasena } = Object.fromEntries(new FormData(form));
     const { error } = await db.auth.signInWithPassword({ email: correo, password: contrasena });
     if (error) return mostrarError(error);
-    await crearLocalPendiente();
-    location.href = "../PerfilLocal/pedidos.html";
+    await crearPerfilPendiente();
+    location.href = destino;
   });
 
   document.getElementById("olvide").addEventListener("click", async (e) => {
@@ -66,6 +76,17 @@ async function entrarLocal() {
     mensaje.textContent = "Te enviamos un correo para cambiar tu contraseña.";
     mensaje.hidden = false;
   });
+}
+
+function avisarConfirmacion(form) {
+  form.hidden = true;
+  const mensaje = document.getElementById("mensaje");
+  mensaje.textContent = "Te enviamos un correo para confirmar tu cuenta. Después entra con tu correo y contraseña.";
+  mensaje.hidden = false;
+}
+
+function entrarLocal() {
+  iniciarSesion(document.getElementById("form-entrar"), "../PerfilLocal/pedidos.html");
 }
 
 // El registro guarda los datos del local en la cuenta; el local se crea al tener
@@ -100,26 +121,28 @@ async function registrarLocal() {
     if (error) return mostrarError(error);
 
     if (data.session) {
-      await crearLocalPendiente();
+      await crearPerfilPendiente();
       location.href = "../PerfilLocal/pedidos.html";
     } else {
-      form.hidden = true;
-      const mensaje = document.getElementById("mensaje");
-      mensaje.textContent = "Te enviamos un correo para confirmar tu cuenta. Después entra con tu correo y contraseña.";
-      mensaje.hidden = false;
+      avisarConfirmacion(form);
     }
   });
 }
 
-async function crearLocalPendiente() {
-  if (await localActual()) return;
+// Crea la fila de alumno o de local con los datos que se guardaron al registrarse.
+async function crearPerfilPendiente() {
   const usuario = await usuarioActual();
-  const registro = usuario?.user_metadata?.registro_local;
-  if (!registro) return;
-  const { horarios, ...local } = registro;
-  const { data, error } = await db.from("locales").insert(local).select("id").single();
-  if (error) return mostrarError(error);
-  const { error: errorHorarios } = await db.from("horarios")
-    .insert(horarios.map((h) => ({ ...h, local_id: data.id })));
-  if (errorHorarios) mostrarError(errorHorarios);
+  const { registro_alumno: alumno, registro_local: registro } = usuario?.user_metadata || {};
+  if (alumno && !(await alumnoActual())) {
+    const { error } = await db.from("alumnos").insert(alumno);
+    if (error) mostrarError(error);
+  }
+  if (registro && !(await localActual())) {
+    const { horarios, ...local } = registro;
+    const { data, error } = await db.from("locales").insert(local).select("id").single();
+    if (error) return mostrarError(error);
+    const { error: errorHorarios } = await db.from("horarios")
+      .insert(horarios.map((h) => ({ ...h, local_id: data.id })));
+    if (errorHorarios) mostrarError(errorHorarios);
+  }
 }
