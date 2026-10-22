@@ -2,32 +2,51 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Pedidos · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <header class="encabezado">
-      <h1>Pedidos de hoy</h1>
-      <label class="interruptor"><input type="checkbox" id="abierto" checked> Abierto</label>
+  <main class="pantalla-local">
+    <header class="encabezado-local">
+      <div><p class="texto-suave nombre-local">Tu local</p><h1>Pedidos de hoy</h1><p class="texto-tenue solo-escritorio">Ordenados por hora de recogida</p></div>
+      <label class="interruptor pastilla-interruptor"><input type="checkbox" id="abierto" checked><span id="texto-abierto">Abierto</span></label>
     </header>
-    <div class="pestanas">
-      <button class="pestana activa" data-estado="nuevo">Nuevos</button>
-      <button class="pestana" data-estado="aceptado,preparando">Preparando</button>
-      <button class="pestana" data-estado="listo">Listos</button>
+    <div class="resumen solo-escritorio">
+      <div class="tarjeta"><span class="etiqueta">Nuevos</span><strong data-contador="nuevo">0</strong></div>
+      <div class="tarjeta"><span class="etiqueta">En preparación</span><strong data-contador="preparando">0</strong></div>
+      <div class="tarjeta"><span class="etiqueta">Listos</span><strong class="verde" data-contador="listo">0</strong></div>
+      <div class="tarjeta"><span class="etiqueta">Ventas de hoy</span><strong class="azul" id="ventas-hoy">$0</strong></div>
     </div>
-    <ul id="lista-pedidos" class="lista"><li class="texto-suave">Cargando…</li></ul>
-    <nav class="barra-inferior">
-      <a href="pedidos.html">Pedidos</a>
-      <a href="escanear-qr.html" class="boton-central">QR</a>
-      <a href="mi-menu.html">Mi menú</a>
-    </nav>
+    <div class="segmentado pestanas solo-celular">
+      <button class="activa" data-pestana="nuevo">Nuevos <span class="contador" data-contador="nuevo">0</span></button>
+      <button data-pestana="preparando">Preparando <span class="contador" data-contador="preparando">0</span></button>
+      <button data-pestana="listo">Listos <span class="contador" data-contador="listo">0</span></button>
+    </div>
+    <p class="texto-tenue con-icono solo-celular"><i data-icono="reloj"></i>Ordenados por hora de recogida</p>
+    <div class="columnas">
+      <section class="columna activa" data-columna="nuevo">
+        <h2>Nuevos <span class="contador" data-contador="nuevo">0</span></h2>
+        <ul class="lista" id="lista-nuevo"><li class="texto-suave">Cargando…</li></ul>
+      </section>
+      <section class="columna" data-columna="preparando">
+        <h2>En preparación <span class="contador" data-contador="preparando">0</span></h2>
+        <ul class="lista" id="lista-preparando"><li class="texto-suave">Cargando…</li></ul>
+      </section>
+      <section class="columna" data-columna="listo">
+        <h2>Listos para recoger <span class="contador" data-contador="listo">0</span></h2>
+        <ul class="lista" id="lista-listo"><li class="texto-suave">Cargando…</li></ul>
+      </section>
+    </div>
+    <nav class="navegacion-local" data-actual="pedidos"></nav>
   </main>
 </body>
 </html>

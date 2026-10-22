@@ -2,24 +2,33 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Iniciar sesión (alumno) · Pick Up UAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Entrar como alumno · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/acceso.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
-    <h1>Entrar como alumno</h1>
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" href="bienvenida.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Entrar como alumno</h1></div>
+      <p class="texto-suave">Usa el correo y la contraseña de tu cuenta.</p>
+    </header>
     <form class="formulario" id="form-entrar-alumno">
-      <label>Correo institucional <input class="campo" type="email" name="correo" required autocomplete="email" placeholder="a2213450123@alumnos.uat.edu.mx"></label>
-      <label>Contraseña <input class="campo" type="password" name="contrasena" required autocomplete="current-password"></label>
-      <button class="boton boton-primario">Entrar</button>
+      <label class="campo-grupo">Correo institucional <input class="campo" type="email" name="correo" required autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"></label>
+      <label class="campo-grupo">Contraseña <input class="campo" type="password" name="contrasena" required autocomplete="current-password" placeholder="••••••••"></label>
+      <a href="#" class="enlace" id="olvide">¿Olvidaste tu contraseña?</a>
+      <p class="mensaje" id="mensaje" hidden></p>
+      <div class="acciones-abajo">
+        <button class="boton boton-primario">Iniciar sesión</button>
+        <p class="pie">¿No tienes cuenta? <a href="alumno-registro.html">Regístrate</a></p>
+      </div>
     </form>
-    <p class="texto-suave" id="mensaje" hidden></p>
-    <a href="#" id="olvide">¿Olvidaste tu contraseña?</a>
-    <a class="boton boton-secundario" href="alumno-registro.html">Crear cuenta de alumno</a>
   </main>
 </body>
 </html>

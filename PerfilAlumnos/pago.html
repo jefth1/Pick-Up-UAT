@@ -2,21 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Pago · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
-    <h1>Pago</h1>
-    <p>Total a pagar: <strong class="precio" id="total-pago">$0</strong> · recoges a las <strong id="hora-pago">—</strong></p>
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" id="volver-pago" href="carrito.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Pago</h1></div>
+      <p class="texto-suave">Paga al recoger y solo pasa por tu pedido.</p>
+    </header>
+    <div class="tarjeta-total">
+      <span>Total a pagar</span>
+      <strong id="total-pago">$0</strong>
+      <span>Recoges hoy a las <b id="hora-pago">—</b> · <span id="local-pago"></span></span>
+    </div>
     <h2>Método de pago</h2>
-    <label><input type="radio" name="metodo" checked> Pagar al recoger</label>
-    <p class="texto-suave">El pago en línea todavía no está conectado.</p>
+    <label class="opcion-pago"><i data-icono="efectivo"></i><span>Pagar al recoger en el local</span><input type="radio" name="metodo" checked></label>
+    <label class="opcion-pago deshabilitada"><i data-icono="tarjeta"></i><span>Tarjeta de débito o crédito<small>Próximamente</small></span><input type="radio" name="metodo" disabled></label>
+    <div class="empuje"></div>
     <button class="boton boton-primario" id="enviar-pedido">Enviar pedido</button>
   </main>
 </body>

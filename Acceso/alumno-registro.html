@@ -2,28 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registro de alumno · Pick Up UAT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Crea tu cuenta · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/acceso.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
-    <h1>Crea tu cuenta</h1>
-    <p class="texto-suave">Registro temporal mientras conectamos la base de datos de la UAT.</p>
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" href="bienvenida.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Crea tu cuenta</h1></div>
+      <p class="texto-suave">Mientras conectamos la cuenta UAT, regístrate aquí una sola vez.</p>
+    </header>
     <form class="formulario" id="form-registro-alumno">
-      <label>Nombre completo <input class="campo" name="nombre" required maxlength="120" autocomplete="name"></label>
-      <label>Matrícula <input class="campo" name="matricula" required maxlength="20"></label>
-      <label>Correo institucional <input class="campo" type="email" name="correo" required maxlength="120" autocomplete="email" placeholder="a2213450123@alumnos.uat.edu.mx"></label>
-      <label>Contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password"></label>
-      <label>Facultad <input class="campo" name="facultad" maxlength="120"></label>
-      <label>Carrera <input class="campo" name="carrera" maxlength="120"></label>
-      <button class="boton boton-primario">Crear cuenta</button>
+      <label class="campo-grupo">Nombre completo <input class="campo" name="nombre" required maxlength="120" autocomplete="name" placeholder="Como aparece en tu credencial"></label>
+      <label class="campo-grupo">Matrícula <input class="campo" name="matricula" required maxlength="20" placeholder="Ej. a2210000"></label>
+      <label class="campo-grupo">Correo institucional <input class="campo" type="email" name="correo" required maxlength="120" autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"></label>
+      <label class="campo-grupo">Facultad <input class="campo" name="facultad" maxlength="120" placeholder="Ej. Facultad de Ingeniería"></label>
+      <label class="campo-grupo">Carrera <input class="campo" name="carrera" maxlength="120" placeholder="Ej. Ing. en Sistemas Computacionales"></label>
+      <label class="campo-grupo">Crea una contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></label>
+      <p class="mensaje" id="mensaje" hidden></p>
+      <div class="acciones-abajo">
+        <button class="boton boton-primario">Crear cuenta</button>
+        <p class="pie">¿Ya tienes cuenta? <a href="alumno-iniciar-sesion.html">Inicia sesión</a></p>
+      </div>
     </form>
-    <p class="texto-suave" id="mensaje" hidden></p>
-    <a href="alumno-iniciar-sesion.html">Ya tengo cuenta</a>
   </main>
 </body>
 </html>

@@ -2,27 +2,37 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Explorar locales · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <h1>Locales</h1>
+  <main class="pantalla con-barra">
+    <header class="encabezado-pantalla">
+      <p class="texto-suave" id="hola">Hola</p>
+      <h1>¿Qué vas a pedir hoy?</h1>
+    </header>
+    <label class="buscador"><i data-icono="buscar"></i><input type="search" id="buscar" placeholder="Buscar local o platillo" autocomplete="off"></label>
     <div class="chips">
       <button class="chip activo" data-filtro="todos">Todos</button>
-      <button class="chip" data-filtro="dentro">Dentro de la UAT</button>
-      <button class="chip" data-filtro="fuera">Fuera de la UAT</button>
+      <button class="chip" data-filtro="dentro">Dentro UAT</button>
+      <button class="chip" data-filtro="fuera">Fuera UAT</button>
     </div>
     <ul id="lista-locales" class="lista"><li class="texto-suave">Cargando…</li></ul>
+    <a class="barra-carrito" id="barra-carrito" href="carrito.html" hidden>
+      <span class="cantidad-carrito" id="cantidad-carrito">0</span><span>Ver carrito</span><span id="total-barra">$0</span>
+    </a>
     <nav class="barra-inferior">
-      <a href="explorar-locales.html">Explorar</a>
-      <a href="carrito.html">Carrito</a>
-      <a href="confirmacion.html">Mis pedidos</a>
+      <a href="explorar-locales.html" class="actual"><i data-icono="inicio"></i>Inicio</a>
+      <a href="confirmacion.html"><i data-icono="bolsa"></i>Mis pedidos</a>
+      <a href="../Acceso/alumno-datos-uat.html"><i data-icono="usuario"></i>Perfil</a>
     </nav>
   </main>
 </body>

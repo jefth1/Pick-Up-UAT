@@ -2,23 +2,42 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Producto · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
   <main class="pantalla">
-    <div class="imagen-portada"></div>
-    <h1 id="nombre-producto">Producto</h1>
-    <p id="precio-producto" class="precio"></p>
-    <p id="descripcion-producto" class="texto-suave"></p>
-    <label>Cantidad <input class="campo" id="cantidad" type="number" min="1" max="20" value="1"></label>
-    <label>Instrucciones para el local <textarea class="campo" id="nota" maxlength="200" placeholder="Sin cebolla, salsa aparte…"></textarea></label>
-    <button class="boton boton-primario" id="agregar">Agregar al carrito</button>
+    <div class="foto imagen-portada" id="foto-producto">
+      <a class="atras-flotante" id="volver-menu" href="explorar-locales.html" aria-label="Volver"><i data-icono="atras"></i></a>
+      <i data-icono="imagen"></i>
+    </div>
+    <header class="encabezado-pantalla">
+      <h1 id="nombre-producto">Cargando…</h1>
+      <p class="texto-suave" id="descripcion-producto"></p>
+      <p class="precio precio-grande" id="precio-producto"></p>
+    </header>
+    <div class="fila-cantidad">
+      <span>Cantidad</span>
+      <div class="selector-cantidad">
+        <button type="button" id="menos" aria-label="Menos"><i data-icono="menos"></i></button>
+        <input id="cantidad" type="number" min="1" max="20" value="1" inputmode="numeric" aria-label="Cantidad">
+        <button type="button" id="mas" aria-label="Más"><i data-icono="mas"></i></button>
+      </div>
+    </div>
+    <label class="campo-grupo">Instrucciones para el local
+      <textarea class="campo" id="nota" maxlength="140" placeholder="Ej. sin cebolla, salsa aparte"></textarea>
+      <span class="ayuda">Opcional · máximo 140 caracteres</span>
+    </label>
+    <div class="empuje"></div>
+    <button class="boton boton-primario" id="agregar">Agregar al pedido</button>
   </main>
 </body>
 </html>

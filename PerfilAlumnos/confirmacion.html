@@ -2,30 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mis pedidos · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
-  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <section id="pedido-actual" hidden>
-      <h1>¡Pedido enviado!</h1>
-      <p class="texto-suave">Muestra este código en el local.</p>
-      <div class="tarjeta qr" id="codigo-pedido">—</div>
-      <p>Pedido <strong id="numero-pedido">#—</strong> en <strong id="local-pedido">—</strong> · recoge a las <strong id="hora-recogida">—</strong></p>
-      <span class="estado" id="estado-pedido">Esperando al local</span>
+  <main class="pantalla con-barra">
+    <section class="confirmacion" id="pedido-actual" hidden>
+      <span class="icono-exito"><i data-icono="check"></i></span>
+      <h1 id="titulo-confirmacion">¡Pedido enviado!</h1>
+      <p class="texto-suave">Muestra este código al recoger tu pedido.</p>
+      <div class="tarjeta qr"><div id="codigo-pedido"></div><strong id="numero-pedido">#—</strong></div>
+      <ol class="tarjeta pasos" id="pasos"></ol>
+      <p class="recoge"><i data-icono="reloj"></i>Recoge a las <b id="hora-recogida">—</b> · <span id="local-pedido"></span></p>
+      <span class="estado" id="estado-pedido" hidden></span>
     </section>
-    <h2>Mis pedidos</h2>
+    <h2 id="titulo-lista">Mis pedidos</h2>
     <ul id="mis-pedidos" class="lista"><li class="texto-suave">Cargando…</li></ul>
     <nav class="barra-inferior">
-      <a href="explorar-locales.html">Explorar</a>
-      <a href="carrito.html">Carrito</a>
-      <a href="confirmacion.html">Mis pedidos</a>
+      <a href="explorar-locales.html"><i data-icono="inicio"></i>Inicio</a>
+      <a href="confirmacion.html" class="actual"><i data-icono="bolsa"></i>Mis pedidos</a>
+      <a href="../Acceso/alumno-datos-uat.html"><i data-icono="usuario"></i>Perfil</a>
     </nav>
   </main>
 </body>

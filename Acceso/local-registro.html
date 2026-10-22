@@ -2,39 +2,46 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Registro de local · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/acceso.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
-
 </head>
 <body>
   <main class="pantalla">
-    <h1>Registra tu local</h1>
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" href="local-iniciar-sesion.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Registro de local</h1></div>
+      <p class="texto-suave">Llena los datos de tu negocio para recibir pedidos.</p>
+    </header>
     <form class="formulario" id="form-registro">
-      <label>Nombre del negocio <input class="campo" name="nombre" required maxlength="80"></label>
-      <label>Encargado <input class="campo" name="encargado" required maxlength="80"></label>
-      <label>Correo <input class="campo" type="email" name="correo" required autocomplete="email"></label>
-      <label>Contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password"></label>
-      <fieldset>
-        <legend>Ubicación</legend>
-        <label><input type="radio" name="ubicacion" value="dentro" checked> Dentro de la UAT</label>
-        <label><input type="radio" name="ubicacion" value="fuera"> Fuera de la UAT</label>
-      </fieldset>
-      <label>Dirección o facultad <input class="campo" name="direccion" maxlength="160"></label>
-      <fieldset>
-        <legend>Horario</legend>
-        <div class="chips" id="dias"></div>
-        <div class="fila-horas">
-          <label>Abre <input class="campo" type="time" name="abre" value="08:00" required></label>
-          <label>Cierra <input class="campo" type="time" name="cierra" value="18:00" required></label>
+      <label class="campo-grupo">Nombre del negocio <input class="campo" name="nombre" required maxlength="80" placeholder="Ej. Cafetería La Ingeniería"></label>
+      <label class="campo-grupo">Encargado <input class="campo" name="encargado" required maxlength="80" placeholder="Nombre de quien atiende"></label>
+      <div class="campo-grupo">Ubicación
+        <div class="segmentado">
+          <label><input type="radio" name="ubicacion" value="dentro" checked>Dentro de la UAT</label>
+          <label><input type="radio" name="ubicacion" value="fuera">Fuera de la UAT</label>
         </div>
-      </fieldset>
-      <button class="boton boton-primario">Registrar local</button>
+      </div>
+      <label class="campo-grupo">Facultad o dirección <input class="campo" name="direccion" maxlength="160" placeholder="Ej. Facultad de Ingeniería, edificio B"></label>
+      <div class="campo-grupo">Días que abres <div class="chips chips-dias" id="dias"></div></div>
+      <div class="fila-campos">
+        <label class="campo-grupo">Abre <input class="campo" type="time" name="abre" value="08:00" required></label>
+        <label class="campo-grupo">Cierra <input class="campo" type="time" name="cierra" value="18:00" required></label>
+      </div>
+      <label class="subir-logo" id="subir-logo"><input type="file" name="logo" accept="image/jpeg,image/png,image/webp"><i data-icono="subir"></i><span id="texto-logo">Subir logo del local</span></label>
+      <label class="campo-grupo">Correo <input class="campo" type="email" name="correo" required autocomplete="email" placeholder="contacto@milocal.com"></label>
+      <label class="campo-grupo">Contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></label>
+      <p class="mensaje" id="mensaje" hidden></p>
+      <div class="acciones-abajo">
+        <button class="boton boton-primario">Registrar local</button>
+      </div>
     </form>
-    <p class="texto-suave" id="mensaje" hidden></p>
   </main>
 </body>
 </html>

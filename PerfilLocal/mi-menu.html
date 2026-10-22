@@ -2,29 +2,28 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mi menú · Pick Up UAT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <header class="encabezado">
-      <h1>Mi menú</h1>
-      <a class="boton boton-primario" href="agregar-producto.html">+ Producto</a>
+  <main class="pantalla-local">
+    <header class="encabezado-local">
+      <div><p class="texto-suave" id="cuenta-productos">0 productos publicados</p><h1>Mi menú</h1><p class="texto-tenue solo-escritorio">Lo que publiques aquí lo ven los alumnos con foto y precio.</p></div>
+      <a class="boton boton-primario boton-agregar" href="agregar-producto.html" aria-label="Agregar producto"><i data-icono="mas"></i><span class="solo-escritorio">Agregar producto</span></a>
     </header>
-    <ul id="lista-menu" class="lista"><li class="texto-suave">Cargando…</li></ul>
-    <p class="texto-suave" id="datos-local"></p>
-    <a href="#" id="salir">Cerrar sesión</a>
-    <nav class="barra-inferior">
-      <a href="pedidos.html">Pedidos</a>
-      <a href="escanear-qr.html" class="boton-central">QR</a>
-      <a href="mi-menu.html">Mi menú</a>
-    </nav>
+    <label class="buscador"><i data-icono="buscar"></i><input type="search" id="buscar-menu" placeholder="Buscar en mi menú" autocomplete="off"></label>
+    <div class="chips" id="categorias-menu"></div>
+    <ul id="lista-menu" class="lista-menu"><li class="texto-suave">Cargando…</li></ul>
+    <nav class="navegacion-local" data-actual="menu"></nav>
   </main>
 </body>
 </html>

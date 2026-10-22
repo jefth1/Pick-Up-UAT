@@ -19,6 +19,8 @@ flowchart TD
   DP -->|Aceptar / Rechazar| PD
   PD --> QR[escanear-qr]
   PD --> MM[mi-menu] --> AP[agregar-producto]
+  PD --> V[ventas]
+  PD --> PF[perfil]
 
   AP -. publica productos .-> M
   CF -. pedido nuevo .-> PD
@@ -42,6 +44,12 @@ flowchart TD
 | Local móvil/Detalle del pedido | `PerfilLocal/detalle-pedido.html` |
 | Local móvil/Escanear QR | `PerfilLocal/escanear-qr.html` |
 | Local móvil/Mi menú | `PerfilLocal/mi-menu.html` |
-| Local móvil/Agregar producto | `PerfilLocal/agregar-producto.html` |
+| Local móvil/Agregar producto | `PerfilLocal/agregar-producto.html` (también edita y elimina) |
+| Barra del local · Ventas | `PerfilLocal/ventas.html` |
+| Barra del local · Perfil | `PerfilLocal/perfil.html` (datos, logo, horario, cerrar sesión) |
 
-La versión de escritorio del local (secundaria) usa las mismas páginas de `PerfilLocal/`, adaptadas con CSS para pantallas grandes.
+La versión de escritorio del local (secundaria) usa las mismas páginas de `PerfilLocal/`: desde 900 px de ancho la barra inferior pasa a barra lateral y los pedidos se ven en tres columnas (Nuevos, En preparación, Listos).
+
+Colores, tipografía (Inter) e iconos del Figma están en `Compartido/css/estilos.css` y `Compartido/js/iconos.js`.
+
+El QR del pedido lleva el texto `PICKUP-<número>`; el local lo lee con la cámara en `escanear-qr.html` (o escribe el número).
