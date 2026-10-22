@@ -30,7 +30,7 @@ async function explorarLocales() {
   const pintar = (filtro) => {
     lista.innerHTML = locales
       .filter((l) => filtro === "todos" || l.ubicacion === filtro)
-      .map((l) => `<li><a class="tarjeta perfil-ejemplo" href="menu-local.html?local=${l.id}">
+      .map((l) => `<li><a class="tarjeta tarjeta-enlace" href="menu-local.html?local=${l.id}">
         <strong>${esc(l.nombre)}</strong><span class="texto-suave">${esc(textoHorario(l.horarios))}</span>
         <span class="estado ${abiertoAhora(l) ? "listo" : ""}">${abiertoAhora(l) ? "Abierto" : "Cerrado"}</span></a></li>`)
       .join("") || `<li class="texto-suave">Todavía no hay locales registrados.</li>`;
@@ -55,9 +55,9 @@ async function menuLocal() {
   document.getElementById("menu-local").innerHTML = local.productos
     .sort((a, b) => a.nombre.localeCompare(b.nombre))
     .map((p) => p.disponible
-      ? `<li><a class="tarjeta perfil-ejemplo" href="producto.html?producto=${p.id}">
+      ? `<li><a class="tarjeta tarjeta-enlace" href="producto.html?producto=${p.id}">
           <strong>${esc(p.nombre)}</strong><span class="precio">${dinero(p.precio)}</span></a></li>`
-      : `<li class="tarjeta perfil-ejemplo agotado"><strong>${esc(p.nombre)}</strong><span>Agotado</span></li>`)
+      : `<li class="tarjeta tarjeta-enlace agotado"><strong>${esc(p.nombre)}</strong><span>Agotado</span></li>`)
     .join("") || `<li class="texto-suave">Este local todavía no sube su menú.</li>`;
 }
 
@@ -83,21 +83,26 @@ async function producto() {
   });
 }
 
-// Horas de recogida cada 15 minutos, desde 15 minutos a partir de ahora hasta el
-// cierre del local hoy.
-function horasDisponibles(local) {
+// Rango para la hora de recogida: desde 15 minutos a partir de ahora (o la apertura)
+// hasta el cierre del local hoy, en minutos del día.
+function rangoRecogida(local) {
   const { dia, minutos } = ahoraEnTamaulipas();
   const hoy = local.horarios.find((h) => h.dia === dia);
-  if (!local.abierto || !hoy) return [];
+  if (!local.abierto || !hoy) return null;
   const aMinutos = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
-  const desde = Math.max(aMinutos(hoy.abre), Math.ceil((minutos + 15) / 15) * 15);
-  const horas = [];
-  for (let m = desde; m <= aMinutos(hoy.cierra); m += 15) horas.push(m);
-  return horas.map((m) => {
-    const fecha = new Date(Date.now() + (m - minutos) * 60000);
-    fecha.setSeconds(0, 0);
-    return { texto: `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`, fecha: fecha.toISOString() };
-  });
+  const desde = Math.max(aMinutos(hoy.abre), Math.ceil((minutos + 15) / 5) * 5);
+  const hasta = aMinutos(hoy.cierra);
+  return desde <= hasta ? { desde, hasta } : null;
+}
+
+const aTexto = (m) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+
+// "13:20" de hoy en Tamaulipas → fecha ISO.
+function fechaDeHoy(texto, ahora) {
+  const m = Number(texto.slice(0, 2)) * 60 + Number(texto.slice(3, 5));
+  const fecha = new Date(Date.now() + (m - ahora) * 60000);
+  fecha.setSeconds(0, 0);
+  return fecha.toISOString();
 }
 
 async function verCarrito() {
@@ -125,29 +130,33 @@ async function verCarrito() {
   const { data: local, error } = await db.from("locales").select("*, horarios(*)").eq("id", c.localId).single();
   if (error) return mostrarError(error);
   document.getElementById("local-carrito").textContent = local.nombre;
-  const horas = horasDisponibles(local);
-  const contenedor = document.getElementById("horarios");
-  if (!horas.length) {
-    contenedor.innerHTML = `<p class="texto-suave">El local ya no recibe pedidos hoy.</p>`;
+  const rango = rangoRecogida(local);
+  const campo = document.getElementById("hora");
+  const aviso = document.getElementById("rango-hora");
+  if (!rango) {
+    campo.hidden = true;
+    aviso.textContent = "El local ya no recibe pedidos hoy.";
     return boton.hidden = true;
   }
-  c.hora = horas.find((h) => h.fecha === c.hora?.fecha) || horas[0];
-  carrito.guardar(c);
-  contenedor.innerHTML = horas.map((h, i) =>
-    `<button class="chip ${h.fecha === c.hora.fecha ? "activo" : ""}" data-hora="${i}">${h.texto}</button>`).join("");
-  contenedor.addEventListener("click", (e) => {
-    const i = e.target.dataset.hora;
-    if (i === undefined) return;
-    contenedor.querySelectorAll(".chip").forEach((b) => b.classList.remove("activo"));
-    e.target.classList.add("activo");
-    c.hora = horas[i];
+  campo.min = aTexto(rango.desde);
+  campo.max = aTexto(rango.hasta);
+  const guardada = c.hora?.texto;
+  campo.value = guardada >= campo.min && guardada <= campo.max ? guardada : campo.min;
+  aviso.textContent = `Entre ${campo.min} y ${campo.max} (cierre del local).`;
+
+  boton.addEventListener("click", (e) => {
+    if (!campo.value || campo.value < campo.min || campo.value > campo.max) {
+      e.preventDefault();
+      return alert(`Elige una hora entre ${campo.min} y ${campo.max}.`);
+    }
+    c.hora = { texto: campo.value, fecha: fechaDeHoy(campo.value, ahoraEnTamaulipas().minutos) };
     carrito.guardar(c);
   });
 }
 
 async function exigirAlumno() {
   const alumno = await alumnoActual();
-  if (!alumno) location.href = "../Acceso/alumno-datos-uat.html";
+  if (!alumno) location.href = "../Acceso/alumno-iniciar-sesion.html";
   return alumno;
 }
 
@@ -193,7 +202,7 @@ async function misPedidos() {
       estado.textContent = actual.estado === "nuevo" ? "Esperando al local" : ESTADOS_PEDIDO[actual.estado].texto;
       estado.className = `estado ${actual.estado === "listo" ? "listo" : actual.estado === "rechazado" ? "urgente" : ""}`;
     }
-    lista.innerHTML = pedidos.map((p) => `<li class="tarjeta perfil-ejemplo">
+    lista.innerHTML = pedidos.map((p) => `<li class="tarjeta tarjeta-enlace">
       <strong>#${p.id} · ${esc(p.locales.nombre)}</strong>
       <span class="texto-suave">Recoge ${hora(p.hora_recogida)} · ${dinero(p.total)}</span>
       <span class="estado ${p.estado === "listo" ? "listo" : ""}">${ESTADOS_PEDIDO[p.estado].texto}</span></li>`)

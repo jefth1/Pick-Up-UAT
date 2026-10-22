@@ -33,16 +33,18 @@ El SQL completo está en `supabase/migrations/`.
 ## Quién entra y cómo
 
 - **Local:** se registra con correo y contraseña (`Acceso/local-registro.html`).
-- **Alumno:** mientras no exista el inicio de sesión con la cuenta UAT, entra con una sesión
-  anónima de Supabase y llena sus datos una vez. La sesión queda guardada en ese navegador.
+- **Alumno:** se registra con correo y contraseña (`Acceso/alumno-registro.html`). Es un
+  registro temporal: se quitará cuando se conecte la API de la base de datos de la UAT.
+
+Una misma cuenta es alumno o local, no las dos.
 
 ## Ajustes en el panel de Supabase
 
 En **Authentication**:
 
-1. **Sign In / Providers → Allow anonymous sign-ins:** activado (para los alumnos).
+1. **Sign In / Providers → Allow anonymous sign-ins:** ya no se usa; se puede desactivar.
 2. **Sign In / Providers → Email → Confirm email:** desactivado mientras se prueba, para que
-   el local entre en cuanto se registra. Si se deja activado, el local debe abrir el correo
+   alumnos y locales entren en cuanto se registran. Si se deja activado, deben abrir el correo
    de confirmación antes de entrar.
 3. **URL Configuration → Site URL:** `https://jefth1.github.io/Pick-Up-UAT/`, y en
    **Redirect URLs** agregar `https://jefth1.github.io/Pick-Up-UAT/**` (y
@@ -50,6 +52,6 @@ En **Authentication**:
 
 ## Pendiente
 
-- Inicio de sesión con la cuenta institucional UAT para alumnos.
+- Cambiar el registro temporal de alumnos por la API de la base de datos de la UAT.
 - Fotos de productos y logo del local (Supabase Storage).
 - Pago en línea; por ahora se paga al recoger.

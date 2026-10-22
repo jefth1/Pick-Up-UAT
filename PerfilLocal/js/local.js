@@ -38,7 +38,7 @@ async function pedidos(local) {
       .eq("local_id", local.id).in("estado", estados).order("hora_recogida");
     if (error) return mostrarError(error);
     lista.innerHTML = data
-      .map((p) => `<li><a class="tarjeta perfil-ejemplo" href="detalle-pedido.html?pedido=${p.id}">
+      .map((p) => `<li><a class="tarjeta tarjeta-enlace" href="detalle-pedido.html?pedido=${p.id}">
         <strong>Pedido #${p.id} · ${esc(p.alumnos?.nombre)}</strong>
         <span class="estado">Recoge ${hora(p.hora_recogida)} · ${dinero(p.total)}</span></a></li>`)
       .join("") || `<li class="texto-suave">Sin pedidos</li>`;

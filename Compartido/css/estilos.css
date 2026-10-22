@@ -46,16 +46,14 @@ a { color: var(--azul); }
 .barra-inferior { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; align-items: center; padding: 12px; background: #fff; border-top: 1px solid var(--borde); }
 .barra-inferior a { text-decoration: none; color: var(--tinta); }
 
-.ejemplos { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--borde); display: flex; flex-direction: column; gap: 8px; }
-.ejemplos h2 { margin: 0; font-size: 16px; }
-.perfil-ejemplo { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--tinta); }
+.tarjeta-enlace { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--tinta); }
 .datos-solo-lectura { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; margin: 0; }
 .datos-solo-lectura dt { color: var(--tinta-suave); }
 .datos-solo-lectura dd { margin: 0; }
 h1 { margin: 0; }
 .fila-producto { display: flex; justify-content: space-between; align-items: center; }
 .agotado { opacity: .5; }
-.perfil-ejemplo .estado { align-self: flex-start; }
+.tarjeta-enlace .estado { align-self: flex-start; }
 .interruptor { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 fieldset { border: 1px solid var(--borde); border-radius: var(--radio); display: flex; flex-direction: column; gap: 8px; }
 .fila-horas { display: flex; gap: 8px; }

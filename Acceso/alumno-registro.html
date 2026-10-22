@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro de alumno · Pick Up UAT</title>
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/acceso.js" defer></script>
+</head>
+<body>
+  <main class="pantalla">
+    <h1>Crea tu cuenta</h1>
+    <p class="texto-suave">Registro temporal mientras conectamos la base de datos de la UAT.</p>
+    <form class="formulario" id="form-registro-alumno">
+      <label>Nombre completo <input class="campo" name="nombre" required maxlength="120" autocomplete="name"></label>
+      <label>Matrícula <input class="campo" name="matricula" required maxlength="20"></label>
+      <label>Correo institucional <input class="campo" type="email" name="correo" required maxlength="120" autocomplete="email" placeholder="a2213450123@alumnos.uat.edu.mx"></label>
+      <label>Contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password"></label>
+      <label>Facultad <input class="campo" name="facultad" maxlength="120"></label>
+      <label>Carrera <input class="campo" name="carrera" maxlength="120"></label>
+      <button class="boton boton-primario">Crear cuenta</button>
+    </form>
+    <p class="texto-suave" id="mensaje" hidden></p>
+    <a href="alumno-iniciar-sesion.html">Ya tengo cuenta</a>
+  </main>
+</body>
+</html>
