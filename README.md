@@ -9,7 +9,7 @@ El alumno deja su pedido y pasa a recogerlo a la hora elegida; el local lo acept
 ```
 Pick-Up-UAT/
 ├── index.html            → redirige a Acceso/bienvenida.html
-├── Acceso/               → entrada: alumno con cuenta UAT, local con correo
+├── Acceso/               → entrada y registro de alumnos (temporal) y locales
 ├── PerfilAlumnos/        → explorar locales, menú, producto, carrito, pago, confirmación
 │   ├── css/alumnos.css
 │   └── js/alumnos.js

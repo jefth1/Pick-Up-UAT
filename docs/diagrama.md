@@ -4,7 +4,10 @@ Cada pantalla del diseño en Figma (archivo `3ku3u2aHkv109klsyMFXXv`, página "P
 
 ```mermaid
 flowchart TD
-  B[Acceso/bienvenida] -->|Cuenta institucional UAT| D[Acceso/alumno-datos-uat]
+  B[Acceso/bienvenida] -->|Entrar como alumno| AS[Acceso/alumno-iniciar-sesion]
+  AS --> AR[Acceso/alumno-registro]
+  AS --> D[Acceso/alumno-datos-uat]
+  AR --> D
   B -->|Entrar como local| LS[Acceso/local-iniciar-sesion]
   LS --> LR[Acceso/local-registro]
 
@@ -24,6 +27,8 @@ flowchart TD
 | Figma | Archivo |
 |---|---|
 | Acceso/Bienvenida | `Acceso/bienvenida.html` |
+| Acceso/Alumno · iniciar sesión (temporal) | `Acceso/alumno-iniciar-sesion.html` |
+| Acceso/Alumno · registro (temporal) | `Acceso/alumno-registro.html` |
 | Acceso/Alumno · datos de la UAT | `Acceso/alumno-datos-uat.html` |
 | Acceso/Local · iniciar sesión | `Acceso/local-iniciar-sesion.html` |
 | Acceso/Registro local | `Acceso/local-registro.html` |
