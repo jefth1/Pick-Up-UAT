@@ -53,7 +53,7 @@ Abre https://jefth1.github.io/Pick-Up-UAT/ y:
 - **Android (Chrome):** menú ⋮ → *Instalar app* (o *Agregar a pantalla principal*).
 - **iPhone (Safari):** botón Compartir → *Agregar a inicio*.
 
-Si cambias archivos del sitio, sube `VERSION` en `sw.js` para que los celulares descarguen lo nuevo.
+Con conexión la app siempre carga lo último que esté publicado; la copia guardada solo se usa sin internet.
 
 ## Diseño
 

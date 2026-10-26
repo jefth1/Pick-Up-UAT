@@ -2,7 +2,7 @@
 // propio sitio para que la app abra rápido y se pueda instalar. Nunca toca las
 // peticiones a otros dominios (Supabase, CDN, fuentes): esas siempre van a la red,
 // así los pedidos, menús y sesiones nunca salen de una copia vieja.
-// Al cambiar archivos del sitio, sube la versión para descartar la caché anterior.
+// Cambiar VERSION borra la copia guardada en los celulares (por ejemplo, si cambia mucho el sitio).
 const VERSION = "pickup-v1";
 
 self.addEventListener("install", (evento) => {
