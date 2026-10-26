@@ -9,6 +9,8 @@ El alumno deja su pedido y pasa a recogerlo a la hora elegida; el local lo acept
 ```
 Pick-Up-UAT/
 ├── index.html            → redirige a Acceso/bienvenida.html
+├── manifest.webmanifest  → datos para instalarla como app (nombre, colores, íconos)
+├── sw.js                 → service worker: guarda el sitio, nunca las llamadas a Supabase
 ├── Acceso/               → entrada y registro de alumnos (temporal) y locales
 ├── PerfilAlumnos/        → explorar locales, menú, producto, carrito, pago, confirmación
 │   ├── css/alumnos.css
@@ -20,7 +22,8 @@ Pick-Up-UAT/
 │   ├── css/estilos.css   → paleta y componentes del diseño
 │   ├── js/supabase.js    → conexión a la base de datos y utilidades
 │   ├── js/estados-pedido.js
-│   └── img/
+│   ├── js/pwa.js         → registra sw.js
+│   └── img/iconos/       → ícono de la app
 ├── supabase/migrations/ → esquema de la base de datos y reglas de seguridad (RLS)
 └── docs/
     ├── diagrama.md       → flujo de pantallas y su relación con Figma
@@ -42,6 +45,15 @@ python3 -m http.server 8000
 ```
 
 y entra a http://localhost:8000.
+
+## Instalarla en el celular (PWA)
+
+Abre https://jefth1.github.io/Pick-Up-UAT/ y:
+
+- **Android (Chrome):** menú ⋮ → *Instalar app* (o *Agregar a pantalla principal*).
+- **iPhone (Safari):** botón Compartir → *Agregar a inicio*.
+
+Si cambias archivos del sitio, sube `VERSION` en `sw.js` para que los celulares descarguen lo nuevo.
 
 ## Diseño
 

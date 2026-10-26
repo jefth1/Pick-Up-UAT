@@ -1,0 +1,18 @@
+{
+  "name": "Pick Up UAT",
+  "short_name": "Pick Up",
+  "description": "Pide antes y recoge sin hacer fila.",
+  "lang": "es-MX",
+  "id": "./",
+  "start_url": "./Acceso/bienvenida.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAFAF8",
+  "theme_color": "#1B3A6B",
+  "icons": [
+    { "src": "Compartido/img/iconos/icono-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "Compartido/img/iconos/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "Compartido/img/iconos/icono-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
