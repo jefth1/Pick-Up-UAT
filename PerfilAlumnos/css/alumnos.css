@@ -87,3 +87,12 @@
 .favor { display: flex; flex-direction: column; gap: 10px; text-align: left; }
 .favor .codigo { font-size: 28px; font-weight: 700; letter-spacing: 6px; }
 .fila-favor { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.lista > li:has(.agregar-rapido) { position: relative; }
+.agregar-rapido { position: absolute; right: 10px; bottom: 10px; display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 999px; background: var(--azul); color: #fff; box-shadow: 0 0 0 3px var(--superficie); cursor: pointer; }
+.agregar-rapido .icono { width: 18px; height: 18px; }
+.agregar-rapido.agregado { background: var(--verde); }
+.mini-cantidad { display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; }
+.mini-cantidad button:not(.quitar) { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--borde); border-radius: 999px; background: var(--superficie); color: var(--tinta); font: inherit; font-weight: 600; cursor: pointer; }
+.agregar-mas { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 14px; }
+.agregar-mas .icono { width: 16px; height: 16px; }
+.segmentado label.deshabilitada { opacity: .5; cursor: not-allowed; }

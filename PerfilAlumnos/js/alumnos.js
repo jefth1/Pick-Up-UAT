@@ -8,6 +8,22 @@ const carrito = {
 const totalDe = (c) => c.items.reduce((s, x) => s + x.precio * x.cantidad, 0);
 const totalConFavor = (c) => totalDe(c) + (c.favor?.tarifa || 0);
 
+// Agrega un producto al carrito; si ya está con la misma nota, suma la cantidad.
+// El carrito es de un solo local: pedir de otro empieza uno nuevo.
+function agregarAlCarrito(p, cantidad, nota = "") {
+  let c = carrito.leer();
+  if (c.localId && c.localId !== p.local_id) {
+    if (!confirm("Tu carrito tiene productos de otro local. ¿Empezar un carrito nuevo?")) return false;
+    c = { localId: null, items: [] };
+  }
+  c.localId = p.local_id;
+  const igual = c.items.find((x) => x.productoId === p.id && (x.nota || "") === nota);
+  if (igual) igual.cantidad = Math.min(20, igual.cantidad + cantidad);
+  else c.items.push({ productoId: p.id, nombre: p.nombre, precio: Number(p.precio), cantidad, nota });
+  carrito.guardar(c);
+  return true;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("lista-locales")) explorarLocales();
   if (document.getElementById("menu-local")) menuLocal();
@@ -42,7 +58,7 @@ const textoUbicacion = (l) => [l.ubicacion === "dentro" ? "Dentro UAT" : "Fuera 
 function barraCarrito() {
   const c = carrito.leer();
   const cantidad = c.items.reduce((s, x) => s + x.cantidad, 0);
-  if (!cantidad) return;
+  if (!cantidad) return (document.getElementById("barra-carrito").hidden = true);
   document.getElementById("cantidad-carrito").textContent = cantidad;
   document.getElementById("total-barra").textContent = dinero(totalDe(c));
   document.getElementById("barra-carrito").hidden = false;
@@ -127,12 +143,25 @@ async function menuLocal() {
             ${p.disponible ? `<span class="precio">${dinero(p.precio)}</span>` : `<span class="estado">Agotado</span>`}</div>
           <div class="foto miniatura" ${fondoFoto(p.foto_url)}>${p.foto_url ? "" : icono("imagen")}</div>`;
         return p.disponible
-          ? `<li><a class="tarjeta fila-menu" href="producto.html?producto=${p.id}">${contenido}</a></li>`
+          ? `<li><a class="tarjeta fila-menu" href="producto.html?producto=${p.id}">${contenido}</a>
+              <button class="agregar-rapido" data-agregar="${p.id}" aria-label="Agregar ${esc(p.nombre)}">${icono("mas")}</button></li>`
           : `<li class="tarjeta fila-menu agotado">${contenido}</li>`;
       })
       .join("") || `<li class="tarjeta vacio"><strong>Menú vacío</strong><span>Este local todavía no sube productos.</span></li>`;
   };
   pintar();
+
+  // "+" agrega uno sin salir del menú; la barra del carrito se actualiza al momento.
+  document.getElementById("menu-local").addEventListener("click", (e) => {
+    const boton = e.target.closest("[data-agregar]");
+    if (!boton) return;
+    const p = productos.find((x) => String(x.id) === boton.dataset.agregar);
+    if (!agregarAlCarrito(p, 1)) return;
+    barraCarrito();
+    boton.classList.add("agregado");
+    boton.innerHTML = icono("check");
+    setTimeout(() => { boton.classList.remove("agregado"); boton.innerHTML = icono("mas"); }, 900);
+  });
 }
 
 async function producto() {
@@ -164,17 +193,10 @@ async function producto() {
     boton.textContent = "Agotado";
   }
 
+  // Regresa al menú para seguir armando el pedido; la barra lleva al carrito.
   boton.addEventListener("click", () => {
-    let c = carrito.leer();
-    if (c.localId && c.localId !== p.local_id) {
-      if (!confirm("Tu carrito tiene productos de otro local. ¿Empezar un carrito nuevo?")) return;
-      c = { localId: null, items: [] };
-    }
-    c.localId = p.local_id;
-    c.items.push({ productoId: p.id, nombre: p.nombre, precio: Number(p.precio), cantidad: cantidad(),
-      nota: document.getElementById("nota").value.trim() });
-    carrito.guardar(c);
-    location.href = "carrito.html";
+    if (agregarAlCarrito(p, cantidad(), document.getElementById("nota").value.trim()))
+      location.href = `menu-local.html?local=${p.local_id}`;
   });
 }
 
@@ -204,7 +226,9 @@ async function verCarrito() {
     lista.innerHTML = c.items.map((x, i) => `<li class="fila-carrito">
       <span class="cant">${x.cantidad}×</span>
       <div><strong>${esc(x.nombre)}</strong>${x.nota ? `<span class="nota">“${esc(x.nota)}”</span>` : ""}
-        <button class="quitar" data-quitar="${i}">Quitar</button></div>
+        <span class="mini-cantidad"><button data-menos="${i}" aria-label="Uno menos">−</button>
+          <button data-mas="${i}" aria-label="Uno más">+</button>
+          <button class="quitar" data-quitar="${i}">Quitar</button></span></div>
       <span>${dinero(x.precio * x.cantidad)}</span></li>`)
       .join("") || `<li class="vacio"><strong>Tu carrito está vacío</strong>
         <span>Elige un local y agrega lo que quieras pedir.</span>
@@ -218,17 +242,25 @@ async function verCarrito() {
     const vacio = !c.items.length;
     document.getElementById("totales").hidden = vacio;
     if (vacio) {
+      document.getElementById("agregar-mas").hidden = true;
       document.getElementById("seccion-hora").hidden = true;
       document.getElementById("seccion-entrega").hidden = true;
       boton.hidden = true;
     }
   };
   lista.addEventListener("click", (e) => {
-    if (!e.target.dataset.quitar) return;
-    c.items.splice(Number(e.target.dataset.quitar), 1);
+    const { quitar, menos, mas } = e.target.dataset;
+    if (quitar === undefined && menos === undefined && mas === undefined) return;
+    const i = Number(quitar ?? menos ?? mas);
+    if (mas !== undefined) c.items[i].cantidad = Math.min(20, c.items[i].cantidad + 1);
+    else if (menos !== undefined && c.items[i].cantidad > 1) c.items[i].cantidad--;
+    else c.items.splice(i, 1);
     if (!c.items.length) c.localId = null;
     carrito.guardar(c);
     pintar();
+    // Si va con favor, la tarifa y el tope se revisan otra vez con el nuevo total.
+    const entrega = document.getElementById("seccion-entrega");
+    if (!entrega.hidden) entrega.dispatchEvent(new Event("change"));
   });
   pintar();
   if (!c.localId) return;
@@ -237,6 +269,9 @@ async function verCarrito() {
   if (error) return mostrarError(error);
   document.getElementById("local-carrito").textContent = local.nombre;
   document.getElementById("volver-carrito").href = `menu-local.html?local=${local.id}`;
+  const agregarMas = document.getElementById("agregar-mas");
+  agregarMas.href = `menu-local.html?local=${local.id}`;
+  agregarMas.hidden = !c.items.length;
   document.getElementById("seccion-hora").hidden = false;
 
   const rango = rangoRecogida(local);
@@ -278,11 +313,27 @@ async function verCarrito() {
 // con los favores encendidos y si el local ya guardó su ubicación.
 async function opcionesEntrega(c, local, pintar) {
   const quitarFavor = () => { delete c.favor; carrito.guardar(c); pintar(); };
-  if (local.lat == null || !(await favoresActivos())) return c.favor && quitarFavor();
-  const { data: puntos } = await db.from("puntos_entrega").select("id, nombre").eq("activo", true).order("nombre");
-  if (!puntos?.length) return c.favor && quitarFavor();
-
   const seccion = document.getElementById("seccion-entrega");
+  seccion.hidden = false;
+  // Las dos opciones siempre se ven; si el favor no se puede, se dice por qué.
+  let motivo = !(await favoresActivos()) ? "Pronto podrás pedir que otro alumno te lo lleve."
+    : local.lat == null ? "Este local todavía no tiene entregas por favor." : null;
+  let puntos = [];
+  if (!motivo) {
+    puntos = (await db.from("puntos_entrega").select("id, nombre").eq("activo", true).order("nombre")).data || [];
+    if (!puntos.length) motivo = "Todavía no hay puntos de entrega para favores.";
+  }
+  if (motivo) {
+    const opcion = seccion.querySelector('[value="favor"]');
+    opcion.disabled = true;
+    opcion.closest("label").classList.add("deshabilitada");
+    seccion.querySelector('[value="recojo"]').checked = true;
+    const texto = document.getElementById("motivo-sin-favor");
+    texto.textContent = motivo;
+    texto.hidden = false;
+    return c.favor && quitarFavor();
+  }
+
   const datos = document.getElementById("datos-favor");
   const punto = document.getElementById("punto-entrega");
   const referencia = document.getElementById("referencia");
@@ -313,7 +364,6 @@ async function opcionesEntrega(c, local, pintar) {
   };
   seccion.addEventListener("change", cotizar);
   referencia.addEventListener("input", () => c.favor && ((c.favor.referencia = referencia.value.trim()), carrito.guardar(c)));
-  seccion.hidden = false;
   cotizar();
 }
 
