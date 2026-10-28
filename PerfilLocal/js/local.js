@@ -167,7 +167,7 @@ async function detallePedido(local) {
   // Si otro alumno le hace el favor, el local entrega el pedido a esa persona.
   const favor = Array.isArray(p.favores) ? p.favores[0] : p.favores;
   if (favor && ["asignado", "recogido"].includes(favor.estado)) {
-    document.getElementById("recoge-pedido").textContent = `Lo recoge ${favor.repartidor?.nombre} (favor)`;
+    document.getElementById("recoge-pedido").textContent = `Lo recoge y paga ${favor.repartidor?.nombre} (favor)`;
     document.getElementById("recoge-pedido").hidden = false;
   }
   const pintarTiempo = () => {

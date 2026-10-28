@@ -61,14 +61,16 @@ dueño del local puede subirlas o borrarlas. La URL queda en `productos.foto_url
 
 Un alumno puede pedir que otro le lleve su pedido a un punto de la UAT, por una tarifa
 según la distancia entre el local y el punto ($10 + $8 por km de camino, en múltiplos de $5,
-entre $15 y $50). Todo está listo pero **apagado** hasta que exista el pago con tarjeta por
-adelantado, para que quien hace el favor nunca adelante dinero (migración
-`20261028200000_favores.sql`). Propuesta completa:
+entre $15 y $50). Se pagan en **efectivo**: quien hace el favor paga el pedido en el local y quien lo pidió le
+paga todo (pedido + tarifa) al recibirlo, y entonces le da su código. Para que nadie adelante
+mucho dinero, el pedido no puede pasar de `ajustes.tope_efectivo` ($250). Todo está
+**apagado** hasta que se enciendan (migraciones `20261028200000_favores.sql` y
+`20261028210000_favores_efectivo.sql`); el pago con tarjeta queda para después. Propuesta completa:
 [Entregas entre alumnos](https://claude.ai/artifact/NiCM6usFrUn6VCLkrjtn4g).
 
 | Tabla | Qué guarda | Quién la ve |
 |---|---|---|
-| `ajustes` | `favores_activos` (una sola fila) | todos |
+| `ajustes` | `favores_activos` y `tope_efectivo` (una sola fila) | todos |
 | `puntos_entrega` | lugares de la UAT con sus coordenadas | todos |
 | `favores` | pedido, cliente, repartidor, punto, distancia, tarifa, estado | cliente, repartidor, local; los libres, quien está disponible |
 | `favor_codigos` | código de 4 dígitos de cada favor | solo el cliente |
@@ -94,5 +96,5 @@ ubicación) y la pestaña Favores de los alumnos.
 ## Pendiente
 
 - Cambiar el registro temporal de alumnos por la API de la base de datos de la UAT.
-- Pago en línea; por ahora se paga al recoger. Al tenerlo, encender los favores.
+- Pago en línea; por ahora se paga al recoger (y los favores, en efectivo a quien lo lleva).
 - Cargar los puntos de entrega de la UAT con sus coordenadas.
