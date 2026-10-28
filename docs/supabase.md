@@ -57,15 +57,17 @@ Supabase Storage, en la carpeta del local (`fotos/<local_id>/…`). Cualquiera l
 dueño del local puede subirlas o borrarlas. La URL queda en `productos.foto_url` y
 `locales.logo_url` (migración `20261022020000_fotos.sql`).
 
-## Favores (apagados)
+## Favores
 
 Un alumno puede pedir que otro le lleve su pedido a un punto de la UAT, por una tarifa
 según la distancia entre el local y el punto ($10 + $8 por km de camino, en múltiplos de $5,
 entre $15 y $50). Se pagan en **efectivo**: quien hace el favor paga el pedido en el local y quien lo pidió le
 paga todo (pedido + tarifa) al recibirlo, y entonces le da su código. Para que nadie adelante
-mucho dinero, el pedido no puede pasar de `ajustes.tope_efectivo` ($250). Todo está
-**apagado** hasta que se enciendan (migraciones `20261028200000_favores.sql` y
-`20261028210000_favores_efectivo.sql`); el pago con tarjeta queda para después. Propuesta completa:
+mucho dinero, el pedido no puede pasar de `ajustes.tope_efectivo` ($250). Se
+encienden y apagan con `ajustes.favores_activos` (migraciones `20261028200000_favores.sql` y
+`20261028210000_favores_efectivo.sql`); el pago con tarjeta queda para después. Desde el
+28 de octubre están **encendidos para pruebas**, con dos puntos de prueba ("Prueba · …") y
+coordenadas aproximadas en los dos locales de prueba: cámbialos por los reales. Propuesta completa:
 [Entregas entre alumnos](https://claude.ai/artifact/NiCM6usFrUn6VCLkrjtn4g).
 
 | Tabla | Qué guarda | Quién la ve |
@@ -83,15 +85,16 @@ Estados: `buscando → asignado → recogido → entregado`, o `cancelado`. Func
 `confirmar_entrega`. El local no hace nada nuevo: al marcar el pedido como entregado, el
 favor pasa a recogido; si lo rechaza o nadie lo recoge, el favor se cancela.
 
-Para encenderlos, en el **SQL Editor**:
+Para cargar puntos y encender o apagar, en el **SQL Editor**:
 
 ```sql
 insert into public.puntos_entrega (nombre, lat, lng) values ('Biblioteca Central', 23.0000, -99.0000);
-update public.ajustes set favores_activos = true where id;
+update public.ajustes set favores_activos = true where id;  -- false para apagarlos
 ```
 
-Con eso aparecen la opción "Que me lo lleven" en el carrito (si el local guardó su
-ubicación) y la pestaña Favores de los alumnos.
+Con eso aparece la opción "Que me lo lleven" en el carrito (si el local guardó su
+ubicación) y hay favores en el apartado de favores de los alumnos (`PerfilFavores/`: favores
+libres, el favor en curso paso a paso, ganancias y favores hechos).
 
 ## Pendiente
 

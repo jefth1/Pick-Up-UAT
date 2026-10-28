@@ -87,4 +87,3 @@
 .favor { display: flex; flex-direction: column; gap: 10px; text-align: left; }
 .favor .codigo { font-size: 28px; font-weight: 700; letter-spacing: 6px; }
 .fila-favor { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.fila-favor > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }

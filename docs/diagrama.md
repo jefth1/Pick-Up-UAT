@@ -13,7 +13,8 @@ flowchart TD
 
   D --> E[PerfilAlumnos/explorar-locales]
   E --> M[menu-local] --> P[producto] --> C[carrito] --> PG[pago] --> CF[confirmacion]
-  E --> FV[favores]
+  E --> FV[PerfilFavores/inicio] --> FF[favor]
+  FV --> FH[historial]
 
   LS --> PD[PerfilLocal/pedidos]
   PD --> DP[detalle-pedido]
@@ -41,7 +42,9 @@ flowchart TD
 | Alumno/Carrito y horario | `PerfilAlumnos/carrito.html` |
 | Alumno/Pago | `PerfilAlumnos/pago.html` |
 | Alumno/Confirmación | `PerfilAlumnos/confirmacion.html` |
-| (sin pantalla en Figma) Alumno/Favores | `PerfilAlumnos/favores.html` (apagada hasta tener pago con tarjeta) |
+| (sin pantalla en Figma) Favores · inicio | `PerfilFavores/inicio.html` (ganancias, favores hechos y favores libres) |
+| (sin pantalla en Figma) Favores · mi favor | `PerfilFavores/favor.html` (ir al local, llevarlo al punto, código) |
+| (sin pantalla en Figma) Favores · historial | `PerfilFavores/historial.html` |
 | Local móvil/Pedidos | `PerfilLocal/pedidos.html` |
 | Local móvil/Detalle del pedido | `PerfilLocal/detalle-pedido.html` |
 | Local móvil/Escanear QR | `PerfilLocal/escanear-qr.html` |
