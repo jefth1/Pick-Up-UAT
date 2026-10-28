@@ -16,10 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("enviar-pedido")) pago();
   if (document.getElementById("mis-pedidos")) misPedidos();
   if (document.getElementById("barra-carrito")) barraCarrito();
-  if (document.getElementById("lista-favores")) favores();
-  // El enlace a Favores solo aparece con los favores encendidos.
-  const enlaceFavores = document.getElementById("enlace-favores");
-  if (enlaceFavores) favoresActivos().then((activos) => (enlaceFavores.hidden = !activos));
 });
 
 const aMinutos = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
@@ -469,84 +465,4 @@ async function misPedidos() {
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pedidos", filter: `alumno_id=eq.${alumno.id}` }, cargar)
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "favores", filter: `cliente_id=eq.${alumno.id}` }, cargar)
     .subscribe();
-}
-
-// Quien hace favores: activa su disponibilidad, toma uno de la lista y, cuando el local
-// se lo entrega, escribe el código que le da quien pidió.
-async function favores() {
-  const alumno = await exigirAlumno();
-  if (!alumno) return;
-  const lista = document.getElementById("lista-favores");
-  const actual = document.getElementById("favor-actual");
-  if (!(await favoresActivos())) {
-    lista.innerHTML = `<li class="tarjeta vacio"><strong>Todavía no hay favores</strong>
-      <span>Se activan cuando se pueda pagar con tarjeta en la app.</span></li>`;
-    return;
-  }
-
-  const disponible = document.getElementById("disponible");
-  disponible.checked = alumno.disponible_favores;
-  document.getElementById("caja-disponible").hidden = false;
-  disponible.addEventListener("change", async () => {
-    const { error } = await db.from("alumnos").update({ disponible_favores: disponible.checked }).eq("id", alumno.id);
-    if (error) return (disponible.checked = !disponible.checked), mostrarError(error);
-    alumno.disponible_favores = disponible.checked;
-    cargar();
-  });
-
-  const cargar = async () => {
-    const { data, error } = await db.from("favores")
-      .select("*, puntos_entrega(nombre), pedidos(id, total, hora_recogida, locales(nombre, direccion)), cliente:alumnos!favores_cliente_id_fkey(nombre)")
-      .or(`repartidor_id.eq.${alumno.id},estado.eq.buscando`).order("creado_en");
-    if (error) return mostrarError(error);
-    const mio = data.find((f) => f.repartidor_id === alumno.id && ["asignado", "recogido"].includes(f.estado));
-    const libres = data.filter((f) => f.estado === "buscando" && f.cliente_id !== alumno.id);
-
-    actual.hidden = !mio;
-    if (mio) {
-      const local = mio.pedidos.locales;
-      actual.innerHTML = `<span class="etiqueta">Tu favor</span>
-        <p><b>${esc(local.nombre)}</b>${local.direccion ? ` · ${esc(local.direccion)}` : ""}<br>
-          Listo a las ${hora(mio.pedidos.hora_recogida)} · Pedido #${mio.pedidos.id}</p>
-        <p>Entrégalo a <b>${esc(mio.cliente?.nombre)}</b> en <b>${esc(mio.puntos_entrega.nombre)}</b>
-          ${mio.referencia ? `<br><span class="texto-suave">“${esc(mio.referencia)}”</span>` : ""}</p>
-        <p class="estado ${mio.estado === "recogido" ? "listo" : ""}">${mio.estado === "recogido" ? "En camino" : "Pasa al local"} · ganas ${dinero(mio.tarifa)}</p>
-        <div class="fila-favor"><span class="texto-suave">Pagas en el local</span><strong>${dinero(mio.pedidos.total)}</strong></div>
-        <div class="fila-favor"><span class="texto-suave">Te paga al recibirlo</span><strong>${dinero(Number(mio.pedidos.total) + Number(mio.tarifa))}</strong></div>
-        ${mio.estado === "asignado"
-          ? `<p class="texto-suave">Muestra este código en el local.</p><div class="qr"><div id="codigo-pedido"></div></div>`
-          : `<form class="formulario" id="form-entregar">
-              <label class="campo-grupo">Código que te da al pagarte
-                <input class="campo" name="codigo" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required></label>
-              <button class="boton boton-primario">Lo entregué</button></form>`}`;
-      if (mio.estado === "asignado") pintarQr(mio.pedidos.id);
-      document.getElementById("form-entregar")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const { error } = await db.rpc("confirmar_entrega", { p_favor_id: mio.id, p_codigo: e.target.codigo.value });
-        if (error) return mostrarError(error);
-        cargar();
-      });
-    }
-
-    document.getElementById("titulo-libres").hidden = !!mio;
-    lista.hidden = !!mio;
-    lista.innerHTML = !alumno.disponible_favores
-      ? `<li class="tarjeta vacio"><strong>Activa “Disponible para favores”</strong><span>Así verás los pedidos que alguien quiere que le lleven.</span></li>`
-      : libres.map((f) => `<li class="tarjeta fila-favor">
-          <div><strong>${esc(f.pedidos.locales.nombre)} → ${esc(f.puntos_entrega.nombre)}</strong>
-            <span class="texto-suave">Listo a las ${hora(f.pedidos.hora_recogida)} · ${(f.distancia_m / 1000).toFixed(1)} km</span>
-            <span class="texto-suave">Adelantas ${dinero(f.pedidos.total)} en efectivo</span></div>
-          <button class="boton boton-primario boton-chico" data-tomar="${f.id}">Tomar · ${dinero(f.tarifa)}</button></li>`).join("")
-        || `<li class="tarjeta vacio"><strong>No hay favores por ahora</strong><span>Cuando alguien pida que le lleven su pedido aparecerá aquí.</span></li>`;
-  };
-  lista.addEventListener("click", async (e) => {
-    const id = e.target.dataset.tomar;
-    if (!id) return;
-    e.target.disabled = true;
-    const { error } = await db.rpc("tomar_favor", { p_favor_id: Number(id) });
-    if (error) mostrarError(error);
-    cargar();
-  });
-  await cargar();
-  db.channel("favores").on("postgres_changes", { event: "*", schema: "public", table: "favores" }, cargar).subscribe();
 }

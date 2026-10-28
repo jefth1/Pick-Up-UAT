@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Historial de favores · Pick Up UAT</title>
+  <meta name="theme-color" content="#1B3A6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Pick Up">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Compartido/img/iconos/favicon-32.png">
+  <link rel="apple-touch-icon" href="../Compartido/img/iconos/apple-touch-icon.png">
+  <script src="../Compartido/js/pwa.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="../PerfilAlumnos/css/alumnos.css">
+  <link rel="stylesheet" href="css/favores.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="js/favores.js" defer></script>
+</head>
+<body>
+  <main class="pantalla con-barra">
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" href="inicio.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Historial</h1></div>
+      <p class="texto-suave" id="total-historial">Favores que ya entregaste.</p>
+    </header>
+    <ul id="historial" class="lista"><li class="texto-suave">Cargando…</li></ul>
+    <nav class="barra-inferior">
+      <a href="../PerfilAlumnos/explorar-locales.html"><i data-icono="inicio"></i>Inicio</a>
+      <a href="../PerfilAlumnos/confirmacion.html"><i data-icono="bolsa"></i>Mis pedidos</a>
+      <a href="inicio.html" class="actual"><i data-icono="ubicacion"></i>Favores</a>
+      <a href="../Acceso/alumno-datos-uat.html"><i data-icono="usuario"></i>Perfil</a>
+    </nav>
+  </main>
+</body>
+</html>

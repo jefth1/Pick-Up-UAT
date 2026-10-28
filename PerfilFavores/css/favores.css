@@ -1,0 +1,31 @@
+/* Estilos solo del apartado de favores. */
+.resumen-favores { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+.resumen-favores > div { display: flex; flex-direction: column; gap: 2px; }
+.resumen-favores strong { font-size: 26px; color: var(--azul); }
+.resumen-favores .enlace { grid-column: 1 / -1; font-size: 14px; }
+
+.favor-en-curso { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; text-decoration: none; color: inherit; border-color: var(--verde); background: var(--verde-claro); }
+.favor-en-curso > div { display: flex; flex-direction: column; gap: 2px; }
+
+.favor-libre { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.favor-libre .ruta { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.favor-libre .ruta > span, .boton .icono { display: inline-flex; align-items: center; gap: 6px; }
+.favor-libre .icono { width: 16px; height: 16px; flex: none; }
+.favor-libre .cifras { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: var(--radio); background: var(--gris); font-size: 14px; }
+
+.pasos-favor { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.paso { display: flex; gap: 12px; padding: 16px; }
+.paso .numero { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--gris); color: var(--tinta-suave); font-weight: 700; font-size: 14px; }
+.paso .numero .icono { width: 16px; height: 16px; }
+.paso .cuerpo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.paso.actual { border-color: var(--azul); }
+.paso.actual .numero { background: var(--azul); color: #fff; }
+.paso.hecho .numero { background: var(--verde); color: #fff; }
+.paso:not(.actual):not(.hecho) { opacity: .6; }
+.paso .qr { align-self: center; padding: 8px 0; }
+.paso.final { flex-direction: column; align-items: center; text-align: center; }
+.fila-cifra { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: var(--radio); background: var(--gris); font-size: 14px; }
+
+.fila-historial { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; }
+.fila-historial > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fila-historial .ganado { font-weight: 700; color: var(--verde); }
