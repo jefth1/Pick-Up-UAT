@@ -157,12 +157,19 @@ async function pedidos(local) {
 
 async function detallePedido(local) {
   const { data: p, error } = await db.from("pedidos")
-    .select("*, alumnos(nombre, matricula), pedido_productos(*)").eq("id", param("pedido")).eq("local_id", local.id).single();
+    .select("*, alumnos(nombre, matricula), pedido_productos(*), favores(estado, repartidor:alumnos!favores_repartidor_id_fkey(nombre))")
+    .eq("id", param("pedido")).eq("local_id", local.id).single();
   if (error) return mostrarError(error);
 
   document.getElementById("titulo-pedido").textContent = `Pedido #${p.id}`;
   document.getElementById("alumno-pedido").textContent =
     [p.alumnos?.nombre, p.alumnos?.matricula, "Pago al recoger"].filter(Boolean).join(" · ");
+  // Si otro alumno le hace el favor, el local entrega el pedido a esa persona.
+  const favor = Array.isArray(p.favores) ? p.favores[0] : p.favores;
+  if (favor && ["asignado", "recogido"].includes(favor.estado)) {
+    document.getElementById("recoge-pedido").textContent = `Lo recoge ${favor.repartidor?.nombre} (favor)`;
+    document.getElementById("recoge-pedido").hidden = false;
+  }
   const pintarTiempo = () => {
     const cuenta = cuentaRegresiva(p);
     document.getElementById("caja-tiempo").className = `cuenta-grande ${cuenta.nivel}`;
@@ -413,6 +420,28 @@ async function perfil(local) {
     etiquetaLogo.classList.add("con-foto");
   }
   form.logo.addEventListener("change", () => form.logo.files[0] && vistaPrevia(etiquetaLogo, form.logo.files[0]));
+
+  // Coordenadas del local con el GPS del celular: sirven para la tarifa de los favores.
+  const textoUbicacion = document.getElementById("texto-ubicacion");
+  const pintarUbicacion = () => (textoUbicacion.textContent = local.lat == null
+    ? "Guárdala estando en el local; sirve para calcular la tarifa cuando un alumno lleva el pedido."
+    : `Guardada (${local.lat.toFixed(5)}, ${local.lng.toFixed(5)}). Vuelve a tocar el botón si cambió.`);
+  pintarUbicacion();
+  const botonUbicacion = document.getElementById("usar-ubicacion");
+  botonUbicacion.addEventListener("click", () => {
+    if (!navigator.geolocation) return alert("Este navegador no puede leer tu ubicación.");
+    botonUbicacion.disabled = true;
+    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+      botonUbicacion.disabled = false;
+      const { error } = await db.from("locales").update({ lat: coords.latitude, lng: coords.longitude }).eq("id", local.id);
+      if (error) return mostrarError(error);
+      Object.assign(local, { lat: coords.latitude, lng: coords.longitude });
+      pintarUbicacion();
+    }, (error) => {
+      botonUbicacion.disabled = false;
+      alert(error.code === 1 ? "Permite el acceso a tu ubicación para guardarla." : "No pudimos leer tu ubicación, intenta de nuevo.");
+    }, { enableHighAccuracy: true, timeout: 15000 });
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();

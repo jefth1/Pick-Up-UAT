@@ -83,3 +83,8 @@
 .recoge .icono { width: 16px; height: 16px; }
 .fila-pedido { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; color: var(--tinta); }
 .fila-pedido > div { display: flex; flex-direction: column; gap: 2px; }
+.seccion-entrega { display: flex; flex-direction: column; gap: 12px; }
+.favor { display: flex; flex-direction: column; gap: 10px; text-align: left; }
+.favor .codigo { font-size: 28px; font-weight: 700; letter-spacing: 6px; }
+.fila-favor { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.fila-favor > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }

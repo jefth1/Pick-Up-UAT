@@ -45,9 +45,22 @@
       </div>
       <p class="aviso-azul" id="rango-hora">Solo puedes elegir una hora entre la actual y la de cierre del local.</p>
     </section>
+    <section class="seccion-entrega" id="seccion-entrega" hidden>
+      <h2>¿Cómo lo recibes?</h2>
+      <div class="segmentado">
+        <label><input type="radio" name="entrega" value="recojo" checked>Paso yo por él</label>
+        <label><input type="radio" name="entrega" value="favor">Que me lo lleven</label>
+      </div>
+      <div class="formulario" id="datos-favor" hidden>
+        <label class="campo-grupo">Punto de entrega <select class="campo" id="punto-entrega"></select></label>
+        <label class="campo-grupo">Referencia <input class="campo" id="referencia" maxlength="120" placeholder="Ej. entrada principal, mochila roja"></label>
+        <p class="aviso-azul" id="aviso-favor">Otro alumno lo recoge y te lo lleva.</p>
+      </div>
+    </section>
     <div class="empuje"></div>
     <div class="totales" id="totales" hidden>
       <div><span>Subtotal</span><span id="subtotal-carrito">$0</span></div>
+      <div id="fila-tarifa" hidden><span>Favor</span><span id="tarifa-carrito">$0</span></div>
       <div class="total"><span>Total</span><span id="total-carrito">$0</span></div>
     </div>
     <a class="boton boton-primario" id="continuar-pago" href="pago.html" hidden>Ir a pagar</a>

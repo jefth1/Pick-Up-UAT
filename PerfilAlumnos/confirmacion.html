@@ -29,8 +29,9 @@
     <section class="confirmacion" id="pedido-actual" hidden>
       <span class="icono-exito"><i data-icono="check"></i></span>
       <h1 id="titulo-confirmacion">¡Pedido enviado!</h1>
-      <p class="texto-suave">Muestra este código al recoger tu pedido.</p>
-      <div class="tarjeta qr"><div id="codigo-pedido"></div><strong id="numero-pedido">#—</strong></div>
+      <p class="texto-suave" id="texto-qr">Muestra este código al recoger tu pedido.</p>
+      <div class="tarjeta qr" id="caja-qr"><div id="codigo-pedido"></div><strong id="numero-pedido">#—</strong></div>
+      <div class="tarjeta favor" id="favor-pedido" hidden></div>
       <ol class="tarjeta pasos" id="pasos"></ol>
       <p class="recoge"><i data-icono="reloj"></i>Recoge a las <b id="hora-recogida">—</b> · <span id="local-pedido"></span></p>
       <span class="estado" id="estado-pedido" hidden></span>
@@ -40,6 +41,7 @@
     <nav class="barra-inferior">
       <a href="explorar-locales.html"><i data-icono="inicio"></i>Inicio</a>
       <a href="confirmacion.html" class="actual"><i data-icono="bolsa"></i>Mis pedidos</a>
+      <a href="favores.html" id="enlace-favores" hidden><i data-icono="ubicacion"></i>Favores</a>
       <a href="../Acceso/alumno-datos-uat.html"><i data-icono="usuario"></i>Perfil</a>
     </nav>
   </main>
