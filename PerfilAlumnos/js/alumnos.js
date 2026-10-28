@@ -297,14 +297,21 @@ async function opcionesEntrega(c, local, pintar) {
     punto.value = c.favor.puntoId;
     referencia.value = c.favor.referencia || "";
   }
+  const { data: ajustes } = await db.from("ajustes").select("tope_efectivo").maybeSingle();
+  const tope = Number(ajustes?.tope_efectivo ?? 250);
   const cotizar = async () => {
     if (!seccion.querySelector('[value="favor"]').checked) return (datos.hidden = true), c.favor && quitarFavor();
     datos.hidden = false;
+    // Quien hace el favor paga el pedido en efectivo: hay un tope para no adelantar mucho.
+    if (totalDe(c) > tope) {
+      aviso.textContent = `Para que te lo lleven, el pedido no puede pasar de ${dinero(tope)}, porque quien te hace el favor lo paga en efectivo.`;
+      return c.favor && quitarFavor();
+    }
     const { data, error } = await db.rpc("cotizar_favor", { p_local_id: local.id, p_punto_id: Number(punto.value) });
     if (error) return mostrarError(error);
     const { distancia_m, tarifa } = data[0];
     c.favor = { puntoId: Number(punto.value), referencia: referencia.value.trim(), tarifa: Number(tarifa) };
-    aviso.textContent = `Otro alumno lo recoge y te lo lleva (${(distancia_m / 1000).toFixed(1)} km): ${dinero(tarifa)} por el favor.`;
+    aviso.textContent = `Otro alumno paga tu pedido, lo recoge y te lo lleva (${(distancia_m / 1000).toFixed(1)} km). Al recibirlo le pagas en efectivo el pedido más ${dinero(tarifa)} del favor.`;
     carrito.guardar(c);
     pintar();
   };
@@ -330,6 +337,10 @@ async function pago() {
     const favor = document.getElementById("favor-pago");
     favor.textContent = `Incluye ${dinero(c.favor.tarifa)} del favor: te lo lleva otro alumno`;
     favor.hidden = false;
+    document.getElementById("texto-pago").textContent = "Le pagas todo en efectivo a quien te lo lleve.";
+    document.getElementById("pago-local").hidden = true;
+    document.getElementById("pago-favor").hidden = false;
+    document.querySelector("#pago-favor input").checked = true;
   }
   const { data: local } = await db.from("locales").select("nombre").eq("id", c.localId).single();
   if (local) document.getElementById("local-pago").textContent = local.nombre;
@@ -389,14 +400,16 @@ function pintarFavor(p) {
   const codigo = unoDe(favor.favor_codigos)?.codigo;
   const textos = {
     buscando: `Buscando quién te lo lleve a <b>${punto}</b> · ${dinero(favor.tarifa)}`,
-    asignado: `<b>${quien}</b> recogerá tu pedido y te lo llevará a <b>${punto}</b>.`,
+    asignado: `<b>${quien}</b> pagará y recogerá tu pedido, y te lo llevará a <b>${punto}</b>.`,
     recogido: `<b>${quien}</b> ya lo recogió y va en camino a <b>${punto}</b>.`,
     entregado: `Recibiste tu pedido en <b>${punto}</b>.`,
     cancelado: p.estado === "rechazado" ? "El favor se canceló con el pedido." : "Nadie lo llevará: pasa tú por él al local.",
   };
-  caja.innerHTML = `<span class="etiqueta">Te lo llevan</span><p>${textos[favor.estado]}</p>
+  const cobro = ["buscando", "asignado", "recogido"].includes(favor.estado)
+    ? `<div class="fila-favor"><span class="texto-suave">Págale en efectivo al recibirlo</span><strong>${dinero(Number(p.total) + Number(favor.tarifa))}</strong></div>` : "";
+  caja.innerHTML = `<span class="etiqueta">Te lo llevan</span><p>${textos[favor.estado]}</p>${cobro}
     ${["asignado", "recogido"].includes(favor.estado) && codigo
-      ? `<div class="fila-favor"><span class="texto-suave">Dale este código al recibirlo</span><span class="codigo">${esc(codigo)}</span></div>` : ""}
+      ? `<div class="fila-favor"><span class="texto-suave">Dale este código cuando le pagues</span><span class="codigo">${esc(codigo)}</span></div>` : ""}
     ${favor.estado === "buscando" ? `<button class="boton boton-secundario" id="cancelar-favor">Mejor paso yo</button>` : ""}`;
   document.getElementById("cancelar-favor")?.addEventListener("click", async () => {
     if (!confirm("¿Cancelar el favor y recogerlo tú?")) return;
@@ -498,10 +511,12 @@ async function favores() {
         <p>Entrégalo a <b>${esc(mio.cliente?.nombre)}</b> en <b>${esc(mio.puntos_entrega.nombre)}</b>
           ${mio.referencia ? `<br><span class="texto-suave">“${esc(mio.referencia)}”</span>` : ""}</p>
         <p class="estado ${mio.estado === "recogido" ? "listo" : ""}">${mio.estado === "recogido" ? "En camino" : "Pasa al local"} · ganas ${dinero(mio.tarifa)}</p>
+        <div class="fila-favor"><span class="texto-suave">Pagas en el local</span><strong>${dinero(mio.pedidos.total)}</strong></div>
+        <div class="fila-favor"><span class="texto-suave">Te paga al recibirlo</span><strong>${dinero(Number(mio.pedidos.total) + Number(mio.tarifa))}</strong></div>
         ${mio.estado === "asignado"
           ? `<p class="texto-suave">Muestra este código en el local.</p><div class="qr"><div id="codigo-pedido"></div></div>`
           : `<form class="formulario" id="form-entregar">
-              <label class="campo-grupo">Código que te da al recibirlo
+              <label class="campo-grupo">Código que te da al pagarte
                 <input class="campo" name="codigo" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required></label>
               <button class="boton boton-primario">Lo entregué</button></form>`}`;
       if (mio.estado === "asignado") pintarQr(mio.pedidos.id);
@@ -519,7 +534,8 @@ async function favores() {
       ? `<li class="tarjeta vacio"><strong>Activa “Disponible para favores”</strong><span>Así verás los pedidos que alguien quiere que le lleven.</span></li>`
       : libres.map((f) => `<li class="tarjeta fila-favor">
           <div><strong>${esc(f.pedidos.locales.nombre)} → ${esc(f.puntos_entrega.nombre)}</strong>
-            <span class="texto-suave">Listo a las ${hora(f.pedidos.hora_recogida)} · ${(f.distancia_m / 1000).toFixed(1)} km</span></div>
+            <span class="texto-suave">Listo a las ${hora(f.pedidos.hora_recogida)} · ${(f.distancia_m / 1000).toFixed(1)} km</span>
+            <span class="texto-suave">Adelantas ${dinero(f.pedidos.total)} en efectivo</span></div>
           <button class="boton boton-primario boton-chico" data-tomar="${f.id}">Tomar · ${dinero(f.tarifa)}</button></li>`).join("")
         || `<li class="tarjeta vacio"><strong>No hay favores por ahora</strong><span>Cuando alguien pida que le lleven su pedido aparecerá aquí.</span></li>`;
   };

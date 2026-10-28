@@ -26,7 +26,7 @@
   <main class="pantalla">
     <header class="encabezado-pantalla">
       <div class="titulo-con-atras"><a class="atras" id="volver-pago" href="carrito.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Pago</h1></div>
-      <p class="texto-suave">Paga al recoger y solo pasa por tu pedido.</p>
+      <p class="texto-suave" id="texto-pago">Paga al recoger y solo pasa por tu pedido.</p>
     </header>
     <div class="tarjeta-total">
       <span>Total a pagar</span>
@@ -35,7 +35,8 @@
       <span id="favor-pago" hidden></span>
     </div>
     <h2>Método de pago</h2>
-    <label class="opcion-pago"><i data-icono="efectivo"></i><span>Pagar al recoger en el local</span><input type="radio" name="metodo" checked></label>
+    <label class="opcion-pago" id="pago-local"><i data-icono="efectivo"></i><span>Pagar al recoger en el local</span><input type="radio" name="metodo" checked></label>
+    <label class="opcion-pago" id="pago-favor" hidden><i data-icono="efectivo"></i><span>Efectivo a quien te lo lleva<small>Pedido más la tarifa del favor</small></span><input type="radio" name="metodo"></label>
     <label class="opcion-pago deshabilitada"><i data-icono="tarjeta"></i><span>Tarjeta de débito o crédito<small>Próximamente</small></span><input type="radio" name="metodo" disabled></label>
     <div class="empuje"></div>
     <button class="boton boton-primario" id="enviar-pedido">Enviar pedido</button>
