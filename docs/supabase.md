@@ -57,7 +57,42 @@ Supabase Storage, en la carpeta del local (`fotos/<local_id>/…`). Cualquiera l
 dueño del local puede subirlas o borrarlas. La URL queda en `productos.foto_url` y
 `locales.logo_url` (migración `20261022020000_fotos.sql`).
 
+## Favores (apagados)
+
+Un alumno puede pedir que otro le lleve su pedido a un punto de la UAT, por una tarifa
+según la distancia entre el local y el punto ($10 + $8 por km de camino, en múltiplos de $5,
+entre $15 y $50). Todo está listo pero **apagado** hasta que exista el pago con tarjeta por
+adelantado, para que quien hace el favor nunca adelante dinero (migración
+`20261028200000_favores.sql`). Propuesta completa:
+[Entregas entre alumnos](https://claude.ai/artifact/NiCM6usFrUn6VCLkrjtn4g).
+
+| Tabla | Qué guarda | Quién la ve |
+|---|---|---|
+| `ajustes` | `favores_activos` (una sola fila) | todos |
+| `puntos_entrega` | lugares de la UAT con sus coordenadas | todos |
+| `favores` | pedido, cliente, repartidor, punto, distancia, tarifa, estado | cliente, repartidor, local; los libres, quien está disponible |
+| `favor_codigos` | código de 4 dígitos de cada favor | solo el cliente |
+
+Además, `locales.lat`/`lng` (el local la guarda con el GPS desde su perfil) y
+`alumnos.disponible_favores`.
+
+Estados: `buscando → asignado → recogido → entregado`, o `cancelado`. Funciones:
+`cotizar_favor`, `crear_pedido_con_favor`, `tomar_favor`, `cancelar_favor` y
+`confirmar_entrega`. El local no hace nada nuevo: al marcar el pedido como entregado, el
+favor pasa a recogido; si lo rechaza o nadie lo recoge, el favor se cancela.
+
+Para encenderlos, en el **SQL Editor**:
+
+```sql
+insert into public.puntos_entrega (nombre, lat, lng) values ('Biblioteca Central', 23.0000, -99.0000);
+update public.ajustes set favores_activos = true where id;
+```
+
+Con eso aparecen la opción "Que me lo lleven" en el carrito (si el local guardó su
+ubicación) y la pestaña Favores de los alumnos.
+
 ## Pendiente
 
 - Cambiar el registro temporal de alumnos por la API de la base de datos de la UAT.
-- Pago en línea; por ahora se paga al recoger.
+- Pago en línea; por ahora se paga al recoger. Al tenerlo, encender los favores.
+- Cargar los puntos de entrega de la UAT con sus coordenadas.

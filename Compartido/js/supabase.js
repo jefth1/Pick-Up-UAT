@@ -92,3 +92,10 @@ async function localActual() {
   const { data } = await db.from("locales").select("*, horarios(*)").eq("propietario", usuario.id).maybeSingle();
   return data;
 }
+
+// Favores (un alumno le lleva el pedido a otro): apagados hasta que exista el pago con
+// tarjeta. Se encienden con ajustes.favores_activos en Supabase.
+async function favoresActivos() {
+  const { data } = await db.from("ajustes").select("favores_activos").maybeSingle();
+  return !!data?.favores_activos;
+}
