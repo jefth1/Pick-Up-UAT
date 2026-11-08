@@ -16,3 +16,10 @@
 
 .chips-dias { flex-wrap: wrap; overflow: visible; }
 
+/* Verificar el correo y cambiar la contraseña */
+.icono-correo { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; background: var(--azul-claro); color: var(--azul); }
+.campo-codigo { text-align: center; font-size: 26px; font-weight: 700; letter-spacing: .35em; padding-left: calc(14px + .35em); font-variant-numeric: tabular-nums; }
+.campo-codigo::placeholder { letter-spacing: .35em; }
+.correo-destino { color: var(--tinta); font-weight: 600; overflow-wrap: anywhere; }
+#reenviar { align-self: center; font-size: 14px; }
+#reenviar:disabled { color: var(--tinta-tenue); cursor: default; }

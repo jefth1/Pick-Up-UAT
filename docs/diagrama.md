@@ -5,11 +5,17 @@ Cada pantalla del diseño en Figma (archivo `3ku3u2aHkv109klsyMFXXv`, página "P
 ```mermaid
 flowchart TD
   B[Acceso/bienvenida] -->|Entrar como alumno| AS[Acceso/alumno-iniciar-sesion]
+  B -.->|ya tiene sesión| E
   AS --> AR[Acceso/alumno-registro]
   AS --> D[Acceso/alumno-datos-uat]
-  AR --> D
+  AR -->|código al correo| VC[Acceso/verificar-correo]
+  AS -.->|no había verificado| VC
+  VC --> D
+  AS -.->|olvidó la contraseña| NC[Acceso/nueva-contrasena]
   B -->|Entrar como local| LS[Acceso/local-iniciar-sesion]
   LS --> LR[Acceso/local-registro]
+  LR -->|código al correo| VC
+  VC --> PD
 
   D --> E[PerfilAlumnos/explorar-locales]
   E --> M[menu-local] --> P[producto] --> C[carrito] --> PG[pago] --> CF[confirmacion]
@@ -34,6 +40,8 @@ flowchart TD
 | Acceso/Alumno · iniciar sesión (temporal) | `Acceso/alumno-iniciar-sesion.html` |
 | Acceso/Alumno · registro (temporal) | `Acceso/alumno-registro.html` |
 | Acceso/Alumno · datos de la UAT | `Acceso/alumno-datos-uat.html` |
+| (sin pantalla en Figma) Verificar correo | `Acceso/verificar-correo.html` (código de 6 dígitos o botón del correo; alumnos y locales) |
+| (sin pantalla en Figma) Nueva contraseña | `Acceso/nueva-contrasena.html` (se abre desde el correo de «¿Olvidaste tu contraseña?») |
 | Acceso/Local · iniciar sesión | `Acceso/local-iniciar-sesion.html` |
 | Acceso/Registro local | `Acceso/local-registro.html` |
 | Alumno/Explorar locales | `PerfilAlumnos/explorar-locales.html` |
