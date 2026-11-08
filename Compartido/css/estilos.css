@@ -138,6 +138,8 @@ textarea.campo { min-height: 96px; resize: vertical; }
 .subir-foto input { display: none; }
 .subir-foto.con-foto > * { visibility: hidden; }
 .mensaje { padding: 12px 14px; border-radius: var(--radio); background: var(--verde-claro); color: var(--verde); font-size: 14px; }
+.mensaje.error { background: var(--rojo-claro); color: var(--rojo); }
+.mensaje a { color: inherit; font-weight: 600; }
 .icono-exito { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; background: var(--verde-claro); color: var(--verde); }
 .con-icono { display: flex; align-items: center; gap: 6px; }
 .con-icono .icono { width: 14px; height: 14px; }

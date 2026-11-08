@@ -15,12 +15,16 @@
   <script src="../Compartido/js/pwa.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="../Compartido/css/mapa.css">
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="../Compartido/js/mapa.js" defer></script>
   <script src="js/local.js" defer></script>
 </head>
 <body>
@@ -40,9 +44,10 @@
         </div>
       </div>
       <label class="campo-grupo">Facultad o dirección <input class="campo" name="direccion" maxlength="160"></label>
-      <div class="campo-grupo">Ubicación del local
-        <button type="button" class="boton boton-secundario" id="usar-ubicacion"><i data-icono="ubicacion"></i>Estoy en mi local, usar mi ubicación</button>
+      <div class="campo-grupo">Tu local en el mapa de la UAT
+        <div class="mapa mapa-local" id="mapa-local"></div>
         <span class="texto-tenue" id="texto-ubicacion"></span>
+        <button type="button" class="boton boton-secundario" id="usar-ubicacion"><i data-icono="mira"></i>Estoy en mi local, usar mi ubicación</button>
       </div>
       <div class="campo-grupo">Días que abres <div class="chips chips-dias" id="dias"></div></div>
       <div class="fila-campos">

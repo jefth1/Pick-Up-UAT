@@ -15,11 +15,15 @@
   <script src="../Compartido/js/pwa.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="../Compartido/css/mapa.css">
   <link rel="stylesheet" href="css/alumnos.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="../Compartido/js/mapa.js" defer></script>
   <script src="js/alumnos.js" defer></script>
 </head>
 <body>
@@ -54,7 +58,10 @@
       </div>
       <p class="texto-tenue" id="motivo-sin-favor" hidden></p>
       <div class="formulario" id="datos-favor" hidden>
-        <label class="campo-grupo">Punto de entrega <select class="campo" id="punto-entrega"></select></label>
+        <label class="campo-grupo">Punto de entrega <select class="campo" id="punto-entrega"></select>
+          <span class="ayuda">También puedes tocar una facultad o zona en el mapa.</span></label>
+        <div class="mapa mapa-ruta" id="mapa-favor"></div>
+        <div class="ruta-favor" id="ruta-favor" hidden></div>
         <label class="campo-grupo">Referencia <input class="campo" id="referencia" maxlength="120" placeholder="Ej. entrada principal, mochila roja"></label>
         <p class="aviso-azul" id="aviso-favor">Otro alumno lo recoge y te lo lleva.</p>
       </div>
@@ -62,7 +69,7 @@
     <div class="empuje"></div>
     <div class="totales" id="totales" hidden>
       <div><span>Subtotal</span><span id="subtotal-carrito">$0</span></div>
-      <div id="fila-tarifa" hidden><span>Favor</span><span id="tarifa-carrito">$0</span></div>
+      <div id="fila-tarifa" hidden><span>Cuota del favor</span><span id="tarifa-carrito">$0</span></div>
       <div class="total"><span>Total</span><span id="total-carrito">$0</span></div>
     </div>
     <a class="boton boton-primario" id="continuar-pago" href="pago.html" hidden>Ir a pagar</a>

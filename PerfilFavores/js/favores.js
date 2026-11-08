@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const EN_CURSO = ["asignado", "recogido"];
 const cobro = (f) => Number(f.pedidos.total) + Number(f.tarifa);
-const km = (m) => `${(m / 1000).toFixed(1)} km`;
+const km = (m) => textoDistancia(m);
 const fecha = (f) => new Date(f).toLocaleDateString("es-MX", { day: "numeric", month: "short", timeZone: ZONA });
 
 // Indicaciones a pie en Google Maps hasta unas coordenadas.
@@ -48,8 +48,11 @@ async function inicio() {
     cargar();
   });
 
+  const estados = new Map(); // estado de cada favor que se ve en esta pantalla
   const cargar = async () => {
     const mios = await misFavores(alumno);
+    estados.clear();
+    mios.forEach((f) => estados.set(f.id, f.estado));
     const entregados = mios.filter((f) => f.estado === "entregado");
     document.getElementById("ganancias").textContent = dinero(entregados.reduce((s, f) => s + Number(f.tarifa), 0));
     document.getElementById("hechos").textContent = entregados.length;
@@ -78,11 +81,12 @@ async function inicio() {
       .select("id, tarifa, distancia_m, puntos_entrega(nombre), pedidos(total, hora_recogida, locales(nombre, direccion))")
       .eq("estado", "buscando").neq("cliente_id", alumno.id).order("creado_en");
     if (error) return mostrarError(error);
+    libres.forEach((f) => estados.set(f.id, "buscando"));
     lista.innerHTML = libres.map((f) => `<li class="tarjeta favor-libre">
         <div class="ruta">
-          <span>${icono("tienda")}<b>${esc(f.pedidos.locales.nombre)}</b>${f.pedidos.locales.direccion ? ` · ${esc(f.pedidos.locales.direccion)}` : ""}</span>
-          <span>${icono("ubicacion")}<b>${esc(f.puntos_entrega.nombre)}</b> · ${km(f.distancia_m)}</span>
-          <span class="texto-suave">${icono("reloj")}Listo a las ${hora(f.pedidos.hora_recogida)}</span>
+          <span><i class="letra-ruta a">A</i><b>${esc(f.pedidos.locales.nombre)}</b>${f.pedidos.locales.direccion ? ` · ${esc(f.pedidos.locales.direccion)}` : ""}</span>
+          <span><i class="letra-ruta">B</i><b>${esc(f.puntos_entrega.nombre)}</b></span>
+          <span class="texto-suave">${icono("reloj")}Listo a las ${hora(f.pedidos.hora_recogida)} · ${km(f.distancia_m)} de A a B (~${minutosCaminando(f.distancia_m)} min)</span>
         </div>
         <div class="cifras">
           <span>Adelantas <b>${dinero(f.pedidos.total)}</b></span>
@@ -102,7 +106,11 @@ async function inicio() {
     location.href = `favor.html?favor=${id}`;
   });
   await cargar();
-  db.channel("favores").on("postgres_changes", { event: "*", schema: "public", table: "favores" }, cargar).subscribe();
+  // El favor en curso cambia su hora estimada cada ~20 s: eso no cambia esta pantalla.
+  db.channel("favores").on("postgres_changes", { event: "*", schema: "public", table: "favores" }, ({ eventType, new: f }) => {
+    if (eventType === "UPDATE" && estados.get(f.id) === f.estado) return;
+    cargar();
+  }).subscribe();
 }
 
 function pintarQr(destino, id) {
@@ -113,19 +121,81 @@ function pintarQr(destino, id) {
   destino.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
 }
 
+// Mapa del favor en curso: A (el local), B (el punto de entrega) y "Tú", que solo se
+// dibuja en este celular.
+function mapaDelFavor(f) {
+  const local = f.pedidos.locales;
+  const punto = f.puntos_entrega;
+  const contenedor = document.getElementById("mapa-favor");
+  const nada = { ponerYo() {} };
+  if (local.lat == null || punto.lat == null) return (contenedor.hidden = true), nada;
+  const mapa = crearMapa(contenedor);
+  if (!mapa) return nada;
+  marcadorLetra(local, "A").addTo(mapa);
+  marcadorLetra(punto, "B").addTo(mapa);
+  lineaRuta([local, punto]).addTo(mapa);
+  mapa.fitBounds([[local.lat, local.lng], [punto.lat, punto.lng]], ENCUADRE);
+  let yo = null;
+  return {
+    ponerYo(pos) {
+      if (yo) return yo.setLatLng([pos.lat, pos.lng]);
+      yo = marcadorYo(pos).addTo(mapa);
+      // La primera vez también se encuadra "Tú", si estás cerca (no si el GPS da algo raro).
+      if (distanciaM(pos, local) < 3000) mapa.fitBounds([[local.lat, local.lng], [punto.lat, punto.lng], [pos.lat, pos.lng]], ENCUADRE);
+    },
+  };
+}
+
+// Mientras el favor está en curso, este celular manda su posición a compartir_avance()
+// cada ~20 s. La base solo guarda la hora estimada de llegada: quien pidió el favor ve
+// "Llega en ~N min", nunca dónde estás.
+let vigilancia = null;
+function compartirAvance(f, alMoverse) {
+  const aviso = document.getElementById("compartiendo");
+  const decir = (texto) => { aviso.innerHTML = `${icono("reloj")}<span>${texto}</span>`; aviso.hidden = false; };
+  if (vigilancia !== null) return;
+  if (!navigator.geolocation) return decir("Tu navegador no comparte ubicación: el alumno verá un tiempo aproximado.");
+  decir("Activa tu ubicación para que el alumno vea en cuánto tiempo llegas. Solo se comparte el tiempo, nunca dónde estás.");
+  let ultimoEnvio = 0;
+  vigilancia = navigator.geolocation.watchPosition(async ({ coords }) => {
+    const pos = { lat: coords.latitude, lng: coords.longitude };
+    alMoverse(pos);
+    if (Date.now() - ultimoEnvio < 20000) return;
+    ultimoEnvio = Date.now();
+    const { data, error } = await db.rpc("compartir_avance", { p_favor_id: f.id, p_lat: pos.lat, p_lng: pos.lng });
+    if (error) return console.warn(error);
+    decir(`Llegas cerca de las <b>${hora(data)}</b>. Al alumno solo le compartimos ese tiempo, nunca tu ubicación.`);
+  }, (error) => decir(error.code === 1
+    ? "Sin permiso de ubicación: el alumno verá un tiempo aproximado. Nunca se comparte dónde estás."
+    : "No pudimos leer tu ubicación; el alumno verá un tiempo aproximado."),
+  { enableHighAccuracy: true, maximumAge: 10000, timeout: 30000 });
+}
+
+function dejarDeCompartir() {
+  if (vigilancia !== null) navigator.geolocation.clearWatch(vigilancia);
+  vigilancia = null;
+  document.getElementById("compartiendo").hidden = true;
+}
+
 async function miFavor() {
   const alumno = await alumnoOSalir();
   if (!alumno) return;
   const pasos = document.getElementById("pasos-favor");
+  let ruta = null;
+  let estado = null;
   const cargar = async () => {
     const { data: f, error } = await db.from("favores")
       .select("*, puntos_entrega(nombre, lat, lng), pedidos(id, total, hora_recogida, locales(nombre, direccion, lat, lng)), cliente:alumnos!favores_cliente_id_fkey(nombre)")
       .eq("id", param("favor")).eq("repartidor_id", alumno.id).maybeSingle();
     if (error) return mostrarError(error);
     if (!f) return (location.href = "inicio.html");
+    estado = f.estado;
     const local = f.pedidos.locales;
     document.getElementById("resumen-favor").textContent =
       `${local.nombre} → ${f.puntos_entrega.nombre} · ganas ${dinero(f.tarifa)}`;
+    ruta ??= mapaDelFavor(f);
+    if (EN_CURSO.includes(f.estado)) compartirAvance(f, ruta.ponerYo);
+    else dejarDeCompartir();
 
     if (f.estado === "entregado" || f.estado === "cancelado") {
       pasos.innerHTML = f.estado === "entregado"
@@ -143,7 +213,7 @@ async function miFavor() {
         <span class="numero">${recogido ? icono("check") : "1"}</span>
         <div class="cuerpo">
           <strong>Ve al local</strong>
-          <span>${esc(local.nombre)}${local.direccion ? ` · ${esc(local.direccion)}` : ""}</span>
+          <span class="con-letra"><i class="letra-ruta a">A</i>${esc(local.nombre)}${local.direccion ? ` · ${esc(local.direccion)}` : ""}</span>
           <span class="texto-suave">Listo a las ${hora(f.pedidos.hora_recogida)} · Pedido #${f.pedidos.id}</span>
           <div class="fila-cifra"><span>Pagas en el local</span><b>${dinero(f.pedidos.total)}</b></div>
           ${recogido ? "" : `${comoLlegar(local)}
@@ -154,7 +224,8 @@ async function miFavor() {
       <li class="tarjeta paso ${recogido ? "actual" : ""}">
         <span class="numero">2</span>
         <div class="cuerpo">
-          <strong>Llévalo a ${esc(f.puntos_entrega.nombre)}</strong>
+          <strong>Llévalo al punto de entrega</strong>
+          <span class="con-letra"><i class="letra-ruta">B</i>${esc(f.puntos_entrega.nombre)} · ${km(f.distancia_m)} (~${minutosCaminando(f.distancia_m)} min a pie)</span>
           <span>Entrégalo a ${esc(f.cliente?.nombre)}</span>
           ${f.referencia ? `<span class="texto-suave">“${esc(f.referencia)}”</span>` : ""}
           <div class="fila-cifra"><span>Te paga en efectivo</span><b>${dinero(cobro(f))}</b></div>
@@ -179,9 +250,11 @@ async function miFavor() {
     });
   };
   await cargar();
-  // Avanza solo cuando el local marca el pedido como entregado.
+  // Avanza solo cuando el local marca el pedido como entregado. Los cambios de la hora
+  // estimada (los manda este mismo celular) no repintan los pasos ni borran el código.
   db.channel("mi-favor")
-    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "favores", filter: `id=eq.${param("favor")}` }, cargar)
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "favores", filter: `id=eq.${param("favor")}` },
+      ({ new: f }) => f.estado !== estado && cargar())
     .subscribe();
 }
 

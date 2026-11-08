@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("enviar-pedido")) pago();
   if (document.getElementById("mis-pedidos")) misPedidos();
   if (document.getElementById("barra-carrito")) barraCarrito();
+  if (document.getElementById("mapa-uat")) mapaUat();
 });
 
 const aMinutos = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
@@ -301,8 +302,10 @@ async function verCarrito() {
   });
 }
 
-// Recoger en el local o que lo lleve otro alumno a un punto de la UAT. Solo aparece
-// con los favores encendidos y si el local ya guardó su ubicación.
+// Recoger en el local o que lo lleve otro alumno a un lugar de la UAT (facultad o zona).
+// Solo aparece con los favores encendidos y si el local ya se colocó en el mapa. El mapa
+// muestra la ruta A (el local, donde se recoge) → B (donde se entrega) y la cuota del
+// favor sale de esa distancia; la gana quien lo lleva.
 async function opcionesEntrega(c, local, pintar) {
   const quitarFavor = () => { delete c.favor; carrito.guardar(c); pintar(); };
   const seccion = document.getElementById("seccion-entrega");
@@ -312,7 +315,7 @@ async function opcionesEntrega(c, local, pintar) {
     : local.lat == null ? "Este local todavía no tiene entregas por favor." : null;
   let puntos = [];
   if (!motivo) {
-    puntos = (await db.from("puntos_entrega").select("id, nombre").eq("activo", true).order("nombre")).data || [];
+    puntos = await lugaresUat();
     if (!puntos.length) motivo = "Todavía no hay puntos de entrega para favores.";
   }
   if (motivo) {
@@ -330,32 +333,80 @@ async function opcionesEntrega(c, local, pintar) {
   const punto = document.getElementById("punto-entrega");
   const referencia = document.getElementById("referencia");
   const aviso = document.getElementById("aviso-favor");
-  punto.innerHTML = puntos.map((p) => `<option value="${p.id}">${esc(p.nombre)}</option>`).join("");
-  if (c.favor) {
+  const resumen = document.getElementById("ruta-favor");
+  const grupo = (tipo, titulo) => {
+    const opciones = puntos.filter((p) => p.tipo === tipo).map((p) => `<option value="${p.id}">${esc(p.nombre)}</option>`);
+    return opciones.length ? `<optgroup label="${titulo}">${opciones.join("")}</optgroup>` : "";
+  };
+  punto.innerHTML = grupo("facultad", "Facultades") + grupo("zona", "Zonas de la UAT");
+  if (c.favor && puntos.some((p) => p.id === c.favor.puntoId)) {
     seccion.querySelector('[value="favor"]').checked = true;
     punto.value = c.favor.puntoId;
     referencia.value = c.favor.referencia || "";
   }
   const { data: ajustes } = await db.from("ajustes").select("tope_efectivo").maybeSingle();
   const tope = Number(ajustes?.tope_efectivo ?? 250);
+  const conFavor = () => seccion.querySelector('[value="favor"]').checked;
+
+  // Mapa de la ruta: se crea la primera vez que se elige "Que me lo lleven".
+  // Tocar otra facultad o zona en el mapa la elige como punto de entrega.
+  let ruta = null;
+  const dibujarRuta = (elegido) => {
+    if (!ruta) {
+      const mapa = crearMapa(document.getElementById("mapa-favor"));
+      if (!mapa) return;
+      puntos.forEach((p) => marcadorLugar(p, { clase: "chico" })
+        .on("click", () => { punto.value = p.id; cotizar(); }).addTo(mapa));
+      ruta = { mapa, a: marcadorLetra(local, "A").addTo(mapa) };
+    }
+    ruta.b?.remove();
+    ruta.linea?.remove();
+    ruta.b = marcadorLetra(elegido, "B").addTo(ruta.mapa);
+    ruta.linea = lineaRuta([local, elegido]).addTo(ruta.mapa);
+    ruta.mapa.fitBounds([[local.lat, local.lng], [elegido.lat, elegido.lng]], ENCUADRE);
+  };
+
+  let cotizacion = null;
+  const pintarRuta = () => {
+    const { distancia_m: d, tarifa, elegido } = cotizacion;
+    const minutos = minutosCaminando(d);
+    resumen.innerHTML = `<span><i class="letra-ruta a">A</i><span><b>${esc(local.nombre)}</b> <span class="texto-tenue">· se recoge</span></span></span>
+      <span><i class="letra-ruta">B</i><span><b>${esc(elegido.nombre)}</b> <span class="texto-tenue">· te lo entregan</span></span></span>
+      <div class="cifras-ruta"><span><b>${textoDistancia(d)}</b> de A a B</span><span><b>~${minutos} min</b> a pie</span><span>Cuota <b>${dinero(tarifa)}</b></span></div>`;
+    resumen.hidden = false;
+    const hora = document.getElementById("hora").value;
+    const llega = hora ? aTexto((aMinutos(hora) + minutos) % 1440) : null;
+    aviso.textContent = "Otro alumno paga tu pedido en el local y te lo lleva. Al recibirlo le pagas en efectivo el pedido " +
+      `más la cuota, que sale de la distancia de A a B.${llega ? ` Si alguien lo toma, te llegaría cerca de las ${llega}.` : ""}`;
+  };
+
   const cotizar = async () => {
-    if (!seccion.querySelector('[value="favor"]').checked) return (datos.hidden = true), c.favor && quitarFavor();
+    if (!conFavor()) return (datos.hidden = true), c.favor && quitarFavor();
     datos.hidden = false;
+    const elegido = puntos.find((p) => String(p.id) === punto.value);
+    dibujarRuta(elegido);
     // Quien hace el favor paga el pedido en efectivo: hay un tope para no adelantar mucho.
     if (totalDe(c) > tope) {
+      resumen.hidden = true;
       aviso.textContent = `Para que te lo lleven, el pedido no puede pasar de ${dinero(tope)}, porque quien te hace el favor lo paga en efectivo.`;
       return c.favor && quitarFavor();
     }
-    const { data, error } = await db.rpc("cotizar_favor", { p_local_id: local.id, p_punto_id: Number(punto.value) });
+    const { data, error } = await db.rpc("cotizar_favor", { p_local_id: local.id, p_punto_id: elegido.id });
     if (error) return mostrarError(error);
+    if (!conFavor() || String(elegido.id) !== punto.value) return; // mientras, eligió otra cosa
     const { distancia_m, tarifa } = data[0];
-    c.favor = { puntoId: Number(punto.value), referencia: referencia.value.trim(), tarifa: Number(tarifa) };
-    aviso.textContent = `Otro alumno paga tu pedido, lo recoge y te lo lleva (${(distancia_m / 1000).toFixed(1)} km). Al recibirlo le pagas en efectivo el pedido más ${dinero(tarifa)} del favor.`;
+    c.favor = { puntoId: elegido.id, referencia: referencia.value.trim(), tarifa: Number(tarifa) };
+    cotizacion = { distancia_m, tarifa: Number(tarifa), elegido };
+    pintarRuta();
     carrito.guardar(c);
     pintar();
   };
   seccion.addEventListener("change", cotizar);
   referencia.addEventListener("input", () => c.favor && ((c.favor.referencia = referencia.value.trim()), carrito.guardar(c)));
+  // La hora de llegada estimada sigue a la hora de recogida (campo o barra).
+  const repintar = () => c.favor && cotizacion && conFavor() && pintarRuta();
+  document.getElementById("hora").addEventListener("input", repintar);
+  document.getElementById("rango").addEventListener("input", repintar);
   cotizar();
 }
 
@@ -373,7 +424,7 @@ async function pago() {
   document.getElementById("hora-pago").textContent = c.hora.texto;
   if (c.favor) {
     const favor = document.getElementById("favor-pago");
-    favor.textContent = `Incluye ${dinero(c.favor.tarifa)} del favor: te lo lleva otro alumno`;
+    favor.textContent = `Incluye ${dinero(c.favor.tarifa)} de cuota del favor: te lo lleva otro alumno`;
     favor.hidden = false;
     document.getElementById("texto-pago").textContent = "Le pagas todo en efectivo a quien te lo lleve.";
     document.getElementById("pago-local").hidden = true;
@@ -423,10 +474,32 @@ function pintarPasos(p) {
 const CAMPOS_FAVOR = "favores(*, puntos_entrega(nombre), repartidor:alumnos!favores_repartidor_id_fkey(nombre), favor_codigos(codigo))";
 const unoDe = (x) => (Array.isArray(x) ? x[0] : x) ?? null;
 
+// Cuándo llega el favor. La hora la calcula la base con el avance de quien lo lleva
+// (compartir_avance); a esta pantalla nunca llega su ubicación, solo la hora estimada.
+let favorEnPantalla = null;
+let pedidoEnPantalla = null;
+function htmlLlegada(favor, p) {
+  if (favor.estado === "buscando") {
+    const sale = Math.max(new Date(p.hora_recogida).getTime(), Date.now());
+    return `<p class="texto-tenue" id="llegada">Si alguien lo toma, llegaría cerca de las ${hora(sale + minutosCaminando(favor.distancia_m) * 60000)}.</p>`;
+  }
+  if (!["asignado", "recogido"].includes(favor.estado) || !favor.llegada_estimada) return "";
+  const texto = textoLlegada(favor.llegada_estimada);
+  return `<div class="llegada ${texto === "Está por llegar" ? "ya" : ""}" id="llegada">${icono("reloj")}
+    <div><strong>${texto}</strong><span>Cerca de las ${hora(favor.llegada_estimada)} · se actualiza conforme se acerca</span></div></div>`;
+}
+
+function pintarLlegada() {
+  const caja = document.getElementById("llegada");
+  if (caja && favorEnPantalla) caja.outerHTML = htmlLlegada(favorEnPantalla, pedidoEnPantalla) || "<span id=\"llegada\"></span>";
+}
+
 // Lo que ve quien pidió el favor, según cómo va.
 function pintarFavor(p) {
   const caja = document.getElementById("favor-pedido");
   const favor = unoDe(p.favores);
+  favorEnPantalla = favor;
+  pedidoEnPantalla = p;
   caja.hidden = !favor;
   // Con alguien ya encargado, el código QR es suyo: quien pidió solo espera la entrega.
   const loLleva = ["asignado", "recogido", "entregado"].includes(favor?.estado);
@@ -445,7 +518,7 @@ function pintarFavor(p) {
   };
   const cobro = ["buscando", "asignado", "recogido"].includes(favor.estado)
     ? `<div class="fila-favor"><span class="texto-suave">Págale en efectivo al recibirlo</span><strong>${dinero(Number(p.total) + Number(favor.tarifa))}</strong></div>` : "";
-  caja.innerHTML = `<span class="etiqueta">Te lo llevan</span><p>${textos[favor.estado]}</p>${cobro}
+  caja.innerHTML = `<span class="etiqueta">Te lo llevan</span><p>${textos[favor.estado]}</p>${htmlLlegada(favor, p)}${cobro}
     ${["asignado", "recogido"].includes(favor.estado) && codigo
       ? `<div class="fila-favor"><span class="texto-suave">Dale este código cuando le pagues</span><span class="codigo">${esc(codigo)}</span></div>` : ""}
     ${favor.estado === "buscando" ? `<button class="boton boton-secundario" id="cancelar-favor">Mejor paso yo</button>` : ""}`;
@@ -502,9 +575,129 @@ async function misPedidos() {
     document.getElementById("titulo-lista").hidden = !!actual && !otros.length;
   };
   await cargar();
-  // Se actualiza solo cuando el local cambia el estado.
+  // Se actualiza solo cuando el local cambia el estado o el favor avanza. Si del favor
+  // solo cambió la hora estimada, se repinta esa línea sin recargar todo.
   db.channel("mis-pedidos")
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pedidos", filter: `alumno_id=eq.${alumno.id}` }, cargar)
-    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "favores", filter: `cliente_id=eq.${alumno.id}` }, cargar)
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "favores", filter: `cliente_id=eq.${alumno.id}` }, ({ new: f }) => {
+      if (f.id !== favorEnPantalla?.id) return; // la lista no muestra favores
+      if (f.estado !== favorEnPantalla.estado) return cargar();
+      favorEnPantalla.llegada_estimada = f.llegada_estimada;
+      pintarLlegada();
+    })
     .subscribe();
+  setInterval(pintarLlegada, 15000); // "Llega en ~N min" baja solo con el tiempo
+}
+
+// Mapa de la UAT: facultades y zonas (las coloca el administrador) y dónde comer (cada
+// local se coloca a sí mismo desde su perfil). "Tú" solo se dibuja en tu pantalla.
+async function mapaUat() {
+  const contenedor = document.getElementById("mapa-uat");
+  const mapa = crearMapa(contenedor);
+  const [lugares, { data: locales, error }] = await Promise.all([
+    lugaresUat(),
+    db.from("locales").select("*, horarios(*)").not("lat", "is", null).order("nombre"),
+  ]);
+  if (error) return mostrarError(error);
+  const todos = [...lugares, ...locales.map((l) => ({ ...l, tipo: "local", abiertoYa: abiertoAhora(l) }))];
+  const lista = document.getElementById("lista-lugares");
+  const tarjeta = document.getElementById("lugar-elegido");
+  const ORDEN = { facultad: 0, zona: 1, local: 2 };
+  let filtro = "todo";
+  let elegido = null;
+  let yo = null;
+  let marcadorTu = null;
+  const visibles = () => todos.filter((l) => filtro === "todo" || l.tipo === filtro);
+  const claseDe = (l) => (l.tipo === "local" && !l.abiertoYa ? "cerrado" : "");
+  const detalle = (l) => (l.tipo === "local" ? `${l.abiertoYa ? "Abierto" : "Cerrado"} · ${textoHoy(l)}` : TIPOS_LUGAR[l.tipo]);
+
+  const capa = mapa && L.layerGroup().addTo(mapa);
+  const marcadores = new Map();
+  if (mapa) {
+    todos.forEach((l) => {
+      const m = marcadorLugar(l, { clase: claseDe(l) }).on("click", () => elegir(l));
+      if (l.tipo === "facultad") etiquetar(m, nombreCorto(l));
+      marcadores.set(l, m.addTo(capa));
+    });
+    // Encuadra lo que esté cerca de la UAT (un local con coordenadas raras no aleja el mapa).
+    const centro = { lat: CENTRO_UAT[0], lng: CENTRO_UAT[1] };
+    const cerca = todos.filter((l) => distanciaM(centro, l) < 5000);
+    if (cerca.length > 1) mapa.fitBounds(cerca.map((l) => [l.lat, l.lng]), ENCUADRE);
+    mapa.on("click", () => elegir(null));
+  }
+
+  const pintarTarjeta = () => {
+    tarjeta.hidden = !elegido;
+    if (!elegido) return;
+    const l = elegido;
+    const deTi = yo ? `<span>${icono("mira")}${textoDistancia(distanciaM(yo, l))} de ti · ~${minutosCaminando(distanciaM(yo, l))} min a pie</span>` : "";
+    if (l.tipo === "local") {
+      tarjeta.innerHTML = `<div class="fila-titulo"><strong>${esc(l.nombre)}</strong>
+          <span class="estado ${l.abiertoYa ? "abierto" : ""}">${l.abiertoYa ? "Abierto" : "Cerrado"}</span></div>
+        <p class="meta texto-suave"><span>${icono("ubicacion")}${esc(textoUbicacion(l))}</span><span>${icono("reloj")}${textoHoy(l)}</span>${deTi}</p>
+        <a class="boton boton-primario" href="menu-local.html?local=${l.id}">Ver menú</a>`;
+      return;
+    }
+    const comer = todos.filter((x) => x.tipo === "local").map((x) => [x, distanciaM(l, x)])
+      .sort((a, b) => a[1] - b[1]).slice(0, 3);
+    tarjeta.innerHTML = `<div class="fila-titulo"><strong>${esc(l.nombre)}</strong><span class="estado">${TIPOS_LUGAR[l.tipo]}</span></div>
+      <p class="meta texto-suave"><span>${icono("bolsa")}Punto de entrega para favores</span>${deTi}</p>
+      ${comer.length ? `<div class="cerca"><span class="etiqueta">Dónde comer cerca</span>${comer.map(([x, d]) =>
+        `<a href="menu-local.html?local=${x.id}"><b>${esc(x.nombre)}</b><span>${textoDistancia(d)} · ${x.abiertoYa ? "Abierto" : "Cerrado"}</span></a>`).join("")}</div>` : ""}`;
+  };
+
+  const pintarLista = () => {
+    const filas = visibles().map((l) => ({ l, d: yo ? distanciaM(yo, l) : null }))
+      .sort((a, b) => (yo ? a.d - b.d : ORDEN[a.l.tipo] - ORDEN[b.l.tipo] || a.l.nombre.localeCompare(b.l.nombre)));
+    lista.innerHTML = filas.map(({ l, d }) => `<li><button class="fila-lugar" data-lugar="${todos.indexOf(l)}">
+        <span class="marcador marcador-${l.tipo} ${claseDe(l)}"><span>${iconoDeLugar(l)}</span></span>
+        <span class="info"><strong>${esc(l.nombre)}</strong><span>${detalle(l)}</span></span>
+        ${d == null ? "" : `<span class="distancia">${textoDistancia(d)}</span>`}</button></li>`).join("")
+      || `<li class="tarjeta vacio"><strong>${filtro === "local" ? "Ningún local en el mapa todavía" : "Todavía no hay lugares aquí"}</strong>
+        <span>${filtro === "local" ? "Los locales aparecen cuando su dueño los coloca desde su perfil." : "Las facultades y zonas aparecen cuando se colocan en el mapa."}</span></li>`;
+  };
+
+  const elegir = (l) => {
+    if (elegido) marcadores.get(elegido)?.getElement()?.classList.remove("elegido");
+    elegido = l;
+    const m = l && marcadores.get(l);
+    if (m) {
+      m.getElement()?.classList.add("elegido");
+      mapa.panTo(m.getLatLng());
+    }
+    pintarTarjeta();
+  };
+
+  document.getElementById("filtros-mapa").addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-capa]");
+    if (!chip) return;
+    document.querySelectorAll("#filtros-mapa .chip").forEach((c) => c.classList.toggle("activo", c === chip));
+    filtro = chip.dataset.capa;
+    if (elegido && !visibles().includes(elegido)) elegir(null);
+    marcadores.forEach((m, l) => (filtro === "todo" || l.tipo === filtro ? capa.addLayer(m) : capa.removeLayer(m)));
+    pintarLista();
+  });
+  lista.addEventListener("click", (e) => {
+    const fila = e.target.closest("[data-lugar]");
+    if (!fila) return;
+    elegir(todos[fila.dataset.lugar]);
+    contenedor.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  const botonYo = document.getElementById("mi-ubicacion");
+  if (botonYo && mapa) {
+    L.DomEvent.disableClickPropagation(botonYo);
+    botonYo.addEventListener("click", async () => {
+      botonYo.disabled = true;
+      yo = await miUbicacion();
+      botonYo.disabled = false;
+      if (!yo) return alert("No pudimos ver dónde estás. Revisa el permiso de ubicación del navegador.");
+      marcadorTu?.remove();
+      marcadorTu = marcadorYo(yo).addTo(mapa);
+      mapa.flyTo([yo.lat, yo.lng], 17);
+      pintarLista();
+      pintarTarjeta();
+    });
+  }
+  pintarLista();
 }

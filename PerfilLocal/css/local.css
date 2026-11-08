@@ -97,6 +97,7 @@ body.oscuro { background: #141414; color: #fff; }
 .fila-disponible { display: flex; justify-content: space-between; align-items: center; gap: 12px; cursor: pointer; }
 .fila-disponible > span:first-child { display: flex; flex-direction: column; gap: 2px; }
 .chips-dias { flex-wrap: wrap; overflow: visible; }
+.mapa-local { height: 240px; }
 
 /* Resumen (ventas y escritorio) */
 .resumen { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }

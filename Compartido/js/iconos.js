@@ -27,8 +27,19 @@ const ICONOS = {
   mas: '<path d="M12 5v14M5 12h14"/>',
   menos: '<path d="M5 12h14"/>',
   mensaje: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
+  correo: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   editar: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/>',
   salir: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
+  // Mapa de la UAT
+  mapa: '<path d="M9 4 3 6.5V20l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4Z"/><path d="M9 4v13.5M15 6.5V20"/>',
+  mira: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  cubiertos: '<path d="M7 2v20M4 2v6a3 3 0 0 0 6 0V2"/><path d="M18 22V2c-2.5 1.5-4 4.5-4 8 0 2.5 1.5 4 4 4"/>',
+  deportes: '<circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6a9 9 0 0 1 0 12.8M18.4 5.6a9 9 0 0 0 0 12.8"/>',
+  edificio: '<path d="M4 21V6l8-3 8 3v15"/><path d="M2 21h20M10 21v-4h4v4M9 8h.01M15 8h.01M9 12h.01M15 12h.01"/>',
+  estacionamiento: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>',
+  libro: '<path d="M2 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H2Z"/><path d="M22 5h-7a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h8Z"/>',
+  arbol: '<path d="M12 22v-5"/><path d="M12 2a6 6 0 0 0-5 9.3A4 4 0 0 0 9 17h6a4 4 0 0 0 2-5.7A6 6 0 0 0 12 2Z"/>',
+  puerta: '<path d="M3 21h18M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><path d="M14 12h.01"/>',
 };
 
 function icono(nombre, clase = "") {

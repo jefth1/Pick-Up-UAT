@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lugares del mapa · Pick Up UAT</title>
+  <meta name="theme-color" content="#1B3A6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Pick Up">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="robots" content="noindex">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Compartido/img/iconos/favicon-32.png">
+  <link rel="apple-touch-icon" href="../Compartido/img/iconos/apple-touch-icon.png">
+  <script src="../Compartido/js/pwa.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="../Compartido/css/mapa.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="../Compartido/js/mapa.js" defer></script>
+  <script src="js/admin.js" defer></script>
+</head>
+<body>
+  <main class="pantalla pantalla-admin">
+    <header class="encabezado-pantalla">
+      <h1>Lugares del mapa</h1>
+      <p class="texto-suave">Facultades y zonas de la UAT. Los alumnos las ven en su mapa y las eligen como punto de entrega de los favores.</p>
+    </header>
+
+    <form class="formulario" id="form-admin" hidden>
+      <label class="campo-grupo">Correo <input class="campo" type="email" name="correo" required autocomplete="email"></label>
+      <label class="campo-grupo">Contraseña <input class="campo" type="password" name="contrasena" required autocomplete="current-password"></label>
+      <button class="boton boton-primario">Entrar</button>
+    </form>
+    <p class="aviso-azul" id="sin-permiso" hidden>Tu cuenta no administra el mapa. Se agrega en la tabla <b>administradores</b> de Supabase (ver docs/supabase.md).</p>
+
+    <section class="editor" id="editor" hidden>
+      <div class="mapa mapa-editor" id="mapa-admin">
+        <button class="boton-mapa" id="mi-ubicacion" type="button" aria-label="Ir a donde estoy" title="Ir a donde estoy"><i data-icono="mira"></i></button>
+      </div>
+      <p class="aviso-azul instruccion" id="instruccion"></p>
+      <form class="tarjeta formulario lugar-admin" id="form-lugar" hidden>
+        <label class="campo-grupo">Nombre <input class="campo" name="nombre" required maxlength="80"></label>
+        <div class="fila-campos">
+          <label class="campo-grupo">Abreviatura <input class="campo" name="abreviatura" maxlength="12" placeholder="Ej. FIC"></label>
+          <label class="campo-grupo">Tipo
+            <select class="campo" name="tipo"><option value="facultad">Facultad</option><option value="zona">Zona</option></select></label>
+        </div>
+        <label class="campo-grupo">Icono <select class="campo" name="icono"></select></label>
+        <p class="texto-tenue" id="coordenadas-lugar"></p>
+        <div class="fila-campos">
+          <button class="boton boton-primario">Guardar</button>
+          <button type="button" class="boton boton-secundario" id="aqui-lugar"><i data-icono="mira"></i>Estoy aquí</button>
+        </div>
+        <button type="button" class="boton boton-peligro" id="quitar-lugar">Quitar del mapa</button>
+      </form>
+      <h2>Por colocar</h2>
+      <p class="texto-tenue">Toca uno y luego toca el mapa donde está (o usa tu ubicación estando ahí).</p>
+      <div class="chips chips-admin" id="por-colocar"></div>
+      <h2>En el mapa</h2>
+      <ul class="lista lista-lugares" id="lista-admin"></ul>
+      <details class="quitados">
+        <summary>Quitados del mapa</summary>
+        <ul class="lista" id="lista-quitados"></ul>
+      </details>
+    </section>
+    <a href="#" class="boton boton-secundario" id="salir" hidden><i data-icono="salir"></i>Cerrar sesión</a>
+  </main>
+</body>
+</html>
