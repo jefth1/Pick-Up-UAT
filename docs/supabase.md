@@ -57,6 +57,10 @@ Supabase Storage, en la carpeta del local (`fotos/<local_id>/…`). Cualquiera l
 dueño del local puede subirlas o borrarlas. La URL queda en `productos.foto_url` y
 `locales.logo_url` (migración `20261022020000_fotos.sql`).
 
+Si el local prefiere un dibujo de referencia en vez de foto, `productos.foto_url` guarda
+`dibujo:<clave>` (por ejemplo `dibujo:tacos`, uno de los archivos de `Compartido/img/menu/`).
+Con `foto_url` vacío la app elige el dibujo por el nombre del producto; no hace falta migración.
+
 ## Favores
 
 Un alumno puede pedir que otro le lleve su pedido a un punto de la UAT, por una tarifa

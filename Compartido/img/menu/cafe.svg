@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Café</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M48 33 C44 27 52 23 48 16"/>
+<path d="M63 33 C59 27 67 23 63 16"/>
+<ellipse cx="58" cy="94" rx="42" ry="8.5" fill="#FFFFFF"/>
+<path d="M86 56 C100 56 102 76 86 78" stroke-width="10"/>
+<path d="M86 56 C100 56 102 76 86 78" stroke="#1B3A6B" stroke-width="4"/>
+<path fill="#1B3A6B" d="M28 48 H88 V64 C88 81 75 94 58 94 C41 94 28 81 28 64 Z"/>
+<ellipse cx="58" cy="48" rx="30" ry="7.5" fill="#B97A00"/>
+<path fill="#FFFFFF" stroke="none" d="M58 53.5 C52 50 52.5 45.5 55.5 46 C56.8 46.2 57.6 47 58 48 C58.4 47 59.2 46.2 60.5 46 C63.5 45.5 64 50 58 53.5 Z"/>
+<path d="M36 61 C36 70 40 78 46 84" stroke="#FFFFFF"/>
+</g>
+</svg>

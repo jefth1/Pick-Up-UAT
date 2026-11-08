@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Licuado</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M68 30 V14 L82 6" stroke-width="9"/>
+<path d="M68 30 V14 L82 6" stroke="#FFFFFF" stroke-width="3.5"/>
+<path fill="#FFFFFF" d="M38 26 H82 L78 106 H42 Z"/>
+<path fill="#E8A317" stroke="none" d="M39.6 40 H80.4 L76.6 104.5 H43.4 Z"/>
+<path d="M45 52 L48 96" stroke="#FFFFFF"/>
+<path fill="#FDF3E1" d="M36 34 C36 26 44 24 48 28 C50 22 60 22 62 27 C66 22 76 24 76 30 C82 29 86 34 84 40 C82 44 78 44 76 42 C72 46 66 45 64 42 C60 46 52 46 50 42 C46 45 40 44 38 41 C36 40 36 37 36 34 Z"/>
+</g>
+</svg>

@@ -23,7 +23,9 @@ Pick-Up-UAT/
 │   ├── js/supabase.js    → conexión a la base de datos y utilidades
 │   ├── js/estados-pedido.js
 │   ├── js/pwa.js         → registra sw.js
-│   └── img/iconos/       → ícono de la app
+│   ├── js/dibujos.js     → qué dibujo le toca a cada producto o local sin foto
+│   ├── img/iconos/       → ícono de la app
+│   └── img/menu/         → dibujos de referencia para los menús (SVG)
 ├── supabase/migrations/ → esquema de la base de datos y reglas de seguridad (RLS)
 └── docs/
     ├── diagrama.md       → flujo de pantallas y su relación con Figma
@@ -58,3 +60,13 @@ Con conexión la app siempre carga lo último que esté publicado; la copia guar
 ## Diseño
 
 Figma: https://www.figma.com/design/3ku3u2aHkv109klsyMFXXv (página "Pick Up UAT"). Paleta: fondo `#FAFAF8`, tinta `#141414`, azul `#1B3A6B` (acción), oro `#E8A317` (avisos).
+
+### Dibujos de referencia de los menús
+
+`Compartido/img/menu/` tiene 35 dibujos con la misma paleta (tacos, torta, gordita, tamal, café, agua fresca, postre, etc.). Se usan cuando no hay foto:
+
+- **Producto sin foto:** se ve el dibujo que le queda por su nombre, categoría o descripción ("Tacos de pastor" → tacos, "Agua de horchata" → agua fresca). Si no se parece a ninguno, se ve un platillo tapado.
+- **El local puede elegir otro** en *Agregar producto* (fila "O usa un dibujo"); si después sube una foto, la foto manda.
+- **Local sin logo:** se ve el dibujo de su nombre ("Cafetería Central" → café) o el de un local.
+
+Para que un nombre nuevo encuentre su dibujo, agrega la palabra en `DIBUJOS` de `Compartido/js/dibujos.js`.

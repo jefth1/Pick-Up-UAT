@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Burrito</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<g transform="rotate(-28 60 62)">
+<path fill="#F4D18B" d="M30 44 H98 V80 H30 A18 18 0 0 1 30 44 Z"/>
+<path d="M70 46 C75 54 75 70 70 78" stroke="#E8A317" stroke-width="2.5"/>
+<path d="M84 46 C89 54 89 70 84 78" stroke="#E8A317" stroke-width="2.5"/>
+<ellipse cx="98" cy="62" rx="9" ry="18" fill="#F4D18B"/>
+<ellipse cx="98" cy="62" rx="5.5" ry="13" fill="#B97A00"/>
+<g stroke="none"><circle cx="97" cy="55" r="1.9" fill="#FFFFFF"/><circle cx="99.5" cy="61" r="1.9" fill="#E8A317"/><circle cx="96.5" cy="67" r="1.9" fill="#FFFFFF"/><circle cx="99" cy="71.5" r="1.5" fill="#E8A317"/></g>
+<path fill="#1B3A6B" d="M30 41 H60 L56 47 L60 53 L56 59 L60 65 L56 71 L60 77 L57 83 H30 A21 21 0 0 1 30 41 Z"/>
+<path d="M20 56 C22 51 26 48 31 47" stroke="#FFFFFF"/>
+</g>
+</g>
+</svg>

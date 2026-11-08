@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Refresco</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<rect x="36" y="26" width="48" height="76" rx="9" fill="#1B3A6B"/>
+<path fill="#FFFFFF" stroke="none" d="M37.5 58 C48 50 62 66 82.5 54 V70 C62 82 48 66 37.5 74 Z"/>
+<circle cx="60" cy="64" r="5.5" fill="#E8A317" stroke-width="2"/>
+<path d="M44 36 V48 M44 82 V92" stroke="#FFFFFF"/>
+<ellipse cx="60" cy="28" rx="23" ry="6" fill="#E8E8E4"/>
+<ellipse cx="54" cy="28" rx="5.5" ry="2.3" stroke-width="2"/>
+<rect x="64.5" y="4" width="7" height="26" rx="2" fill="#FFFFFF" transform="rotate(18 68 30)"/>
+</g>
+</svg>

@@ -108,6 +108,8 @@ textarea.campo { min-height: 96px; resize: vertical; }
 /* Imágenes */
 .foto { background: var(--gris) center / cover no-repeat; color: var(--tinta-tenue); display: grid; place-items: center; }
 .foto .icono { width: 24px; height: 24px; }
+/* Dibujo de referencia (Compartido/img/menu/) si el producto no tiene foto o el local no tiene logo. */
+.foto[data-dibujo] { background-color: var(--oro-claro); background-size: auto 78%; }
 .imagen-portada { margin: -56px -24px 0; height: 190px; position: relative; }
 .precio { font-weight: 600; color: var(--azul); }
 

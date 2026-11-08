@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Fruta</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M60 8 L57 42" stroke-width="2.5"/>
+<path d="M56 8 L56.5 15 M60 7.5 L60 15 M64 8 L63.5 15" stroke-width="2"/>
+<rect x="35" y="30" width="16" height="16" rx="3" fill="#E8A317" transform="rotate(-14 43 38)"/>
+<rect x="49" y="25" width="17" height="17" rx="3" fill="#F4D18B" transform="rotate(8 57.5 33.5)"/>
+<path fill="#FFFFFF" d="M64 44 L71 26 L84 39 Z"/>
+<rect x="70" y="32" width="15" height="15" rx="3" fill="#E8A317" transform="rotate(18 77.5 39.5)"/>
+<g fill="#B97A00" stroke="none"><circle cx="41" cy="33" r="1.4"/><circle cx="45" cy="36" r="1.2"/><circle cx="55" cy="29" r="1.4"/><circle cx="60" cy="31" r="1.2"/><circle cx="76" cy="36" r="1.4"/><circle cx="72" cy="31" r="1.2"/></g>
+<g stroke="none">
+<rect x="38" y="60" width="13" height="13" rx="2.5" fill="#E8A317" transform="rotate(10 44.5 66.5)"/>
+<rect x="56" y="70" width="13" height="13" rx="2.5" fill="#F4D18B" transform="rotate(-12 62.5 76.5)"/>
+<rect x="66" y="54" width="13" height="13" rx="2.5" fill="#E8A317"/>
+<rect x="44" y="84" width="13" height="13" rx="2.5" fill="#F4D18B" transform="rotate(-20 50.5 90.5)"/>
+<rect x="64" y="88" width="12" height="12" rx="2.5" fill="#E8A317" transform="rotate(14 70 94)"/>
+<rect x="50" y="50" width="12" height="12" rx="2.5" fill="#FFFFFF"/>
+</g>
+<path fill="#C6CEDA" fill-opacity=".55" d="M30 46 H90 L83 104 H37 Z"/>
+<path d="M28 46 H92" stroke-width="3.5"/>
+<path d="M38 54 L42 96" stroke="#FFFFFF"/>
+</g>
+</svg>

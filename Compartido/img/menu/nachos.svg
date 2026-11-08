@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Nachos</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path fill="#F4D18B" d="M20 74 L33 40 L50 74 Z"/>
+<path fill="#F4D18B" d="M36 74 L57 30 L74 74 Z"/>
+<path fill="#F4D18B" d="M60 74 L83 38 L96 74 Z"/>
+<path fill="#F4D18B" d="M80 74 L101 50 L104 74 Z"/>
+<path fill="#E8A317" d="M22 64 C28 56 36 62 42 57 C48 52 56 60 62 56 C68 52 76 60 82 55 C88 51 96 58 100 60 V72 H22 Z"/>
+<g fill="#B97A00" stroke="none"><circle cx="40" cy="64" r="2.4"/><circle cx="58" cy="62" r="2.4"/><circle cx="76" cy="64" r="2.4"/><circle cx="90" cy="64" r="2"/></g>
+<path fill="#1B3A6B" d="M12 70 H108 L98 98 H22 Z"/>
+<path d="M26 82 H94" stroke="#FFFFFF" stroke-width="2.5"/>
+</g>
+</svg>

@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/local.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/dibujos.js" defer></script>
   <script src="../Compartido/js/estados-pedido.js" defer></script>
   <script src="../Compartido/js/iconos.js" defer></script>
   <script src="js/local.js" defer></script>
@@ -32,8 +33,13 @@
     <form class="formulario" id="form-producto">
       <label class="subir-foto foto-producto" id="subir-foto">
         <input type="file" name="foto" accept="image/jpeg,image/png,image/webp">
-        <i data-icono="subir"></i><span>Tomar o subir foto</span><span class="texto-tenue">Se verá en el menú del alumno</span>
+        <i data-icono="subir"></i><span class="accion-foto">Tomar o subir foto</span><span class="texto-tenue">Se verá en el menú del alumno</span>
       </label>
+      <div class="campo-grupo">
+        <span>O usa un dibujo</span>
+        <div class="dibujos" id="dibujos" role="group" aria-label="Dibujos para el producto"></div>
+        <span class="ayuda" id="ayuda-dibujo"></span>
+      </div>
       <label class="campo-grupo">Nombre <input class="campo" name="nombre" required maxlength="80" placeholder="Ej. Enchiladas suizas"></label>
       <div class="fila-campos">
         <label class="campo-grupo">Precio <input class="campo" name="precio" type="number" min="0" step="0.5" required placeholder="$ 0.00"></label>
@@ -46,7 +52,7 @@
         <span class="interruptor"><input type="checkbox" name="disponible" checked></span>
       </label>
       <div class="empuje"></div>
-      <button class="boton boton-primario">Guardar y publicar</button>
+      <button class="boton boton-primario" id="guardar">Guardar y publicar</button>
       <button type="button" class="boton boton-peligro" id="eliminar" hidden>Eliminar producto</button>
     </form>
   </main>

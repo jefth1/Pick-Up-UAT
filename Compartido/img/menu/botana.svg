@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Botana</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path fill="#1B3A6B" d="M30 24 L35 28 L40 24 L45 28 L50 24 L55 28 L60 24 L65 28 L70 24 L75 28 L80 24 L85 28 L90 24 V32 C95 48 95 78 90 94 V100 L85 96 L80 100 L75 96 L70 100 L65 96 L60 100 L55 96 L50 100 L45 96 L40 100 L35 96 L30 100 V94 C25 78 25 48 30 32 Z"/>
+<path d="M30 32 H90 M30 94 H90" stroke="#FFFFFF" stroke-width="2" stroke-opacity=".7"/>
+<ellipse cx="60" cy="63" rx="20" ry="17" fill="#E8A317"/>
+<path fill="#F4D18B" d="M48 66 C49 56 60 52 68 57 C73 61 71 70 63 73 C56 75 48 72 48 66 Z"/>
+<path d="M38 42 V54" stroke="#FFFFFF"/>
+<path fill="#FFFFFF" stroke="none" d="M80 78 l2 4.5 4.5 1.5 -4.5 1.5 -2 4.5 -2 -4.5 -4.5 -1.5 4.5 -1.5 Z"/>
+</g>
+</svg>

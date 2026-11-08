@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Enchiladas</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="60" cy="68" rx="54" ry="32" fill="#1B3A6B"/>
+<ellipse cx="60" cy="66" rx="45" ry="25" fill="#FFFFFF"/>
+<g transform="rotate(-10 60 66)">
+<rect x="22" y="44" width="76" height="15" rx="7.5" fill="#B97A00"/>
+<rect x="22" y="58" width="76" height="15" rx="7.5" fill="#B97A00"/>
+<rect x="22" y="72" width="76" height="15" rx="7.5" fill="#B97A00"/>
+<g fill="#F4D18B"><ellipse cx="28" cy="51.5" rx="4" ry="5.5"/><ellipse cx="28" cy="65.5" rx="4" ry="5.5"/><ellipse cx="28" cy="79.5" rx="4" ry="5.5"/></g>
+<path d="M34 51 C39 46 43 56 48 51 C53 46 57 56 62 51 C67 46 71 56 76 51 C81 46 85 56 90 51 M34 65 C39 60 43 70 48 65 C53 60 57 70 62 65 C67 60 71 70 76 65 C81 60 85 70 90 65 M34 79 C39 74 43 84 48 79 C53 74 57 84 62 79 C67 74 71 84 76 79 C81 74 85 84 90 79" stroke="#FFFFFF" stroke-width="2.4"/>
+<g fill="#FDF3E1" stroke="none"><circle cx="42" cy="62" r="2"/><circle cx="58" cy="54" r="2"/><circle cx="66" cy="70" r="2"/><circle cx="82" cy="62" r="2"/><circle cx="50" cy="78" r="2"/><circle cx="90" cy="78" r="2"/></g>
+</g>
+</g>
+</svg>
