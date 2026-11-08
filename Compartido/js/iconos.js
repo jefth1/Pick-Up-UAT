@@ -27,6 +27,7 @@ const ICONOS = {
   mas: '<path d="M12 5v14M5 12h14"/>',
   menos: '<path d="M5 12h14"/>',
   mensaje: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
+  correo: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   editar: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/>',
   salir: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
 };
