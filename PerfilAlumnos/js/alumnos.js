@@ -623,7 +623,8 @@ async function mapaUat() {
   const marcadores = new Map();
   if (mapa) {
     todos.forEach((l) => {
-      const m = marcadorLugar(l, { clase: claseDe(l) }).on("click", () => elegir(l));
+      // Dónde comer queda encima si se enciman con una facultad o zona.
+      const m = marcadorLugar(l, { clase: claseDe(l), zIndexOffset: l.tipo === "local" ? 500 : 0 }).on("click", () => elegir(l));
       if (l.tipo === "facultad") etiquetar(m, nombreCorto(l));
       marcadores.set(l, m.addTo(capa));
     });

@@ -6,7 +6,7 @@
 const CENTRO_UAT = [23.72094, -99.15136]; // Centro Universitario Victoria, Cd. Victoria
 const ZOOM_UAT = 16;
 // Margen al encuadrar puntos: a la derecha están los botones del mapa (zoom y "mi ubicación").
-const ENCUADRE = { paddingTopLeft: [36, 36], paddingBottomRight: [60, 36], maxZoom: 17 };
+const ENCUADRE = { paddingTopLeft: [36, 36], paddingBottomRight: [72, 36], maxZoom: 17 };
 
 // Iconos que puede tener una facultad o zona (todos existen en iconos.js).
 const ICONOS_LUGAR = {
