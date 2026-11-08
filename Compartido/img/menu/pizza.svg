@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Pizza</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path fill="#F4D18B" d="M22 36 Q60 26 98 36 L84 63 C86 70 84 78 81 78 C78 78 78 73 80.5 70 L63 104 Q60 109 57 104 Z"/>
+<circle cx="45" cy="50" r="7.5" fill="#B97A00"/>
+<circle cx="72" cy="51" r="7" fill="#B97A00"/>
+<circle cx="56" cy="71" r="6.5" fill="#B97A00"/>
+<circle cx="60" cy="90" r="3.6" fill="#B97A00"/>
+<path fill="#E8A317" d="M15 33 Q60 18 105 33 Q108 40 101 43 Q60 31 19 43 Q12 40 15 33 Z"/>
+<g fill="#B97A00" stroke="none"><circle cx="32" cy="34" r="1.6"/><circle cx="52" cy="29" r="1.6"/><circle cx="74" cy="30" r="1.6"/><circle cx="92" cy="35" r="1.6"/></g>
+</g>
+</svg>

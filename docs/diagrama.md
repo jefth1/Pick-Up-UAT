@@ -72,4 +72,6 @@ El mapa (Leaflet con los mapas de OpenStreetMap) vive en `Compartido/js/mapa.js`
 
 Colores, tipografía (Inter) e iconos del Figma están en `Compartido/css/estilos.css` y `Compartido/js/iconos.js`.
 
+Los dibujos de referencia de los menús (productos sin foto y locales sin logo) están en `Compartido/img/menu/`; cuál le toca a cada uno lo decide `Compartido/js/dibujos.js`. Se ven en Explorar locales, Menú del local, Producto, Mi menú y Agregar producto.
+
 El QR del pedido lleva el texto `PICKUP-<número>`; el local lo lee con la cámara en `escanear-qr.html` (o escribe el número).

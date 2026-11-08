@@ -85,7 +85,7 @@ async function explorarLocales() {
     lista.innerHTML = visibles.map((l) => {
       const abierto = abiertoAhora(l);
       return `<li><a class="tarjeta-local ${abierto ? "" : "cerrado"}" href="menu-local.html?local=${l.id}">
-        <div class="foto" ${fondoFoto(l.logo_url)}>${l.logo_url ? "" : icono("imagen")}</div>
+        <div class="foto" ${atributosImagen(imagenLocal(l))}></div>
         <div class="cuerpo">
           <div class="fila-titulo"><strong>${esc(l.nombre)}</strong>
             <span class="estado ${abierto ? "abierto" : ""}">${abierto ? "Abierto" : "Cerrado"}</span></div>
@@ -114,11 +114,7 @@ async function menuLocal() {
   document.getElementById("nombre-local").textContent = local.nombre;
   document.getElementById("ubicacion-local").textContent = textoUbicacion(local);
   document.getElementById("horario-local").textContent = `${textoHoy(local)}${abiertoAhora(local) ? "" : " · Cerrado ahora"}`;
-  if (local.logo_url) {
-    const portada = document.getElementById("portada");
-    portada.style.backgroundImage = `url('${local.logo_url}')`;
-    portada.querySelector(":scope > .icono").remove();
-  }
+  ponerImagen(document.getElementById("portada"), imagenLocal(local));
 
   const productos = local.productos.sort((a, b) => b.disponible - a.disponible || a.nombre.localeCompare(b.nombre));
   const categorias = [...new Set(productos.map((p) => p.categoria).filter(Boolean))].sort();
@@ -142,7 +138,7 @@ async function menuLocal() {
         const contenido = `<div><strong>${esc(p.nombre)}</strong>
             ${p.descripcion ? `<span class="descripcion">${esc(p.descripcion)}</span>` : ""}
             ${p.disponible ? `<span class="precio">${dinero(p.precio)}</span>` : `<span class="estado">Agotado</span>`}</div>
-          <div class="foto miniatura" ${fondoFoto(p.foto_url)}>${p.foto_url ? "" : icono("imagen")}</div>`;
+          <div class="foto miniatura" ${atributosImagen(imagenProducto(p))}></div>`;
         return p.disponible
           ? `<li><a class="tarjeta fila-menu" href="producto.html?producto=${p.id}">${contenido}</a>
               <button class="agregar-rapido" data-agregar="${p.id}" aria-label="Agregar ${esc(p.nombre)}">${icono("mas")}</button></li>`
@@ -171,11 +167,7 @@ async function producto() {
   document.getElementById("volver-menu").href = `menu-local.html?local=${p.local_id}`;
   document.getElementById("nombre-producto").textContent = p.nombre;
   document.getElementById("descripcion-producto").textContent = p.descripcion || "";
-  if (p.foto_url) {
-    const foto = document.getElementById("foto-producto");
-    foto.style.backgroundImage = `url('${p.foto_url}')`;
-    foto.querySelector(":scope > .icono").remove();
-  }
+  ponerImagen(document.getElementById("foto-producto"), imagenProducto(p));
 
   const campo = document.getElementById("cantidad");
   const boton = document.getElementById("agregar");

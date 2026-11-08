@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Sándwich</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M60 15 V46"/>
+<path fill="#1B3A6B" d="M60 15 L80 20.5 L60 26 Z"/>
+<rect x="16" y="76" width="88" height="16" rx="5" fill="#F4D18B"/>
+<path fill="#E8A317" d="M20 66 H100 V69 L95 78 L88 70 L80 80 L72 70 L64 77 L56 70 L48 79 L40 70 L32 76 L26 70 L20 73 Z"/>
+<rect x="18" y="60" width="84" height="12" rx="6" fill="#B97A00"/>
+<path fill="#FFFFFF" d="M17 54 H103 V58 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 q-5.375 14 -10.75 0 Z"/>
+<rect x="16" y="40" width="88" height="17" rx="5" fill="#F4D18B"/>
+<path d="M24 46 H34" stroke="#FFFFFF"/>
+</g>
+</svg>

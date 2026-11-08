@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Tamal</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<g transform="rotate(-38 60 64)">
+<path fill="#F4D18B" d="M32 16 C46 11 74 11 88 16 C90 46 84 84 60 116 C36 84 30 46 32 16 Z"/>
+<path d="M60 88 V108 M50 88 C52 96 55 102 58 108 M70 88 C68 96 65 102 62 108" stroke="#E8A317" stroke-width="2"/>
+<rect x="42" y="22" width="36" height="66" rx="15" fill="#FDF3E1"/>
+<path d="M50 34 C52 50 52 66 50 78" stroke="#E8A317" stroke-width="2"/>
+<path fill="#B97A00" d="M56 30 C64 28 70 34 68 42 C66 50 58 52 54 46 C50 40 50 32 56 30 Z" stroke-width="2"/>
+<path fill="#F4D18B" d="M32 16 C32 44 36 70 46 90 C42 70 41 46 42 26 C40 22 36 18 32 16 Z"/>
+<path fill="#F4D18B" d="M88 16 C88 44 84 70 74 90 C78 70 79 46 78 26 C80 22 84 18 88 16 Z"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Galletas</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="44" cy="56" r="26" fill="#E8A317"/>
+<g fill="#B97A00" stroke="none"><circle cx="34" cy="46" r="3.2"/><circle cx="50" cy="42" r="2.8"/><circle cx="56" cy="56" r="3"/><circle cx="38" cy="62" r="2.8"/><circle cx="27" cy="56" r="2.2"/><circle cx="46" cy="72" r="2.6"/></g>
+<path fill="#F4D18B" d="M101.6 67.5 A26 26 0 1 1 80.5 46.4 A7.5 7.5 0 0 0 89 53 A7.5 7.5 0 0 0 96 59 A7.5 7.5 0 0 0 101.6 67.5 Z"/>
+<g fill="#B97A00" stroke="none"><circle cx="66" cy="70" r="3.2"/><circle cx="79" cy="63" r="2.8"/><circle cx="74" cy="82" r="3"/><circle cx="88" cy="78" r="2.8"/><circle cx="62" cy="86" r="2.2"/><circle cx="88" cy="90" r="2.4"/></g>
+<circle cx="104" cy="54" r="2.2" fill="#F4D18B" stroke-width="1.5"/>
+<circle cx="98" cy="46" r="1.6" fill="#F4D18B" stroke-width="1.2"/>
+</g>
+</svg>

@@ -297,7 +297,7 @@ async function miMenu(local) {
     menu.innerHTML = productos
       .filter((p) => (!categoria || p.categoria === categoria) && (!texto || p.nombre.toLowerCase().includes(texto)))
       .map((p) => `<li class="${p.disponible ? "" : "agotado"}">
-        <a class="foto miniatura-chica" href="agregar-producto.html?producto=${p.id}" ${fondoFoto(p.foto_url)}>${p.foto_url ? "" : icono("imagen")}</a>
+        <a class="foto miniatura-chica" href="agregar-producto.html?producto=${p.id}" ${atributosImagen(imagenProducto(p))}></a>
         <a class="info" href="agregar-producto.html?producto=${p.id}"><strong>${esc(p.nombre)}</strong>
           <span class="${p.disponible ? "" : "agotado-texto"}">${dinero(p.precio)}${p.disponible ? "" : " · Agotado"}</span></a>
         <label class="interruptor" aria-label="Disponible"><input type="checkbox" data-producto="${p.id}" ${p.disponible ? "checked" : ""}></label></li>`)
@@ -330,6 +330,7 @@ function vistaPrevia(etiqueta, archivo) {
 async function agregarProducto(local) {
   const form = document.getElementById("form-producto");
   const etiquetaFoto = document.getElementById("subir-foto");
+  const guardar = document.getElementById("guardar");
   const id = param("producto");
   let producto = null;
 
@@ -344,11 +345,7 @@ async function agregarProducto(local) {
     document.getElementById("titulo-producto").textContent = "Editar producto";
     for (const campo of ["nombre", "precio", "categoria", "descripcion"]) form[campo].value = producto[campo] ?? "";
     form.disponible.checked = producto.disponible;
-    if (producto.foto_url) {
-      etiquetaFoto.style.backgroundImage = `url('${producto.foto_url}')`;
-      etiquetaFoto.classList.add("con-foto");
-    }
-    form.querySelector("button").textContent = "Guardar cambios";
+    guardar.textContent = "Guardar cambios";
     const eliminar = document.getElementById("eliminar");
     eliminar.hidden = false;
     eliminar.addEventListener("click", async () => {
@@ -359,22 +356,64 @@ async function agregarProducto(local) {
     });
   }
 
-  form.foto.addEventListener("change", () => form.foto.files[0] && vistaPrevia(etiquetaFoto, form.foto.files[0]));
+  // Imagen: una foto del local o un dibujo de referencia. Si no hay foto ni dibujo elegido,
+  // se ve el que le toca por el nombre, y cambia mientras el local lo escribe.
+  let fotoGuardada = producto?.foto_url && !esDibujo(producto.foto_url) ? producto.foto_url : null;
+  let fotoNueva = null;
+  let dibujoElegido = esDibujo(producto?.foto_url) && DIBUJOS[producto.foto_url.slice(7)] ? producto.foto_url.slice(7) : null;
+  const selector = document.getElementById("dibujos");
+  selector.innerHTML = Object.entries(DIBUJOS).filter(([clave]) => clave !== "local")
+    .map(([clave, d]) => `<button type="button" data-clave="${clave}"><span style="background-image:url('${urlDibujo(clave)}')"></span>${d.nombre}</button>`)
+    .join("");
+  let mostrado = null;
+  const pintarImagen = () => {
+    const foto = fotoNueva || fotoGuardada;
+    const clave = foto ? null : dibujoElegido ||
+      dibujoDe({ nombre: form.nombre.value, categoria: form.categoria.value, descripcion: form.descripcion.value });
+    ponerImagen(etiquetaFoto, foto ? { url: foto, dibujo: null } : { url: urlDibujo(clave), dibujo: clave });
+    etiquetaFoto.classList.toggle("con-foto", !!foto);
+    selector.querySelectorAll("[data-clave]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.clave === clave));
+    document.getElementById("ayuda-dibujo").textContent = foto
+      ? "En el menú se ve tu foto. Toca un dibujo si prefieres usarlo en su lugar."
+      : dibujoElegido ? "Se ve este dibujo mientras no subas una foto."
+      : "Lo elegimos por el nombre del producto; toca otro si le queda mejor.";
+    const boton = selector.querySelector('[aria-pressed="true"]');
+    if (boton && clave !== mostrado)
+      selector.scrollTo({ left: boton.offsetLeft - (selector.clientWidth - boton.offsetWidth) / 2, behavior: mostrado ? "smooth" : "auto" });
+    mostrado = clave;
+  };
+  form.foto.addEventListener("change", () => {
+    fotoNueva = form.foto.files[0] ? URL.createObjectURL(form.foto.files[0]) : null;
+    if (fotoNueva) dibujoElegido = null;
+    pintarImagen();
+  });
+  selector.addEventListener("click", (e) => {
+    const boton = e.target.closest("[data-clave]");
+    if (!boton) return;
+    dibujoElegido = boton.dataset.clave;
+    fotoNueva = fotoGuardada = null;
+    form.foto.value = "";
+    pintarImagen();
+  });
+  form.addEventListener("input", (e) => ["nombre", "categoria", "descripcion"].includes(e.target.name) && pintarImagen());
+  pintarImagen();
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const boton = form.querySelector("button");
-    boton.disabled = true;
+    guardar.disabled = true;
     const { foto, ...datos } = Object.fromEntries(new FormData(form));
     const cambios = { ...datos, precio: Number(datos.precio), disponible: form.disponible.checked };
     if (form.foto.files[0]) {
       const url = await subirFoto(local.id, form.foto.files[0]);
-      if (!url) return (boton.disabled = false);
+      if (!url) return (guardar.disabled = false);
       cambios.foto_url = url;
+    } else if (!fotoGuardada) {
+      cambios.foto_url = dibujoElegido ? `dibujo:${dibujoElegido}` : null;
     }
     const { error } = producto
       ? await db.from("productos").update(cambios).eq("id", producto.id)
       : await db.from("productos").insert({ ...cambios, local_id: local.id });
-    boton.disabled = false;
+    guardar.disabled = false;
     if (error) return mostrarError(error);
     location.href = "mi-menu.html";
   });

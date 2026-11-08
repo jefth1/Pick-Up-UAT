@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Agua</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<rect x="50" y="18" width="20" height="9" rx="3" fill="#1B3A6B"/>
+<path fill="#FFFFFF" d="M53 27 H67 V33 C67 37 77 39 77 48 V96 C77 100 74 103 70 103 H50 C46 103 43 100 43 96 V48 C43 39 53 37 53 33 Z"/>
+<path fill="#C6CEDA" stroke="none" d="M44.5 54 H75.5 V96 C75.5 99 73.5 101.5 70 101.5 H50 C46.5 101.5 44.5 99 44.5 96 Z"/>
+<path d="M46 87 H74 M46 94 H74" stroke="#FFFFFF" stroke-width="2"/>
+<rect x="43" y="58" width="34" height="20" fill="#1B3A6B"/>
+<path d="M47 68 C52 62 56 74 61 68 C66 62 69 72 73 66" stroke="#FFFFFF" stroke-width="2.5"/>
+<path d="M53 27 H67 V33 C67 37 77 39 77 48 V96 C77 100 74 103 70 103 H50 C46 103 43 100 43 96 V48 C43 39 53 37 53 33 Z"/>
+<path d="M48 44 C47 46 47 48 47 51" stroke="#C6CEDA"/>
+</g>
+</svg>

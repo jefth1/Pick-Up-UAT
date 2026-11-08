@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Local</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M50 26 V32 M70 26 V32" stroke-width="2.5"/>
+<rect x="38" y="12" width="44" height="14" rx="4" fill="#E8A317"/>
+<path d="M47 19 H73" stroke="#FFFFFF"/>
+<rect x="18" y="46" width="84" height="54" fill="#FFFFFF"/>
+<rect x="26" y="58" width="40" height="26" rx="3" fill="#C6CEDA"/>
+<path d="M33 79 L44 64 M43 81 L54 66" stroke="#FFFFFF" stroke-width="2.5"/>
+<rect x="22" y="84" width="48" height="5" rx="2" fill="#E8A317"/>
+<rect x="74" y="58" width="20" height="42" rx="2" fill="#1B3A6B"/>
+<circle cx="89" cy="80" r="1.8" fill="#E8A317" stroke="none"/>
+<path fill="#FFFFFF" d="M18 32 H102 L108 46 H12 Z"/>
+<path fill="#1B3A6B" stroke="none" d="M18 32 H32 L28 46 H12 Z M46 32 H60 V46 H44 Z M74 32 H88 L92 46 H76 Z"/>
+<path d="M18 32 H102 L108 46 H12 Z"/>
+<path fill="#1B3A6B" d="M12 46 A8 8 0 0 0 28 46 Z"/>
+<path fill="#FFFFFF" d="M28 46 A8 8 0 0 0 44 46 Z"/>
+<path fill="#1B3A6B" d="M44 46 A8 8 0 0 0 60 46 Z"/>
+<path fill="#FFFFFF" d="M60 46 A8 8 0 0 0 76 46 Z"/>
+<path fill="#1B3A6B" d="M76 46 A8 8 0 0 0 92 46 Z"/>
+<path fill="#FFFFFF" d="M92 46 A8 8 0 0 0 108 46 Z"/>
+<path d="M8 100 H112"/>
+</g>
+</svg>

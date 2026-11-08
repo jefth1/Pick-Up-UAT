@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Sopa</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<path d="M44 31 C40 25 48 21 44 14"/>
+<path d="M60 29 C56 23 64 19 60 12"/>
+<path d="M76 31 C72 25 80 21 76 14"/>
+<path fill="#1B3A6B" d="M14 58 H106 C106 83 86 100 60 100 C34 100 14 83 14 58 Z"/>
+<ellipse cx="60" cy="58" rx="46" ry="11" fill="#B97A00"/>
+<path d="M24 58 C30 52 36 64 42 58 C48 52 54 64 60 58 C66 52 72 64 78 58 C84 52 88 62 94 58" stroke="#F4D18B" stroke-width="3"/>
+<path d="M34 63 C40 58 46 67 52 62 C58 57 64 67 70 62" stroke="#F4D18B" stroke-width="2.5"/>
+<rect x="88" y="22" width="8" height="40" rx="4" fill="#FFFFFF" transform="rotate(32 92 42)"/>
+<path d="M24 70 C26 78 32 86 40 90" stroke="#FFFFFF"/>
+</g>
+</svg>

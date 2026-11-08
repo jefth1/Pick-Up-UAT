@@ -131,3 +131,17 @@ body.oscuro { background: #141414; color: #fff; }
   .columna > h2 { display: flex; align-items: center; gap: 8px; font-size: 15px; }
   .boton-agregar { width: auto; padding: 0 18px; border-radius: var(--radio); }
 }
+
+/* Agregar producto: dibujo de referencia en lugar de foto */
+.subir-foto[data-dibujo] { justify-content: flex-end; padding: 12px; background-color: var(--oro-claro); background-size: auto 66%; background-position: center 30%; }
+.subir-foto[data-dibujo] > .icono, .subir-foto[data-dibujo] > .texto-tenue { display: none; }
+.subir-foto[data-dibujo] .accion-foto { padding: 6px 12px; border-radius: 999px; background: var(--superficie); box-shadow: 0 0 0 1px var(--borde); font-size: 13px; }
+.dibujos { position: relative; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px; }
+.dibujos::-webkit-scrollbar { display: none; }
+.dibujos button { flex: none; width: 68px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; border: 0; background: none; font: inherit; font-size: 11px; font-weight: 500; color: var(--tinta-suave); cursor: pointer; }
+.dibujos button span { width: 60px; height: 60px; border-radius: var(--radio); background: var(--oro-claro) center / 80% no-repeat; }
+.dibujos button[aria-pressed="true"] { color: var(--azul); font-weight: 600; }
+.dibujos button[aria-pressed="true"] span { box-shadow: 0 0 0 2px var(--azul); }
+@media (min-width: 900px) {
+  .dibujos { flex-wrap: wrap; row-gap: 12px; overflow: visible; }
+}

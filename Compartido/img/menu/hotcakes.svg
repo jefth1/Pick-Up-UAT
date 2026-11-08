@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+<title>Hot cakes</title>
+<g fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<ellipse cx="60" cy="88" rx="52" ry="11" fill="#1B3A6B"/>
+<rect x="20" y="70" width="80" height="15" rx="7.5" fill="#E8A317"/>
+<rect x="20" y="57" width="80" height="15" rx="7.5" fill="#E8A317"/>
+<rect x="20" y="44" width="80" height="15" rx="7.5" fill="#E8A317"/>
+<ellipse cx="60" cy="46" rx="39" ry="7" fill="#F4D18B"/>
+<path fill="#B97A00" d="M30 46 C30 41 44 38 60 38 C76 38 90 41 90 46 C90 49 87 51 85 50 V62 C85 66 79 66 79 62 V52 C70 53.5 60 54 52 53.5 V70 C52 74 46 74 46 70 V53 C37 52 30 50 30 46 Z"/>
+<rect x="52" y="34" width="16" height="10" rx="2" fill="#FDF3E1" transform="rotate(-8 60 39)"/>
+</g>
+</svg>
