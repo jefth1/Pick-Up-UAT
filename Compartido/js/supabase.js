@@ -5,6 +5,10 @@ const SUPABASE_URL = "https://gdexcnbivhxqkfryoygf.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkZXhjbmJpdmh4cWtmcnlveWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2MjEzNTQsImV4cCI6MjEwODE5NzM1NH0.XoKfFhX0-Qq-rTkFeiRjMYbamcPPn5bN_9HM3gNmXmc";
 
+// Lo que trae la URL al llegar desde un enlace del correo (verificar la cuenta o cambiar
+// la contraseña). Se lee antes de crear el cliente porque él la borra al tomar la sesión.
+const LLEGADA = new URLSearchParams(location.hash.slice(1));
+
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const DIAS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -28,9 +32,45 @@ function param(nombre) {
   return new URLSearchParams(location.search).get(nombre);
 }
 
+// Errores de Supabase Auth en español (por su código); los de la base ya vienen en español.
+const ERRORES_CUENTA = {
+  invalid_credentials: "Correo o contraseña incorrectos.",
+  email_not_confirmed: "Primero verifica tu correo con el código que te enviamos.",
+  user_already_exists: "Ya hay una cuenta con este correo. Inicia sesión.",
+  email_exists: "Ya hay una cuenta con este correo. Inicia sesión.",
+  weak_password: "La contraseña debe tener al menos 6 caracteres.",
+  same_password: "La contraseña nueva debe ser distinta a la anterior.",
+  otp_expired: "El código no es correcto o ya venció. Revisa el último correo o pide otro código.",
+  over_request_rate_limit: "Demasiados intentos. Espera un momento y vuelve a intentarlo.",
+  email_address_invalid: "Ese correo no es válido.",
+  validation_failed: "Revisa que el correo esté bien escrito.",
+  email_address_not_authorized: "Por ahora no podemos enviar correos a esa dirección. Avísale al administrador de Pick Up UAT.",
+  signup_disabled: "El registro está cerrado por ahora.",
+  session_not_found: "Tu sesión terminó. Vuelve a iniciar sesión.",
+  refresh_token_not_found: "Tu sesión terminó. Vuelve a iniciar sesión.",
+};
+
+function mensajeError(error) {
+  if (error?.code === "over_email_send_rate_limit") {
+    const segundos = /(\d+) seconds?/.exec(error.message)?.[1];
+    return segundos
+      ? `Espera ${segundos} segundos para pedir otro correo.`
+      : "Ya enviamos varios correos en poco tiempo. Espera unos minutos y vuelve a intentarlo.";
+  }
+  if (ERRORES_CUENTA[error?.code]) return ERRORES_CUENTA[error.code];
+  if (/error sending .*email/i.test(error?.message)) {
+    return "No pudimos enviarte el correo. Intenta de nuevo en unos minutos.";
+  }
+  if (error?.status >= 500) return "Algo falló en el servidor. Intenta de nuevo en unos minutos.";
+  if (error?.name === "AuthRetryableFetchError" || /failed to fetch|network/i.test(error?.message)) {
+    return "No hay conexión. Revisa tu internet y vuelve a intentarlo.";
+  }
+  return error?.message || String(error);
+}
+
 function mostrarError(error) {
   console.error(error);
-  alert(error?.message || String(error));
+  alert(mensajeError(error));
 }
 
 // "Lun–Vie 8:00–18:00" a partir de las filas de horarios.

@@ -11,7 +11,7 @@ Pick-Up-UAT/
 ├── index.html            → redirige a Acceso/bienvenida.html
 ├── manifest.webmanifest  → datos para instalarla como app (nombre, colores, íconos)
 ├── sw.js                 → service worker: guarda el sitio, nunca las llamadas a Supabase
-├── Acceso/               → entrada y registro de alumnos (temporal) y locales
+├── Acceso/               → entrada, registro con verificación del correo y cambio de contraseña
 ├── PerfilAlumnos/        → explorar locales, menú, producto, carrito, pago, confirmación
 │   ├── css/alumnos.css
 │   └── js/alumnos.js
@@ -28,7 +28,9 @@ Pick-Up-UAT/
 │   ├── js/estados-pedido.js
 │   ├── js/pwa.js         → registra sw.js
 │   └── img/iconos/       → ícono de la app
-├── supabase/migrations/ → esquema de la base de datos y reglas de seguridad (RLS)
+├── supabase/
+│   ├── migrations/       → esquema de la base de datos y reglas de seguridad (RLS)
+│   └── plantillas-correo/ → correos de Supabase en español (código de verificación, contraseña)
 └── docs/
     ├── diagrama.md       → flujo de pantallas y su relación con Figma
     └── supabase.md       → tablas, quién puede ver qué y ajustes del panel

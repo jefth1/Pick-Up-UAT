@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Verifica tu correo · Pick Up UAT</title>
+  <meta name="theme-color" content="#1B3A6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Pick Up">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Compartido/img/iconos/favicon-32.png">
+  <link rel="apple-touch-icon" href="../Compartido/img/iconos/apple-touch-icon.png">
+  <script src="../Compartido/js/pwa.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/acceso.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="../Compartido/js/acceso.js" defer></script>
+</head>
+<body>
+  <main class="pantalla">
+    <header class="encabezado-pantalla">
+      <div class="titulo-con-atras"><a class="atras" id="atras" href="alumno-registro.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Verifica tu correo</h1></div>
+    </header>
+    <span class="icono-correo"><i data-icono="correo"></i></span>
+    <p class="texto-suave" id="texto-verificar">Te enviamos un código a <span class="correo-destino" id="correo-destino">tu correo</span>. Escríbelo aquí para activar tu cuenta.</p>
+    <form class="formulario" id="form-verificar" novalidate>
+      <label class="campo-grupo" id="grupo-correo" hidden>Correo con el que te registraste <input class="campo" type="email" name="correo" maxlength="120" autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"></label>
+      <label class="campo-grupo">Código de verificación <input class="campo campo-codigo" name="codigo" required inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="000000"></label>
+      <p class="texto-tenue">¿No lo ves? Revisa la carpeta de correo no deseado. También puedes abrir el enlace del correo desde este celular.</p>
+      <p class="mensaje" id="mensaje" hidden></p>
+      <div class="acciones-abajo">
+        <button class="boton boton-primario">Verificar y entrar</button>
+        <button type="button" class="enlace" id="reenviar">Reenviar código</button>
+        <p class="pie">¿Ya verificaste tu correo? <a href="alumno-iniciar-sesion.html" id="ir-entrar">Inicia sesión</a></p>
+      </div>
+    </form>
+  </main>
+</body>
+</html>
