@@ -18,8 +18,12 @@ Pick-Up-UAT/
 ├── PerfilLocal/          → pedidos, detalle (aceptar/rechazar), QR, mi menú, agregar producto
 │   ├── css/local.css
 │   └── js/local.js
+├── PerfilFavores/        → favores entre alumnos: favores libres, el favor en curso, ganancias
+├── PerfilAdmin/mapa.html → editor de facultades y zonas del mapa (solo administradores)
 ├── Compartido/           → lo que usan los dos perfiles
 │   ├── css/estilos.css   → paleta y componentes del diseño
+│   ├── css/mapa.css      → mapa de la UAT: marcadores, ruta A → B, hora de llegada
+│   ├── js/mapa.js        → mapa de la UAT (Leaflet + OpenStreetMap), distancias y tiempos a pie
 │   ├── js/supabase.js    → conexión a la base de datos y utilidades
 │   ├── js/estados-pedido.js
 │   ├── js/pwa.js         → registra sw.js
@@ -33,6 +37,27 @@ Pick-Up-UAT/
 ## Base de datos
 
 Los datos viven en Supabase. Ver [docs/supabase.md](docs/supabase.md).
+
+## Mapa de la UAT
+
+- **Alumnos** (`PerfilAlumnos/mapa.html`, botón *Mapa* de la barra): facultades (azul), zonas
+  (gris) y dónde comer (oro, cerrado en blanco). Al tocar un lugar se ve qué hay cerca; al
+  tocar un local, su horario y *Ver menú*.
+- **Facultades y zonas:** las coloca un administrador en `PerfilAdmin/mapa.html` tocando el
+  mapa o con su ubicación; las puede mover, renombrar y quitar.
+- **Cafeterías y comercios:** cada local se coloca solo, desde su perfil. Solo la cuenta del
+  dueño puede mover su local.
+- **Cuota del favor:** sale de la distancia entre **A** (el local, donde se recoge) y **B** (la
+  facultad o zona donde se entrega). El carrito muestra la ruta, los minutos a pie y la cuota,
+  que gana quien lo lleva.
+- **Hora de llegada:** mientras alguien lleva un favor, su celular manda su posición a la base,
+  que solo guarda la hora estimada. Quien pidió ve "Llega en ~N min" y nunca ve dónde va.
+
+El mapa usa [Leaflet](https://leafletjs.com/) y los mapas de
+[OpenStreetMap](https://www.openstreetmap.org/copyright). Sin conexión, las páginas siguen
+funcionando sin el dibujo del mapa. Los mapas de OpenStreetMap son gratis para un uso
+moderado; si la app crece mucho, conviene un proveedor con cuenta (MapTiler, Stadia…): solo
+cambia la dirección de los mapas en `crearMapa()` de `Compartido/js/mapa.js`.
 
 ## Cómo verlo
 

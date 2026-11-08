@@ -96,3 +96,14 @@
 .agregar-mas { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 14px; }
 .agregar-mas .icono { width: 16px; height: 16px; }
 .segmentado label.deshabilitada { opacity: .5; cursor: not-allowed; }
+
+/* Mapa de la UAT */
+.mapa-grande { height: 50vh; min-height: 280px; max-height: 520px; }
+.lugar-elegido { display: flex; flex-direction: column; gap: 10px; }
+.lugar-elegido .cerca { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--borde); }
+.lugar-elegido .cerca a { display: flex; justify-content: space-between; gap: 12px; color: var(--tinta); text-decoration: none; font-size: 14px; }
+.lugar-elegido .cerca a span { color: var(--tinta-suave); font-size: 13px; white-space: nowrap; }
+
+/* Ruta del favor en el carrito y hora estimada en Mis pedidos */
+.mapa-ruta { height: 200px; }
+.favor .llegada { text-align: left; }
