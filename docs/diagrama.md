@@ -21,6 +21,7 @@ flowchart TD
   E --> M[menu-local] --> P[producto] --> C[carrito] --> PG[pago] --> CF[confirmacion]
   E --> FV[PerfilFavores/inicio] --> FF[favor]
   FV --> FH[historial]
+  E --> MU[PerfilAlumnos/mapa] -->|Ver menú| M
 
   LS --> PD[PerfilLocal/pedidos]
   PD --> DP[detalle-pedido]
@@ -32,6 +33,8 @@ flowchart TD
 
   AP -. publica productos .-> M
   CF -. pedido nuevo .-> PD
+  PF -. ubicación del local .-> MU
+  AD[PerfilAdmin/mapa] -. facultades y zonas .-> MU
 ```
 
 | Figma | Archivo |
@@ -50,6 +53,7 @@ flowchart TD
 | Alumno/Carrito y horario | `PerfilAlumnos/carrito.html` |
 | Alumno/Pago | `PerfilAlumnos/pago.html` |
 | Alumno/Confirmación | `PerfilAlumnos/confirmacion.html` |
+| (sin pantalla en Figma) Mapa de la UAT | `PerfilAlumnos/mapa.html` (facultades, zonas y dónde comer) |
 | (sin pantalla en Figma) Favores · inicio | `PerfilFavores/inicio.html` (ganancias, favores hechos y favores libres) |
 | (sin pantalla en Figma) Favores · mi favor | `PerfilFavores/favor.html` (ir al local, llevarlo al punto, código) |
 | (sin pantalla en Figma) Favores · historial | `PerfilFavores/historial.html` |
@@ -59,9 +63,12 @@ flowchart TD
 | Local móvil/Mi menú | `PerfilLocal/mi-menu.html` |
 | Local móvil/Agregar producto | `PerfilLocal/agregar-producto.html` (también edita y elimina) |
 | Barra del local · Ventas | `PerfilLocal/ventas.html` |
-| Barra del local · Perfil | `PerfilLocal/perfil.html` (datos, logo, horario, cerrar sesión) |
+| Barra del local · Perfil | `PerfilLocal/perfil.html` (datos, logo, horario, su lugar en el mapa, cerrar sesión) |
+| (sin pantalla en Figma) Lugares del mapa | `PerfilAdmin/mapa.html` (solo administradores: colocar, mover, renombrar y quitar facultades y zonas) |
 
 La versión de escritorio del local (secundaria) usa las mismas páginas de `PerfilLocal/`: desde 900 px de ancho la barra inferior pasa a barra lateral y los pedidos se ven en tres columnas (Nuevos, En preparación, Listos).
+
+El mapa (Leaflet con los mapas de OpenStreetMap) vive en `Compartido/js/mapa.js` y `Compartido/css/mapa.css`, con la misma paleta: facultades en azul, zonas en gris y dónde comer en oro. Lo usan el mapa de los alumnos, la ruta A → B del favor en el carrito y en `PerfilFavores/favor.html`, el perfil del local y el editor de lugares.
 
 Colores, tipografía (Inter) e iconos del Figma están en `Compartido/css/estilos.css` y `Compartido/js/iconos.js`.
 

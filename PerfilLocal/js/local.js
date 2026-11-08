@@ -421,27 +421,7 @@ async function perfil(local) {
   }
   form.logo.addEventListener("change", () => form.logo.files[0] && vistaPrevia(etiquetaLogo, form.logo.files[0]));
 
-  // Coordenadas del local con el GPS del celular: sirven para la tarifa de los favores.
-  const textoUbicacion = document.getElementById("texto-ubicacion");
-  const pintarUbicacion = () => (textoUbicacion.textContent = local.lat == null
-    ? "Guárdala estando en el local; sirve para calcular la tarifa cuando un alumno lleva el pedido."
-    : `Guardada (${local.lat.toFixed(5)}, ${local.lng.toFixed(5)}). Vuelve a tocar el botón si cambió.`);
-  pintarUbicacion();
-  const botonUbicacion = document.getElementById("usar-ubicacion");
-  botonUbicacion.addEventListener("click", () => {
-    if (!navigator.geolocation) return alert("Este navegador no puede leer tu ubicación.");
-    botonUbicacion.disabled = true;
-    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
-      botonUbicacion.disabled = false;
-      const { error } = await db.from("locales").update({ lat: coords.latitude, lng: coords.longitude }).eq("id", local.id);
-      if (error) return mostrarError(error);
-      Object.assign(local, { lat: coords.latitude, lng: coords.longitude });
-      pintarUbicacion();
-    }, (error) => {
-      botonUbicacion.disabled = false;
-      alert(error.code === 1 ? "Permite el acceso a tu ubicación para guardarla." : "No pudimos leer tu ubicación, intenta de nuevo.");
-    }, { enableHighAccuracy: true, timeout: 15000 });
-  });
+  colocarEnMapa(local);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -449,7 +429,7 @@ async function perfil(local) {
     const elegidos = datos.getAll("dia").map(Number);
     if (!elegidos.length) return alert("Elige al menos un día de atención.");
     if (datos.get("cierra") <= datos.get("abre")) return alert("La hora de cierre debe ser después de la de apertura.");
-    const boton = form.querySelector("button");
+    const boton = form.querySelector(".boton-primario");
     boton.disabled = true;
     const cambios = { nombre: datos.get("nombre"), encargado: datos.get("encargado"),
       ubicacion: datos.get("ubicacion"), direccion: datos.get("direccion") };
@@ -475,5 +455,59 @@ async function perfil(local) {
     e.preventDefault();
     await db.auth.signOut();
     location.href = "../Acceso/bienvenida.html";
+  });
+}
+
+// El dueño coloca su cafetería o comercio en el mapa de la UAT: tocando el mapa,
+// arrastrando su punto o con el GPS estando en el local. Así lo encuentran los alumnos
+// en el mapa y se calcula la cuota de los favores. Solo el dueño puede moverlo (RLS).
+function colocarEnMapa(local) {
+  const texto = document.getElementById("texto-ubicacion");
+  const pintarTexto = (guardado) => (texto.textContent = local.lat == null
+    ? "Toca el mapa donde está tu local (o usa tu ubicación estando ahí). Así aparece en el mapa de los alumnos y se calcula la cuota de los favores."
+    : guardado ? "Listo, guardamos dónde está tu local." : "Tu local ya aparece en el mapa. Si no está bien, arrástralo o toca el lugar correcto para moverlo.");
+  const mapa = crearMapa(document.getElementById("mapa-local"),
+    local.lat == null ? {} : { centro: [local.lat, local.lng], zoom: 17 });
+  let punto = null;
+  const ponerPunto = () => {
+    if (!mapa || local.lat == null) return;
+    if (punto) return punto.setLatLng([local.lat, local.lng]);
+    punto = marcadorLugar({ ...local, tipo: "local" }, { draggable: true, clase: "arrastrable elegido", zIndexOffset: 1000 })
+      .on("dragend", () => guardar(punto.getLatLng())).addTo(mapa);
+  };
+  const guardar = async ({ lat, lng }) => {
+    const { error } = await db.from("locales").update({ lat, lng }).eq("id", local.id);
+    if (error) return mostrarError(error), ponerPunto();
+    Object.assign(local, { lat, lng });
+    ponerPunto();
+    pintarTexto(true);
+  };
+  if (mapa) {
+    mapa.on("click", (e) => {
+      if (local.lat == null) return guardar(e.latlng);
+      // Ya está colocado: se pregunta antes de moverlo, por si el toque fue sin querer.
+      const boton = L.DomUtil.create("button", "boton boton-primario boton-chico");
+      boton.type = "button";
+      boton.textContent = "Mover mi local aquí";
+      const globo = L.popup({ closeButton: false, className: "globo-mapa" }).setLatLng(e.latlng).setContent(boton).openOn(mapa);
+      boton.addEventListener("click", () => { mapa.closePopup(globo); guardar(e.latlng); });
+    });
+    // Facultades y zonas de referencia para ubicarse.
+    lugaresUat().then((lugares) => lugares.forEach((l) => {
+      const m = marcadorLugar(l, { clase: "chico", interactive: false, keyboard: false }).addTo(mapa);
+      if (l.tipo === "facultad") etiquetar(m, nombreCorto(l));
+    }));
+  }
+  ponerPunto();
+  pintarTexto(false);
+
+  const boton = document.getElementById("usar-ubicacion");
+  boton.addEventListener("click", async () => {
+    boton.disabled = true;
+    const pos = await miUbicacion();
+    boton.disabled = false;
+    if (!pos) return alert("No pudimos leer tu ubicación. Permite el acceso a tu ubicación e intenta de nuevo.");
+    await guardar(pos);
+    mapa?.setView([pos.lat, pos.lng], 18);
   });
 }

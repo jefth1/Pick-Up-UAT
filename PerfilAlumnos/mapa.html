@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mapa de la UAT · Pick Up UAT</title>
+  <meta name="theme-color" content="#1B3A6B">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Pick Up">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Compartido/img/iconos/favicon-32.png">
+  <link rel="apple-touch-icon" href="../Compartido/img/iconos/apple-touch-icon.png">
+  <script src="../Compartido/js/pwa.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="../Compartido/css/mapa.css">
+  <link rel="stylesheet" href="css/alumnos.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="../Compartido/js/mapa.js" defer></script>
+  <script src="js/alumnos.js" defer></script>
+</head>
+<body>
+  <main class="pantalla con-barra">
+    <header class="encabezado-pantalla">
+      <h1>Mapa de la UAT</h1>
+      <p class="texto-suave">Centro Universitario Victoria: facultades, zonas y dónde comer.</p>
+    </header>
+    <div class="chips" id="filtros-mapa">
+      <button class="chip activo" data-capa="todo">Todo</button>
+      <button class="chip" data-capa="facultad"><span class="punto-leyenda facultad"></span>Facultades</button>
+      <button class="chip" data-capa="zona"><span class="punto-leyenda zona"></span>Zonas</button>
+      <button class="chip" data-capa="local"><span class="punto-leyenda local"></span>Dónde comer</button>
+    </div>
+    <div class="mapa mapa-grande" id="mapa-uat">
+      <button class="boton-mapa" id="mi-ubicacion" aria-label="Ver dónde estoy" title="Ver dónde estoy"><i data-icono="mira"></i></button>
+    </div>
+    <section class="tarjeta lugar-elegido" id="lugar-elegido" hidden></section>
+    <ul class="lista lista-lugares" id="lista-lugares"><li class="texto-suave">Cargando…</li></ul>
+    <nav class="barra-inferior">
+      <a href="explorar-locales.html"><i data-icono="inicio"></i>Inicio</a>
+      <a href="mapa.html" class="actual"><i data-icono="mapa"></i>Mapa</a>
+      <a href="confirmacion.html"><i data-icono="bolsa"></i>Mis pedidos</a>
+      <a href="../PerfilFavores/inicio.html"><i data-icono="ubicacion"></i>Favores</a>
+      <a href="../Acceso/alumno-datos-uat.html"><i data-icono="usuario"></i>Perfil</a>
+    </nav>
+  </main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+/* Estilos solo del editor de lugares del mapa. */
+.pantalla-admin { max-width: 560px; }
+.editor { display: flex; flex-direction: column; gap: 14px; }
+.mapa-editor { height: 56vh; min-height: 320px; max-height: 560px; }
+.instruccion .enlace { font-size: 13px; text-decoration: underline; }
+.lugar-admin { gap: 12px; }
+.chips-admin { flex-wrap: wrap; overflow: visible; }
+.chips-admin .chip { flex: 0 1 auto; max-width: 100%; text-align: left; }
+.quitados summary { cursor: pointer; color: var(--tinta-suave); font-size: 14px; }
+.quitados .lista { margin-top: 10px; gap: 8px; }
+.fila-quitado { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--tinta-suave); }

@@ -29,3 +29,10 @@
 .fila-historial { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; }
 .fila-historial > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .fila-historial .ganado { font-weight: 700; color: var(--verde); }
+
+/* Ruta del favor (A → B) y hora estimada que se comparte */
+.favor-libre .ruta .letra-ruta, .paso .letra-ruta { width: 18px; height: 18px; font-size: 10px; }
+.paso .con-letra { display: inline-flex; align-items: center; gap: 6px; }
+.mapa-favor { height: 210px; }
+.compartiendo { display: flex; align-items: flex-start; gap: 8px; }
+.compartiendo .icono { width: 18px; height: 18px; margin-top: 1px; }

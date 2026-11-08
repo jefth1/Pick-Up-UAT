@@ -15,13 +15,17 @@
   <script src="../Compartido/js/pwa.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="../Compartido/css/mapa.css">
   <link rel="stylesheet" href="../PerfilAlumnos/css/alumnos.css">
   <link rel="stylesheet" href="css/favores.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="../Compartido/js/mapa.js" defer></script>
   <script src="js/favores.js" defer></script>
 </head>
 <body>
@@ -30,9 +34,12 @@
       <div class="titulo-con-atras"><a class="atras" href="inicio.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Tu favor</h1></div>
       <p class="texto-suave" id="resumen-favor"></p>
     </header>
+    <div class="mapa mapa-favor" id="mapa-favor"></div>
+    <p class="aviso-azul compartiendo" id="compartiendo" hidden></p>
     <ol class="pasos-favor" id="pasos-favor"><li class="texto-suave">Cargando…</li></ol>
     <nav class="barra-inferior">
       <a href="../PerfilAlumnos/explorar-locales.html"><i data-icono="inicio"></i>Inicio</a>
+      <a href="../PerfilAlumnos/mapa.html"><i data-icono="mapa"></i>Mapa</a>
       <a href="../PerfilAlumnos/confirmacion.html"><i data-icono="bolsa"></i>Mis pedidos</a>
       <a href="inicio.html" class="actual"><i data-icono="ubicacion"></i>Favores</a>
       <a href="../Acceso/alumno-datos-uat.html"><i data-icono="usuario"></i>Perfil</a>
