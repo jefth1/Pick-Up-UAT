@@ -23,7 +23,7 @@ Pick-Up-UAT/
 ├── Compartido/           → lo que usan los dos perfiles
 │   ├── css/estilos.css   → paleta y componentes del diseño
 │   ├── css/mapa.css      → mapa de la UAT: marcadores, ruta A → B, hora de llegada
-│   ├── js/mapa.js        → mapa de la UAT (Leaflet + OpenStreetMap), distancias y tiempos a pie
+│   ├── js/mapa.js        → mapa propio del campus Tampico (dibujo + Leaflet), distancias y tiempos a pie
 │   ├── js/supabase.js    → conexión a la base de datos y utilidades
 │   ├── js/estados-pedido.js
 │   ├── js/pwa.js         → registra sw.js
@@ -57,11 +57,11 @@ Los datos viven en Supabase. Ver [docs/supabase.md](docs/supabase.md).
 - **Hora de llegada:** mientras alguien lleva un favor, su celular manda su posición a la base,
   que solo guarda la hora estimada. Quien pidió ve "Llega en ~N min" y nunca ve dónde va.
 
-El mapa usa [Leaflet](https://leafletjs.com/) y los mapas de
-[OpenStreetMap](https://www.openstreetmap.org/copyright). Sin conexión, las páginas siguen
-funcionando sin el dibujo del mapa. Los mapas de OpenStreetMap son gratis para un uso
-moderado; si la app crece mucho, conviene un proveedor con cuenta (MapTiler, Stadia…): solo
-cambia la dirección de los mapas en `crearMapa()` de `Compartido/js/mapa.js`.
+El mapa es un dibujo propio del Centro Universitario Tampico-Madero (Campus Sur), con la
+paleta de la app y sin mapas de afuera: terreno, calles, estacionamientos, áreas verdes y
+edificios están en `CAMPUS`, al inicio de `Compartido/js/mapa.js`, con coordenadas reales
+(se calcó de una captura de Google Maps). [Leaflet](https://leafletjs.com/) solo lo dibuja y
+permite acercar y mover. Sin conexión, las páginas siguen funcionando sin el mapa.
 
 ## Cómo verlo
 

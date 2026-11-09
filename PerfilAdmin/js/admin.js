@@ -3,19 +3,24 @@
 // y las quita. Los alumnos las ven en su mapa y las eligen como punto de entrega.
 // Las cafeterías y comercios no van aquí: cada local se coloca desde su perfil.
 
-// Lugares del Centro Universitario Victoria que faltan por colocar. Revisa el nombre
-// antes de guardarlo; "Otro lugar" agrega cualquiera.
+// Lugares del Centro Universitario Tampico-Madero (Campus Sur) que faltan por colocar.
+// Revisa el nombre antes de guardarlo; "Otro lugar" agrega cualquiera.
 const LUGARES_SUGERIDOS = [
-  { nombre: "Facultad de Ingeniería y Ciencias", abreviatura: "FIC", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Comercio y Administración Victoria", abreviatura: "FCAV", tipo: "facultad", icono: "birrete" },
-  { nombre: "Unidad Académica Multidisciplinaria de Ciencias, Educación y Humanidades", abreviatura: "UAMCEH", tipo: "facultad", icono: "birrete" },
-  { nombre: "Unidad Académica de Derecho y Ciencias Sociales", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Trabajo Social y Ciencias para el Desarrollo Humano", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Enfermería Victoria", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Medicina Dr. Alberto Romo Caballero", abreviatura: "Medicina", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Enfermería Tampico", abreviatura: "Enfermería", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Odontología", abreviatura: "Odontología", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Derecho y Ciencias Sociales", abreviatura: "FADYCS", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Comercio y Administración Tampico", abreviatura: "FCAT", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Ingeniería Arturo Narro Siller", abreviatura: "FIANS", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Arquitectura, Diseño y Urbanismo", abreviatura: "FADU", tipo: "facultad", icono: "birrete" },
+  { nombre: "Facultad de Música y Artes", abreviatura: "Música", tipo: "facultad", icono: "birrete" },
   { nombre: "Biblioteca", tipo: "zona", icono: "libro" },
-  { nombre: "Gimnasio Multidisciplinario", tipo: "zona", icono: "deportes" },
-  { nombre: "Canchas de fútbol", tipo: "zona", icono: "deportes" },
-  { nombre: "Edificio CAUCE", tipo: "zona", icono: "edificio" },
+  { nombre: "Librería Educal", tipo: "zona", icono: "libro" },
+  { nombre: "Servicios Escolares", tipo: "zona", icono: "edificio" },
+  { nombre: "Centro de Idiomas", tipo: "zona", icono: "edificio" },
+  { nombre: "Gimnasio", tipo: "zona", icono: "deportes" },
+  { nombre: "Canchas", tipo: "zona", icono: "deportes" },
+  { nombre: "Auditorio", tipo: "zona", icono: "edificio" },
   { nombre: "Explanada", tipo: "zona", icono: "arbol" },
   { nombre: "Estacionamiento", tipo: "zona", icono: "estacionamiento" },
   { nombre: "Entrada principal", tipo: "zona", icono: "puerta" },

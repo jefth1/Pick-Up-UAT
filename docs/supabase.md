@@ -165,10 +165,12 @@ Migración `20261108220000_mapa_uat.sql`.
 
 - Las cafeterías y comercios son los `locales`: cada uno se coloca desde su perfil y RLS solo
   deja moverlo a su dueño. Una cuenta de alumno no puede crear locales.
-- La migración apaga los puntos de prueba («Prueba · …») y agrega el Estadio Universitario
-  Eugenio Alvizo Porras con sus coordenadas. Las facultades y demás zonas se colocan con el
-  editor, que sugiere las que faltan (FIC, FCAV, UAMCEH, Derecho, Trabajo Social, Enfermería,
-  biblioteca, gimnasio, canchas, CAUCE, explanada, estacionamiento, entrada principal).
+- La migración apaga los puntos de prueba («Prueba · …»), borra las coordenadas de Cd. Victoria
+  de los locales de prueba (cada local se vuelve a colocar desde su perfil) y agrega los
+  lugares del campus Tampico que se ven en el mapa: Música y Artes, Medicina, Derecho y Ciencias
+  Sociales, Arquitectura (FADU), el edificio central, CELLAP, el Estadio Olímpico, el Gimnasio
+  Multidisciplinario y el Lago Lain. Ingeniería, Comercio, Odontología, Enfermería y demás zonas
+  se colocan con el editor, que las sugiere.
 
 **Cuota del favor:** `cotizar_favor` usa la distancia en línea recta entre **A** (el local,
 donde se recoge) y **B** (la facultad o zona donde se entrega): $10 + $8 por km de camino
@@ -190,4 +192,4 @@ Dentro del campus casi todo sale en $15 (hasta unos 480 m); 850 m son $20 y 1.5 
 
 - Cambiar el registro temporal de alumnos por la API de la base de datos de la UAT.
 - Pago en línea; por ahora se paga al recoger (y los favores, en efectivo a quien lo lleva).
-- Colocar las facultades y zonas en `PerfilAdmin/mapa.html` (por ahora solo está el Estadio).
+- Colocar Ingeniería, Comercio, Odontología, Enfermería y demás zonas en `PerfilAdmin/mapa.html`.
