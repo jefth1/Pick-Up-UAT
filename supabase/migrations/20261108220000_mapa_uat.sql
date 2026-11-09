@@ -1,4 +1,4 @@
--- Mapa de la UAT (Centro Universitario Victoria).
+-- Mapa de la UAT (Centro Universitario Tampico-Madero, Campus Sur).
 -- 1. puntos_entrega pasa a ser los lugares del mapa: facultades y zonas. Todos sirven
 --    como punto de entrega de los favores. Los coloca un administrador desde
 --    PerfilAdmin/mapa.html, tocando el mapa (solo se guardan lugares con coordenadas reales).
@@ -19,10 +19,22 @@ alter table public.puntos_entrega
 -- existen los siguen usando).
 update public.puntos_entrega set activo = false where nombre like 'Prueba · %';
 
--- Coordenadas del estadio según Wikipedia. Las facultades y demás zonas las coloca el
--- administrador en el mapa.
-insert into public.puntos_entrega (nombre, tipo, icono, lat, lng)
-values ('Estadio Universitario Eugenio Alvizo Porras', 'zona', 'deportes', 23.71806, -99.15056);
+-- Lugares del campus que ya se ven en el mapa (calcados de Google Maps). Las demás
+-- facultades (Ingeniería, Comercio, Odontología, Enfermería) las coloca el administrador.
+insert into public.puntos_entrega (nombre, abreviatura, tipo, icono, lat, lng) values
+  ('Facultad de Música y Artes', 'Música', 'facultad', 'birrete', 22.278545, -97.862404),
+  ('Facultad de Medicina Dr. Alberto Romo Caballero', 'Medicina', 'facultad', 'birrete', 22.277696, -97.861018),
+  ('Facultad de Derecho y Ciencias Sociales', 'FADYCS', 'facultad', 'birrete', 22.276508, -97.864595),
+  ('Facultad de Arquitectura, Diseño y Urbanismo', 'FADU', 'facultad', 'birrete', 22.275319, -97.863576),
+  ('Edificio central UAT CU Sur', null, 'zona', 'edificio', 22.2768, -97.8622),
+  ('CELLAP Tampico (idiomas)', null, 'zona', 'edificio', 22.276404, -97.862903),
+  ('Estadio Olímpico UAT CU Sur', null, 'zona', 'deportes', 22.275112, -97.859183),
+  ('Gimnasio Multidisciplinario UAT', null, 'zona', 'deportes', 22.275715, -97.858011),
+  ('Lago Lain', null, 'zona', 'arbol', 22.277215, -97.866022);
+
+-- Los locales de prueba tenían coordenadas aproximadas de Cd. Victoria: se borran para que
+-- cada local se coloque en el mapa del campus Tampico desde su perfil.
+update public.locales set lat = null, lng = null where lat between 23.5 and 24;
 
 -- Administradores del mapa (se agregan desde el panel de Supabase).
 create table public.administradores (

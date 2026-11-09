@@ -68,7 +68,7 @@ flowchart TD
 
 La versión de escritorio del local (secundaria) usa las mismas páginas de `PerfilLocal/`: desde 900 px de ancho la barra inferior pasa a barra lateral y los pedidos se ven en tres columnas (Nuevos, En preparación, Listos).
 
-El mapa (Leaflet con los mapas de OpenStreetMap) vive en `Compartido/js/mapa.js` y `Compartido/css/mapa.css`, con la misma paleta: facultades en azul, zonas en gris y dónde comer en oro. Lo usan el mapa de los alumnos, la ruta A → B del favor en el carrito y en `PerfilFavores/favor.html`, el perfil del local y el editor de lugares.
+El mapa (un dibujo propio del campus Tampico, que Leaflet muestra) vive en `Compartido/js/mapa.js` y `Compartido/css/mapa.css`, con la misma paleta: facultades en azul, zonas en gris y dónde comer en oro. Lo usan el mapa de los alumnos, la ruta A → B del favor en el carrito y en `PerfilFavores/favor.html`, el perfil del local y el editor de lugares.
 
 Colores, tipografía (Inter) e iconos del Figma están en `Compartido/css/estilos.css` y `Compartido/js/iconos.js`.
 
