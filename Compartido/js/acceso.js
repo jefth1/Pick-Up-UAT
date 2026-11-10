@@ -71,7 +71,9 @@ async function dominiosAlumnos() {
 // Las dos contraseñas del registro deben coincidir. Regresa el aviso, o nada si están bien.
 function revisarContrasenas(form) {
   const { contrasena, confirmar } = form;
-  if (contrasena.value.length < 6) return contrasena.focus(), "La contraseña debe tener al menos 6 caracteres.";
+  if (contrasena.value.length < 8 || !/[a-z]/i.test(contrasena.value) || !/\d/.test(contrasena.value)) {
+    return contrasena.focus(), "La contraseña debe tener al menos 8 caracteres, con letras y números.";
+  }
   if (contrasena.value !== confirmar.value) return confirmar.focus(), "Las contraseñas no coinciden. Escríbelas otra vez.";
 }
 

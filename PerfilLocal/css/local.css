@@ -145,3 +145,6 @@ body.oscuro { background: #141414; color: #fff; }
 @media (min-width: 900px) {
   .dibujos { flex-wrap: wrap; row-gap: 12px; overflow: visible; }
 }
+
+/* Local recién registrado: espera la aprobación del administrador. */
+.aviso-revision { margin: 0 0 12px; padding: 12px 14px; border-radius: var(--radio); background: var(--oro-claro); color: var(--tinta); font-size: 14px; }

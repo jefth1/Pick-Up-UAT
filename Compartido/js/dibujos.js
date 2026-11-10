@@ -81,13 +81,15 @@ function dibujoDe(p) {
 
 // { url, dibujo }: la foto o el logo, o el dibujo que toca (dibujo = su clave).
 function imagenProducto(p) {
-  if (p.foto_url && !esDibujo(p.foto_url)) return { url: p.foto_url, dibujo: null };
+  const foto = fotoSegura(p.foto_url);
+  if (foto) return { url: foto, dibujo: null };
   const clave = dibujoDe(p);
   return { url: urlDibujo(clave), dibujo: clave };
 }
 
 function imagenLocal(l) {
-  if (l.logo_url) return { url: l.logo_url, dibujo: null };
+  const logo = fotoSegura(l.logo_url);
+  if (logo) return { url: logo, dibujo: null };
   const clave = buscarDibujo(l.nombre) || "local";
   return { url: urlDibujo(clave), dibujo: clave };
 }

@@ -243,9 +243,10 @@ async function miFavor() {
       e.preventDefault();
       const boton = e.target.querySelector("button");
       boton.disabled = true;
-      const { error } = await db.rpc("confirmar_entrega", { p_favor_id: f.id, p_codigo: e.target.codigo.value });
+      const { data: coincide, error } = await db.rpc("confirmar_entrega", { p_favor_id: f.id, p_codigo: e.target.codigo.value });
       boton.disabled = false;
       if (error) return mostrarError(error);
+      if (coincide === false) return alert("El código no coincide. Pídele al alumno que te lo muestre otra vez.");
       cargar();
     });
   };

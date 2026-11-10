@@ -14,6 +14,13 @@ const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const DIAS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 const ZONA = "America/Monterrey";
 
+// Solo se muestran fotos del bucket "fotos" de este proyecto (la base tampoco acepta otras
+// direcciones): así nadie puede meter estilos con comillas ni cargar imágenes de otro sitio.
+const CARPETA_FOTOS = `${SUPABASE_URL}/storage/v1/object/public/fotos/`;
+function fotoSegura(url) {
+  return typeof url === "string" && url.startsWith(CARPETA_FOTOS) && /^[\w.\/:-]+$/.test(url) ? url : null;
+}
+
 // Escapa texto de la base antes de meterlo en innerHTML.
 function esc(texto) {
   return String(texto ?? "").replace(/[&<>"']/g, (c) =>
@@ -38,7 +45,7 @@ const ERRORES_CUENTA = {
   email_not_confirmed: "Primero verifica tu correo con el código que te enviamos.",
   user_already_exists: "Ya hay una cuenta con este correo. Inicia sesión.",
   email_exists: "Ya hay una cuenta con este correo. Inicia sesión.",
-  weak_password: "La contraseña debe tener al menos 6 caracteres.",
+  weak_password: "La contraseña debe tener al menos 8 caracteres, con letras y números.",
   same_password: "La contraseña nueva debe ser distinta a la anterior.",
   otp_expired: "El código no es correcto o ya venció. Revisa el último correo o pide otro código.",
   over_request_rate_limit: "Demasiados intentos. Espera un momento y vuelve a intentarlo.",
@@ -139,7 +146,8 @@ async function achicarFoto(archivo, lado = 1200) {
 
 // Fondo de imagen para las fotos de productos y logos; sin foto se ve el icono.
 function fondoFoto(url) {
-  return url ? `style="background-image:url('${esc(url)}')"` : "";
+  const segura = fotoSegura(url);
+  return segura ? `style="background-image:url('${segura}')"` : "";
 }
 
 async function usuarioActual() {
