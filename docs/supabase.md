@@ -52,10 +52,17 @@ código de 6 dígitos que le llega al correo (o toca el botón del mismo correo)
 registró y no verificó, al intentar entrar se le manda un código nuevo. Supabase deja pedir
 otro correo cada 60 segundos y el código vence en una hora.
 
-El registro de alumnos y de locales pide la contraseña dos veces y no deja seguir si no
-coinciden. Si todavía no pegas la plantilla de abajo, el correo de Supabase trae solo el
-botón (sin código): la página de verificación sirve igual, porque al tocarlo entra solo, y si
-lo abre en otra pestaña del mismo celular la primera también entra. El logo del local nunca
+El registro de alumnos y de locales (y «Nueva contraseña») pide la contraseña dos veces y no
+deja seguir si no coinciden.
+
+**Por qué hacen falta las plantillas del repo:** el correo de fábrica de Supabase trae solo un
+botón, sin código, y ese botón verifica la cuenta en cuanto se abre. El correo de la UAT
+(Outlook) abre los enlaces de cada correo segundos después de que llega, para revisarlos, y
+con eso verifica la cuenta por el alumno y gasta el enlace (pasó el 10 de noviembre). El botón
+de las plantillas del repo lleva a `verificar-correo.html` con `token_hash` y la cuenta se
+verifica hasta que la persona toca «Confirmar mi correo»; el código de 6 dígitos sigue
+sirviendo aunque Outlook ya haya abierto el enlace. Lo mismo hace la plantilla de cambiar la
+contraseña con `nueva-contrasena.html`. El logo del local nunca
 detiene la entrada: si no se puede subir, el local entra sin él y lo sube después en «Perfil».
 
 La base (migración `20261108230000_verificacion_alumnos.sql`) cuida que la verificación
@@ -90,7 +97,8 @@ En **Authentication**:
 3. **Emails → Templates:** en **Confirm signup** pon el asunto `{{ .Token }} es tu código de
    Pick Up UAT` y pega `supabase/plantillas-correo/confirmar-registro.html` (lleva el código
    y el botón). En **Reset password** pon el asunto `Cambia tu contraseña de Pick Up UAT` y pega
-   `supabase/plantillas-correo/cambiar-contrasena.html`.
+   `supabase/plantillas-correo/cambiar-contrasena.html`. El botón usa `{{ .RedirectTo }}`, así
+   que el paso 6 (Redirect URLs) tiene que estar hecho o el botón no llevará al sitio.
 4. **Sign In / Providers → Email → Confirm email:** **activado**. Es lo que obliga a verificar
    el correo. Si se apaga, las cuentas entran sin código (el sitio sigue funcionando igual,
    pero sin verificación).

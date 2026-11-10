@@ -30,6 +30,11 @@
     <span class="icono-correo"><i data-icono="correo"></i></span>
     <p class="texto-suave" id="texto-verificar">Te enviamos un correo a <span class="correo-destino" id="correo-destino">tu correo</span>. Toca el botón que viene en él, o escribe aquí el código de 6 dígitos si trae uno.</p>
     <p class="mensaje" id="verificando" hidden>Verificando tu correo…</p>
+    <div class="formulario" id="confirmar-enlace" hidden>
+      <div class="acciones-abajo">
+        <button type="button" class="boton boton-primario" id="confirmar-correo">Confirmar mi correo</button>
+      </div>
+    </div>
     <form class="formulario" id="form-verificar" novalidate>
       <label class="campo-grupo" id="grupo-correo" hidden>Correo con el que te registraste <input class="campo" type="email" name="correo" maxlength="120" autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"></label>
       <label class="campo-grupo">Código de verificación <input class="campo campo-codigo" name="codigo" required inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="000000"></label>
