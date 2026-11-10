@@ -31,10 +31,11 @@
     <form class="formulario" id="form-registro-alumno">
       <label class="campo-grupo">Nombre completo <input class="campo" name="nombre" required maxlength="120" autocomplete="name" placeholder="Como aparece en tu credencial"></label>
       <label class="campo-grupo">Matrícula <input class="campo" name="matricula" required maxlength="20" placeholder="Ej. a2210000"></label>
-      <label class="campo-grupo">Correo institucional <input class="campo" type="email" name="correo" required maxlength="120" autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"><span class="ayuda">Solo correos @alumnos.uat.edu.mx. Te enviaremos un código para verificar que es tuyo.</span></label>
+      <label class="campo-grupo">Correo institucional <input class="campo" type="email" name="correo" required maxlength="120" autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"><span class="ayuda">Solo correos @alumnos.uat.edu.mx. Te enviaremos un correo para verificar que es tuyo.</span></label>
       <label class="campo-grupo">Facultad <input class="campo" name="facultad" maxlength="120" placeholder="Ej. Facultad de Ingeniería"></label>
       <label class="campo-grupo">Carrera <input class="campo" name="carrera" maxlength="120" placeholder="Ej. Ing. en Sistemas Computacionales"></label>
       <label class="campo-grupo">Crea una contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></label>
+      <label class="campo-grupo">Confirma tu contraseña <input class="campo" type="password" name="confirmar" required minlength="6" autocomplete="new-password" placeholder="Escríbela otra vez"></label>
       <p class="mensaje" id="mensaje" hidden></p>
       <div class="acciones-abajo">
         <button class="boton boton-primario">Crear cuenta</button>

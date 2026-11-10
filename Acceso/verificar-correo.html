@@ -28,11 +28,12 @@
       <div class="titulo-con-atras"><a class="atras" id="atras" href="alumno-registro.html" aria-label="Volver"><i data-icono="atras"></i></a><h1>Verifica tu correo</h1></div>
     </header>
     <span class="icono-correo"><i data-icono="correo"></i></span>
-    <p class="texto-suave" id="texto-verificar">Te enviamos un código a <span class="correo-destino" id="correo-destino">tu correo</span>. Escríbelo aquí para activar tu cuenta.</p>
+    <p class="texto-suave" id="texto-verificar">Te enviamos un correo a <span class="correo-destino" id="correo-destino">tu correo</span>. Toca el botón que viene en él, o escribe aquí el código de 6 dígitos si trae uno.</p>
+    <p class="mensaje" id="verificando" hidden>Verificando tu correo…</p>
     <form class="formulario" id="form-verificar" novalidate>
       <label class="campo-grupo" id="grupo-correo" hidden>Correo con el que te registraste <input class="campo" type="email" name="correo" maxlength="120" autocomplete="email" placeholder="matricula@alumnos.uat.edu.mx"></label>
       <label class="campo-grupo">Código de verificación <input class="campo campo-codigo" name="codigo" required inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="000000"></label>
-      <p class="texto-tenue">¿No lo ves? Revisa la carpeta de correo no deseado. También puedes abrir el enlace del correo desde este celular.</p>
+      <p class="texto-tenue">¿No lo ves? Revisa la carpeta de correo no deseado. Si abres el enlace en otro navegador, ahí mismo entras a tu cuenta.</p>
       <p class="mensaje" id="mensaje" hidden></p>
       <div class="acciones-abajo">
         <button class="boton boton-primario">Verificar y entrar</button>
