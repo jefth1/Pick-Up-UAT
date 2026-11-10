@@ -52,6 +52,12 @@ código de 6 dígitos que le llega al correo (o toca el botón del mismo correo)
 registró y no verificó, al intentar entrar se le manda un código nuevo. Supabase deja pedir
 otro correo cada 60 segundos y el código vence en una hora.
 
+El registro de alumnos y de locales pide la contraseña dos veces y no deja seguir si no
+coinciden. Si todavía no pegas la plantilla de abajo, el correo de Supabase trae solo el
+botón (sin código): la página de verificación sirve igual, porque al tocarlo entra solo, y si
+lo abre en otra pestaña del mismo celular la primera también entra. El logo del local nunca
+detiene la entrada: si no se puede subir, el local entra sin él y lo sube después en «Perfil».
+
 La base (migración `20261108230000_verificacion_alumnos.sql`) cuida que la verificación
 sirva para saber que es alumno de la UAT:
 

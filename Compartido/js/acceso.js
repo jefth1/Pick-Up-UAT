@@ -68,6 +68,13 @@ async function dominiosAlumnos() {
   return !error && Array.isArray(data?.dominios_alumnos) ? data.dominios_alumnos : DOMINIOS_ALUMNOS;
 }
 
+// Las dos contraseñas del registro deben coincidir. Regresa el aviso, o nada si están bien.
+function revisarContrasenas(form) {
+  const { contrasena, confirmar } = form;
+  if (contrasena.value.length < 6) return contrasena.focus(), "La contraseña debe tener al menos 6 caracteres.";
+  if (contrasena.value !== confirmar.value) return confirmar.focus(), "Las contraseñas no coinciden. Escríbelas otra vez.";
+}
+
 // Lista vacía = cualquier correo (para probar con uno personal).
 const correoDeAlumno = (correo, dominios) => !dominios.length || dominios.includes(correo.split("@").pop());
 
@@ -78,8 +85,10 @@ function registrarAlumno() {
   const form = document.getElementById("form-registro-alumno");
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const { contrasena, ...alumno } = Object.fromEntries(new FormData(form));
+    const { contrasena, confirmar, ...alumno } = Object.fromEntries(new FormData(form));
     alumno.correo = alumno.correo.trim().toLowerCase();
+    const aviso = revisarContrasenas(form);
+    if (aviso) return avisar(aviso, "error");
     await esperando(form.querySelector("button"), async () => {
       const dominios = await dominiosAlumnos();
       if (!correoDeAlumno(alumno.correo, dominios)) {
@@ -128,15 +137,38 @@ async function verificarCorreo() {
   document.getElementById("atras").href = REGISTRO[perfil];
   document.getElementById("ir-entrar").href = ENTRAR[perfil];
   let correo = (param("correo") || "").trim().toLowerCase();
+  const verificando = document.getElementById("verificando");
 
-  if (LLEGADA.get("error_code")) {
-    avisar("Ese enlace ya venció o ya se usó. Si ya verificaste tu correo, inicia sesión; si no, escribe el código o pide uno nuevo.", "error");
-  } else if (LLEGADA.has("access_token") && (await usuarioActual())) {
-    // Tocó el botón del correo: Supabase ya verificó la cuenta y dejó la sesión en la URL.
+  // Entra una sola vez aunque lo pidan el formulario y otra pestaña al mismo tiempo.
+  let entrada = null;
+  const entrar = () => (entrada ??= (async () => {
+    form.hidden = true;
+    verificando.hidden = false;
     const problema = await continuar();
-    if (!problema) return;
+    if (!problema) return true;
+    verificando.hidden = true;
+    form.hidden = false;
     avisar(problema, "error");
+    entrada = null;
+    return false;
+  })());
+
+  if (LLEGADA.has("access_token") && (await usuarioActual())) {
+    // Tocó el botón del correo: Supabase ya verificó la cuenta y dejó la sesión en la URL.
+    if (await entrar()) return;
+  } else if (LLEGADA.get("error_code")) {
+    // El enlace ya se usó (por ejemplo, lo tocó dos veces). Si este navegador ya tiene la
+    // sesión de la primera vez, entra con ella.
+    const usuario = await usuarioActual();
+    const reciente = Date.now() - new Date(usuario?.email_confirmed_at ?? 0) < 30 * 60 * 1000;
+    if (usuario && reciente && (!correo || usuario.email === correo) && (await entrar())) return;
+    avisar("Ese enlace ya venció o ya se usó. Si ya verificaste tu correo, inicia sesión; si no, escribe el código o pide uno nuevo.", "error");
   }
+
+  // Si verifica con el enlace en otra pestaña de este navegador, esta también entra.
+  db.auth.onAuthStateChange((evento, sesion) => {
+    if (evento === "SIGNED_IN" && correo && sesion?.user?.email === correo) setTimeout(entrar);
+  });
 
   const pintarCorreo = () => {
     document.getElementById("correo-destino").textContent = correo || "tu correo";
@@ -153,8 +185,7 @@ async function verificarCorreo() {
     await esperando(form.querySelector("button"), async () => {
       const { error } = await db.auth.verifyOtp({ email: correo, token, type: "email" });
       if (error) return avisar(mensajeError(error), "error");
-      const problema = await continuar();
-      if (problema) avisar(problema, "error");
+      await entrar();
     });
   });
 
@@ -176,7 +207,7 @@ async function verificarCorreo() {
       else reenviar.disabled = false;
       return avisar(mensajeError(error), "error");
     }
-    avisar(`Te enviamos un código nuevo a ${correo}.`);
+    avisar(`Te enviamos otro correo a ${correo}. Si no llega, quizá ya verificaste: inicia sesión.`);
     cuentaRegresiva(reenviar);
   }
 }
@@ -299,6 +330,8 @@ async function registrarLocal() {
     const dias = datos.getAll("dia").map(Number);
     if (!dias.length) return avisar("Elige al menos un día de atención.", "error");
     if (datos.get("cierra") <= datos.get("abre")) return avisar("La hora de cierre debe ser después de la de apertura.", "error");
+    const aviso = revisarContrasenas(form);
+    if (aviso) return avisar(aviso, "error");
 
     const correo = datos.get("correo").trim().toLowerCase();
     const registro = {
@@ -329,28 +362,36 @@ async function crearPerfilPendiente() {
   const { registro_alumno: alumno, registro_local: registro } = usuario?.user_metadata || {};
   if (alumno && !(await alumnoActual()) && !(await localActual())) {
     const { error } = await db.from("alumnos").insert(alumno);
+    if (error?.code === "23505") return; // otra pestaña ya lo creó
     if (error?.code === "42501") return "Para tener cuenta de alumno necesitas tu correo institucional (@alumnos.uat.edu.mx).";
     if (error) return mensajeError(error);
   }
   if (registro && !(await localActual()) && !(await alumnoActual())) {
     const { horarios, ...local } = registro;
     const { data, error } = await db.from("locales").insert(local).select("id").single();
+    if (error?.code === "23505") return; // otra pestaña ya lo creó
     if (error) return mensajeError(error);
     const { error: errorHorarios } = await db.from("horarios")
       .insert(horarios.map((h) => ({ ...h, local_id: data.id })));
     if (errorHorarios) return mensajeError(errorHorarios);
     const archivo = await logoPendiente.sacar(usuario.email);
-    if (archivo) await guardarLogo(archivo);
+    if (archivo) await guardarLogo(data.id, archivo);
   }
 }
 
-async function guardarLogo(archivo) {
-  const local = await localActual();
-  if (!local) return;
-  const url = await subirFoto(local.id, archivo);
-  if (!url) return;
-  const { error } = await db.from("locales").update({ logo_url: url }).eq("id", local.id);
-  if (error) mostrarError(error);
+// El logo es opcional: si no se puede subir, el local entra igual y lo sube después
+// desde «Perfil». Nunca espera más de 20 segundos.
+async function guardarLogo(localId, archivo) {
+  const subir = async () => {
+    const url = await subirFoto(localId, archivo, { avisar: false });
+    if (url) await db.from("locales").update({ logo_url: url }).eq("id", localId);
+  };
+  const limite = new Promise((listo) => setTimeout(listo, 20000));
+  try {
+    await Promise.race([subir(), limite]);
+  } catch (error) {
+    console.warn("No se pudo subir el logo", error);
+  }
 }
 
 // El logo que el local eligió al registrarse espera en este navegador (IndexedDB) hasta
@@ -375,13 +416,22 @@ const logoPendiente = {
       return null;
     }
   },
-  guardar(correo, archivo) {
-    return this.usar("readwrite", (logos) => logos.put(archivo, correo));
+  // Se guardan los bytes y no el archivo: en Android el archivo elegido de la galería
+  // puede dejar de leerse cuando se abre otra pestaña.
+  async guardar(correo, archivo) {
+    try {
+      const datos = await archivo.arrayBuffer();
+      return this.usar("readwrite", (logos) => logos.put({ datos, tipo: archivo.type, nombre: archivo.name }, correo));
+    } catch (error) {
+      console.warn("No se pudo leer el logo", error);
+    }
   },
   async sacar(correo) {
     if (!correo) return null;
-    const archivo = await this.usar("readonly", (logos) => logos.get(correo));
-    if (archivo) await this.usar("readwrite", (logos) => logos.delete(correo));
-    return archivo;
+    const guardado = await this.usar("readonly", (logos) => logos.get(correo));
+    if (!guardado) return null;
+    await this.usar("readwrite", (logos) => logos.delete(correo));
+    if (guardado instanceof Blob) return guardado; // guardado por la versión anterior
+    return new File([guardado.datos], guardado.nombre || "logo", { type: guardado.tipo });
   },
 };

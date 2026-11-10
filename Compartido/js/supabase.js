@@ -101,12 +101,40 @@ function ahoraEnTamaulipas() {
 }
 
 // Sube una imagen a fotos/<local_id>/ y regresa su URL pública (o null si falla).
-async function subirFoto(localId, archivo) {
-  const extension = { "image/png": "png", "image/webp": "webp" }[archivo.type] || "jpg";
-  const ruta = `${localId}/${crypto.randomUUID()}.${extension}`;
-  const { error } = await db.storage.from("fotos").upload(ruta, archivo, { contentType: archivo.type });
-  if (error) return mostrarError(error), null;
-  return db.storage.from("fotos").getPublicUrl(ruta).data.publicUrl;
+// Las fotos grandes del celular se achican antes: el bucket acepta hasta 5 MB.
+async function subirFoto(localId, archivo, { avisar = true } = {}) {
+  try {
+    archivo = await achicarFoto(archivo);
+    const extension = { "image/png": "png", "image/webp": "webp" }[archivo.type] || "jpg";
+    const ruta = `${localId}/${crypto.randomUUID()}.${extension}`;
+    const { error } = await db.storage.from("fotos").upload(ruta, archivo, { contentType: archivo.type });
+    if (error) throw error;
+    return db.storage.from("fotos").getPublicUrl(ruta).data.publicUrl;
+  } catch (error) {
+    if (avisar) mostrarError(error);
+    else console.warn("No se pudo subir la foto", error);
+    return null;
+  }
+}
+
+// Deja la foto en máximo 1200 px por lado si pesa más de 1 MB. Si algo falla, usa la original.
+async function achicarFoto(archivo, lado = 1200) {
+  if (archivo.size <= 1024 * 1024) return archivo;
+  try {
+    const imagen = await createImageBitmap(archivo);
+    const escala = Math.min(1, lado / Math.max(imagen.width, imagen.height));
+    const lienzo = Object.assign(document.createElement("canvas"), {
+      width: Math.round(imagen.width * escala), height: Math.round(imagen.height * escala),
+    });
+    const ctx = lienzo.getContext("2d");
+    ctx.fillStyle = "#fff"; // los PNG transparentes quedan sobre blanco
+    ctx.fillRect(0, 0, lienzo.width, lienzo.height);
+    ctx.drawImage(imagen, 0, 0, lienzo.width, lienzo.height);
+    const blob = await new Promise((listo) => lienzo.toBlob(listo, "image/jpeg", 0.85));
+    return blob && blob.size < archivo.size ? new File([blob], "foto.jpg", { type: "image/jpeg" }) : archivo;
+  } catch {
+    return archivo;
+  }
 }
 
 // Fondo de imagen para las fotos de productos y logos; sin foto se ve el icono.
