@@ -98,7 +98,7 @@ En **Authentication**:
    Pick Up UAT` y pega `supabase/plantillas-correo/confirmar-registro.html` (lleva el código
    y el botón). En **Reset password** pon el asunto `Cambia tu contraseña de Pick Up UAT` y pega
    `supabase/plantillas-correo/cambiar-contrasena.html`. El botón usa `{{ .RedirectTo }}`, así
-   que el paso 6 (Redirect URLs) tiene que estar hecho o el botón no llevará al sitio.
+   que el paso 7 (Redirect URLs) tiene que estar hecho o el botón no llevará al sitio.
 4. **Sign In / Providers → Email → Confirm email:** **activado**. Es lo que obliga a verificar
    el correo. Si se apaga, las cuentas entran sin código (el sitio sigue funcionando igual,
    pero sin verificación).
