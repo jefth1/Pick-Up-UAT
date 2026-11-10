@@ -1,7 +1,7 @@
 # Base de datos (Supabase)
 
 Proyecto de Supabase: **Pick-Up-UAT** (`gdexcnbivhxqkfryoygf`). El sitio en GitHub Pages
-habla directo con Supabase usando `supabase-js` desde el CDN. En el navegador solo va la
+habla directo con Supabase usando `supabase-js` (copiado en `Compartido/vendor/`). En el navegador solo va la
 **anon key**, que es pública: lo que cada quien puede ver o cambiar lo deciden las
 políticas RLS.
 
@@ -9,7 +9,7 @@ políticas RLS.
 
 | Tabla | Qué guarda | Quién la ve | Quién la cambia |
 |---|---|---|---|
-| `locales` | nombre, encargado, dentro/fuera de la UAT, dirección, si está recibiendo pedidos | todos | el dueño del local |
+| `locales` | nombre, encargado, dentro/fuera de la UAT, dirección, si está recibiendo pedidos, si ya está **aprobado** | todos, si está aprobado; si no, solo su dueño | el dueño del local (menos `aprobado`, que solo cambia el administrador) |
 | `horarios` | un renglón por día que abre el local (0 = domingo … 6 = sábado) | todos | el dueño del local |
 | `productos` | menú del local: nombre, precio, categoría, descripción, disponible | todos | el dueño del local |
 | `alumnos` | nombre, matrícula, correo (el verificado de su cuenta), facultad, carrera | el propio alumno y los locales a los que les pidió | el propio alumno |
@@ -103,7 +103,10 @@ En **Authentication**:
    el correo. Si se apaga, las cuentas entran sin código (el sitio sigue funcionando igual,
    pero sin verificación).
 5. **Sign In / Providers → Allow anonymous sign-ins:** ya no se usa; se puede desactivar.
-6. **URL Configuration → Site URL:** `https://jefth1.github.io/Pick-Up-UAT/`, y en
+6. **Sign In / Providers → Email → Minimum password length:** `8`, y en **Password
+   Requirements** «Letters and digits» (la app ya lo pide así al registrarse). Si tu plan lo
+   tiene, activa también **Prevent use of leaked passwords**.
+7. **URL Configuration → Site URL:** `https://jefth1.github.io/Pick-Up-UAT/`, y en
    **Redirect URLs** agregar `https://jefth1.github.io/Pick-Up-UAT/**` (y
    `http://localhost:8000/**` para probar en la computadora). El botón de los correos
    regresa a esas direcciones.
@@ -201,6 +204,41 @@ Dentro del campus casi todo sale en $15 (hasta unos 480 m); 850 m son $20 y 1.5 
   repartidor de ese favor puede llamarla, a lo mucho una vez cada 15 segundos.
 - Quien pidió ve "Llega en ~N min" por realtime y nunca ve dónde va quien se lo lleva.
 - Minutos a pie = distancia × 1.3 ÷ 75 m por minuto (lo mismo en `Compartido/js/mapa.js`).
+
+## Seguridad para el lanzamiento
+
+Migración `20261110233000_seguridad_lanzamiento.sql` (10 de noviembre de 2026):
+
+- **Locales nuevos esperan aprobación.** Al registrarse, `locales.aprobado` queda en `false`:
+  el local entra a su panel (con un aviso de que está en revisión) y puede armar su menú, pero
+  los alumnos no lo ven ni le pueden pedir. Para aprobarlo, en **Table Editor → locales** pon
+  `aprobado` en `true`, o en el **SQL Editor**:
+
+  ```sql
+  update public.locales set aprobado = true where nombre = 'Nombre del local';
+  -- Ver los que esperan:  select id, nombre, encargado, direccion, creado_en from public.locales where not aprobado;
+  ```
+
+  Ponerlo otra vez en `false` lo esconde (quien ya le pidió sigue viendo sus pedidos). El
+  dueño no puede aprobarse solo: desde la app solo puede cambiar nombre, encargado,
+  ubicación, dirección, abierto, logo y su punto en el mapa.
+- **Fotos y logos:** la base solo acepta imágenes del bucket `fotos` de este proyecto o
+  `dibujo:<clave>`, y el sitio tampoco pinta otra cosa (`fotoSegura()` en
+  `Compartido/js/supabase.js`). Antes, una dirección con comillas podía meter estilos que
+  tapaban la pantalla de los alumnos o cargaban imágenes de otro sitio.
+- **Pedidos:** cada alumno puede tener hasta 3 pedidos esperando respuesta y hacer hasta 10
+  por hora; un pedido lleva hasta 30 productos distintos (y hasta 20 de cada uno).
+- **Código de entrega de los favores:** tras 5 intentos equivocados hay que esperar 10 minutos.
+  `confirmar_entrega` ahora regresa `true` o `false` en lugar de dar error.
+- **Páginas:** todas llevan una política de seguridad (`Content-Security-Policy`) que solo deja
+  correr scripts del propio sitio y conectarse a este Supabase, y las bibliotecas
+  (supabase-js, Leaflet, jsQR, qrcode-generator) se sirven desde `Compartido/vendor/` en lugar
+  de un CDN. Si la app se abre dentro de un marco de otra página, no se muestra.
+
+Revisado también: RLS activo en todas las tablas, en el navegador solo va la anon key (nunca la
+service_role, tampoco en el historial del repo), todo lo que viene de la base pasa por `esc()`
+antes de entrar a la página y el bucket de fotos solo acepta JPG, PNG y WebP de hasta 5 MB en
+la carpeta del propio local.
 
 ## Pendiente
 

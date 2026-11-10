@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://gdexcnbivhxqkfryoygf.supabase.co; connect-src 'self' https://gdexcnbivhxqkfryoygf.supabase.co wss://gdexcnbivhxqkfryoygf.supabase.co; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Nueva contraseña · Pick Up UAT</title>
   <meta name="theme-color" content="#1B3A6B">
@@ -17,7 +18,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
   <link rel="stylesheet" href="css/acceso.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js" defer></script>
+  <script src="../Compartido/vendor/supabase-js-2.117.0/supabase.js" defer></script>
   <script src="../Compartido/js/supabase.js" defer></script>
   <script src="../Compartido/js/iconos.js" defer></script>
   <script src="../Compartido/js/acceso.js" defer></script>
@@ -29,8 +30,8 @@
       <p class="texto-suave" id="texto-contrasena">Escribe la contraseña que usarás para entrar.</p>
     </header>
     <form class="formulario" id="form-nueva-contrasena" hidden>
-      <label class="campo-grupo">Nueva contraseña <input class="campo" type="password" name="contrasena" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres"></label>
-      <label class="campo-grupo">Confirma tu contraseña <input class="campo" type="password" name="confirmar" required minlength="6" autocomplete="new-password" placeholder="Escríbela otra vez"></label>
+      <label class="campo-grupo">Nueva contraseña <input class="campo" type="password" name="contrasena" required minlength="8" autocomplete="new-password" placeholder="Mínimo 8, con letras y números"></label>
+      <label class="campo-grupo">Confirma tu contraseña <input class="campo" type="password" name="confirmar" required minlength="8" autocomplete="new-password" placeholder="Escríbela otra vez"></label>
       <p class="mensaje" id="mensaje" hidden></p>
       <div class="acciones-abajo">
         <button class="boton boton-primario">Guardar y entrar</button>

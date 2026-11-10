@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!local) return (location.href = "../Acceso/local-iniciar-sesion.html");
 
   pintarNavegacion(local);
+  avisoRevision(local);
   document.querySelectorAll(".nombre-local").forEach((n) => (n.textContent = local.nombre));
   if (document.getElementById("lista-nuevo")) pedidos(local);
   if (document.getElementById("titulo-pedido")) detallePedido(local);
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function pintarNavegacion(local) {
   const nav = document.querySelector(".navegacion-local");
   if (!nav) return;
-  nav.innerHTML = `<div class="marca-lateral"><span class="logo" ${fondoFoto(local.logo_url)}>${local.logo_url ? "" : "PU"}</span>
+  nav.innerHTML = `<div class="marca-lateral"><span class="logo" ${fondoFoto(local.logo_url)}>${fotoSegura(local.logo_url) ? "" : "PU"}</span>
       <div>${esc(local.nombre)}<small>Panel del local</small></div></div>` +
     NAVEGACION.map(([clave, href, ico, texto]) => clave === "qr"
       ? `<a href="${href}" class="boton-central ${nav.dataset.actual === clave ? "actual" : ""}" aria-label="${texto}">${icono(ico)}<span class="texto-qr">${texto}</span></a>`
@@ -46,6 +47,16 @@ async function pintarNavegacion(local) {
   const contador = document.getElementById("nuevos-nav");
   contador.textContent = count || 0;
   contador.hidden = !count;
+}
+
+// Un local recién registrado no lo ven los alumnos hasta que el administrador lo aprueba.
+function avisoRevision(local) {
+  if (local.aprobado !== false) return;
+  const aviso = document.createElement("p");
+  aviso.className = "aviso-revision";
+  aviso.textContent = "Tu local está en revisión. Los alumnos lo verán y podrán pedirte en cuanto lo aprobemos; " +
+    "mientras, puedes preparar tu menú y tu perfil.";
+  document.querySelector("main")?.prepend(aviso);
 }
 
 async function cambiarEstado(id, estado) {
@@ -358,7 +369,7 @@ async function agregarProducto(local) {
 
   // Imagen: una foto del local o un dibujo de referencia. Si no hay foto ni dibujo elegido,
   // se ve el que le toca por el nombre, y cambia mientras el local lo escribe.
-  let fotoGuardada = producto?.foto_url && !esDibujo(producto.foto_url) ? producto.foto_url : null;
+  let fotoGuardada = fotoSegura(producto?.foto_url);
   let fotoNueva = null;
   let dibujoElegido = esDibujo(producto?.foto_url) && DIBUJOS[producto.foto_url.slice(7)] ? producto.foto_url.slice(7) : null;
   const selector = document.getElementById("dibujos");
@@ -454,8 +465,8 @@ async function perfil(local) {
   document.getElementById("dias").innerHTML = DIAS
     .map((d, i) => `<label class="chip"><input type="checkbox" name="dia" value="${i}" ${dias.has(i) ? "checked" : ""}>${d}</label>`)
     .join("");
-  if (local.logo_url) {
-    etiquetaLogo.style.backgroundImage = `url('${local.logo_url}')`;
+  if (fotoSegura(local.logo_url)) {
+    etiquetaLogo.style.backgroundImage = `url('${fotoSegura(local.logo_url)}')`;
     etiquetaLogo.classList.add("con-foto");
   }
   form.logo.addEventListener("change", () => form.logo.files[0] && vistaPrevia(etiquetaLogo, form.logo.files[0]));
