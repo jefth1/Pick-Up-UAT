@@ -153,7 +153,26 @@ async function verificarCorreo() {
     return false;
   })());
 
-  if (LLEGADA.has("access_token") && (await usuarioActual())) {
+  if (param("token_hash")) {
+    // Botón del correo (plantilla de supabase/plantillas-correo/): la cuenta se verifica
+    // hasta que la persona toca «Confirmar mi correo». Así el revisor de enlaces de Outlook,
+    // que abre los enlaces del correo antes que el alumno, no la verifica por él.
+    const confirmar = document.getElementById("confirmar-enlace");
+    const texto = document.getElementById("texto-verificar");
+    form.hidden = true;
+    texto.textContent = "Toca el botón para terminar de verificar tu correo.";
+    confirmar.hidden = false;
+    document.getElementById("confirmar-correo").addEventListener("click", async (e) => {
+      await esperando(e.currentTarget, async () => {
+        const { error } = await db.auth.verifyOtp({ token_hash: param("token_hash"), type: "email" });
+        confirmar.hidden = true;
+        if (!error) return void (await entrar());
+        form.hidden = false;
+        texto.textContent = "Ese botón ya se usó o venció.";
+        avisar("Si ya verificaste tu correo, inicia sesión. Si no, escribe tu correo abajo y toca «Reenviar código».", "error");
+      });
+    });
+  } else if (LLEGADA.has("access_token") && (await usuarioActual())) {
     // Tocó el botón del correo: Supabase ya verificó la cuenta y dejó la sesión en la URL.
     if (await entrar()) return;
   } else if (LLEGADA.get("error_code")) {
@@ -274,14 +293,25 @@ async function nuevaContrasena() {
   const perfil = perfilDeLaPagina();
   document.getElementById("atras").href = ENTRAR[perfil];
   document.getElementById("pedir-otro").href = ENTRAR[perfil];
-  if (LLEGADA.get("error_code") || !(await usuarioActual())) {
+  // Con la plantilla del repo el enlace trae token_hash y la sesión se crea al guardar,
+  // no al abrir el enlace (así el revisor de enlaces de Outlook no lo gasta).
+  let tokenHash = param("token_hash");
+  const sinEnlace = () => {
+    form.hidden = true;
     document.getElementById("sin-enlace").hidden = false;
-    return;
-  }
+  };
+  if (!tokenHash && (LLEGADA.get("error_code") || !(await usuarioActual()))) return sinEnlace();
   form.hidden = false;
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const aviso = revisarContrasenas(form);
+    if (aviso) return avisar(aviso, "error");
     await esperando(form.querySelector("button"), async () => {
+      if (tokenHash) {
+        const { error } = await db.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" });
+        if (error) return sinEnlace();
+        tokenHash = null; // ya hay sesión; si algo falla abajo, se reintenta sin el enlace
+      }
       const { error } = await db.auth.updateUser({ password: form.contrasena.value });
       if (error) return avisar(mensajeError(error), "error");
       const problema = await continuar();

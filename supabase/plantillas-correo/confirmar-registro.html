@@ -5,7 +5,7 @@
     <p style="margin:0 0 20px;color:#6E6E6A;font-size:15px;line-height:1.4;">Escribe este código en Pick Up UAT para activar tu cuenta:</p>
     <p style="margin:0 0 24px;padding:16px;border-radius:12px;background:#EEF2F8;color:#1B3A6B;font-size:32px;font-weight:700;letter-spacing:8px;text-align:center;">{{ .Token }}</p>
     <p style="margin:0 0 8px;color:#6E6E6A;font-size:14px;line-height:1.4;">O verifica con un toque:</p>
-    <p style="margin:0 0 24px;"><a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 20px;border-radius:12px;background:#1B3A6B;color:#FFFFFF;font-weight:600;text-decoration:none;">Verificar mi correo</a></p>
+    <p style="margin:0 0 24px;"><a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}" style="display:inline-block;padding:12px 20px;border-radius:12px;background:#1B3A6B;color:#FFFFFF;font-weight:600;text-decoration:none;">Verificar mi correo</a></p>
     <p style="margin:0;color:#A3A39E;font-size:13px;line-height:1.4;">El código vence en una hora. Si tú no creaste una cuenta en Pick Up UAT, ignora este correo.</p>
   </div>
 </div>
