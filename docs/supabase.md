@@ -184,10 +184,11 @@ Migración `20261108220000_mapa_uat.sql`.
   deja moverlo a su dueño. Una cuenta de alumno no puede crear locales.
 - La migración apaga los puntos de prueba («Prueba · …»), borra las coordenadas de Cd. Victoria
   de los locales de prueba (cada local se vuelve a colocar desde su perfil) y agrega los
-  lugares del campus Tampico que se ven en el mapa: Música y Artes, Medicina, Derecho y Ciencias
-  Sociales, Arquitectura (FADU), el edificio central, CELLAP, el Estadio Olímpico, el Gimnasio
-  Multidisciplinario y el Lago Lain. Ingeniería, Comercio, Odontología, Enfermería y demás zonas
-  se colocan con el editor, que las sugiere.
+  lugares con nombre del dibujo del mapa (OpenStreetMap), en el centro de su terreno: las ocho
+  facultades (Ingeniería, Derecho y Ciencias Sociales, Comercio, Arquitectura, Medicina,
+  Odontología, Enfermería y Música y Artes), la Biblioteca, la Clínica Dental, la Pista de
+  atletismo y la Cancha de fútbol. Las demás zonas (gimnasio, auditorio, entradas…) se colocan
+  con el editor, que las sugiere.
 
 **Cuota del favor:** `cotizar_favor` usa la distancia en línea recta entre **A** (el local,
 donde se recoge) y **B** (la facultad o zona donde se entrega): $10 + $8 por km de camino

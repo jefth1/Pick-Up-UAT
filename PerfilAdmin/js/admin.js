@@ -3,30 +3,31 @@
 // y las quita. Los alumnos las ven en su mapa y las eligen como punto de entrega.
 // Las cafeterías y comercios no van aquí: cada local se coloca desde su perfil.
 
-// Lugares del Centro Universitario Tampico-Madero (Campus Sur) que faltan por colocar.
-// Revisa el nombre antes de guardarlo; "Otro lugar" agrega cualquiera.
+// Lugares del Campus Tampico (Centro Universitario Tampico-Madero) que faltan por colocar.
+// Los que traen lat/lng están en el dibujo del mapa (OpenStreetMap) y se pueden poner ahí
+// con un toque; los demás se colocan tocando el mapa. "Otro lugar" agrega cualquiera.
 const LUGARES_SUGERIDOS = [
-  { nombre: "Facultad de Medicina Dr. Alberto Romo Caballero", abreviatura: "Medicina", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Enfermería Tampico", abreviatura: "Enfermería", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Odontología", abreviatura: "Odontología", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Derecho y Ciencias Sociales", abreviatura: "FADYCS", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Comercio y Administración Tampico", abreviatura: "FCAT", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Ingeniería Arturo Narro Siller", abreviatura: "FIANS", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Arquitectura, Diseño y Urbanismo", abreviatura: "FADU", tipo: "facultad", icono: "birrete" },
-  { nombre: "Facultad de Música y Artes", abreviatura: "Música", tipo: "facultad", icono: "birrete" },
-  { nombre: "Biblioteca", tipo: "zona", icono: "libro" },
+  { nombre: "Facultad de Ingeniería Arturo Narro Siller", abreviatura: "FIANS", tipo: "facultad", icono: "birrete", lat: 22.2767041, lng: -97.8643157 },
+  { nombre: "Facultad de Derecho y Ciencias Sociales", abreviatura: "FADYCS", tipo: "facultad", icono: "birrete", lat: 22.2756944, lng: -97.8646432 },
+  { nombre: "Facultad de Comercio y Administración Tampico", abreviatura: "FCAT", tipo: "facultad", icono: "birrete", lat: 22.2748209, lng: -97.8619641 },
+  { nombre: "Facultad de Arquitectura, Diseño y Urbanismo", abreviatura: "FADU", tipo: "facultad", icono: "birrete", lat: 22.2742137, lng: -97.8641401 },
+  { nombre: "Facultad de Medicina Dr. Alberto Romo Caballero", abreviatura: "Medicina", tipo: "facultad", icono: "birrete", lat: 22.277154, lng: -97.8615878 },
+  { nombre: "Facultad de Odontología", abreviatura: "Odontología", tipo: "facultad", icono: "birrete", lat: 22.2774206, lng: -97.8603006 },
+  { nombre: "Facultad de Enfermería Tampico", abreviatura: "Enfermería", tipo: "facultad", icono: "birrete", lat: 22.2785538, lng: -97.861668 },
+  { nombre: "Facultad de Música y Artes", abreviatura: "Música", tipo: "facultad", icono: "birrete", lat: 22.2782288, lng: -97.8631979 },
+  { nombre: "Biblioteca", tipo: "zona", icono: "libro", lat: 22.2761477, lng: -97.8611594 },
+  { nombre: "Clínica Dental", tipo: "zona", icono: "edificio", lat: 22.2776341, lng: -97.8604611 },
+  { nombre: "Pista de atletismo", tipo: "zona", icono: "deportes", lat: 22.274278, lng: -97.8598592 },
+  { nombre: "Cancha de fútbol", tipo: "zona", icono: "deportes", lat: 22.2753349, lng: -97.8637384 },
+  { nombre: "Gimnasio", tipo: "zona", icono: "deportes" },
   { nombre: "Librería Educal", tipo: "zona", icono: "libro" },
   { nombre: "Servicios Escolares", tipo: "zona", icono: "edificio" },
   { nombre: "Centro de Idiomas", tipo: "zona", icono: "edificio" },
-  { nombre: "Gimnasio", tipo: "zona", icono: "deportes" },
-  { nombre: "Canchas", tipo: "zona", icono: "deportes" },
   { nombre: "Auditorio", tipo: "zona", icono: "edificio" },
   { nombre: "Explanada", tipo: "zona", icono: "arbol" },
   { nombre: "Estacionamiento", tipo: "zona", icono: "estacionamiento" },
   { nombre: "Entrada principal", tipo: "zona", icono: "puerta" },
 ];
-
-const sinAcentos = (texto) => texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
 document.addEventListener("DOMContentLoaded", async () => {
   const usuario = await usuarioActual();
@@ -69,7 +70,6 @@ async function editor() {
   let lugares = [];
   let elegido = null; // lugar abierto en el formulario
   let colocando = null; // lugar nuevo que se coloca con el siguiente toque al mapa
-  let primeraVez = true;
   const capa = mapa && L.layerGroup().addTo(mapa);
   const decir = (html) => (instruccion.innerHTML = html);
   const buscar = (id) => lugares.find((l) => String(l.id) === String(id));
@@ -82,11 +82,9 @@ async function editor() {
         const m = marcadorLugar(l, { draggable: true, clase: `arrastrable ${elegido?.id === l.id ? "elegido" : ""}` })
           .on("click", () => abrir(l))
           .on("dragend", () => mover(l, m.getLatLng()));
-        if (l.tipo === "facultad") etiquetar(m, nombreCorto(l));
+        if (l.tipo === "facultad") etiquetarFacultad(m, l);
         m.addTo(capa);
       });
-      if (primeraVez && activos.length > 1) mapa.fitBounds(activos.map((l) => [l.lat, l.lng]), ENCUADRE);
-      primeraVez = false;
     }
     // Una sugerencia ya está colocada si algún lugar se llama así (aunque luego se le haya
     // agregado algo al nombre, como "Explanada central").
@@ -103,7 +101,9 @@ async function editor() {
       .join("") || `<li class="texto-suave">Nada por aquí.</li>`;
     contenedor.classList.toggle("colocando", !!colocando);
     decir(colocando
-      ? `Toca el mapa donde está <b>${esc(colocando.nombre)}</b>, o <button type="button" class="enlace" id="colocar-aqui">usa tu ubicación</button> si estás ahí. <button type="button" class="enlace" id="cancelar-colocar">Cancelar</button>`
+      ? `Toca el mapa donde está <b>${esc(colocando.nombre)}</b>, ${colocando.lat != null
+        ? `<button type="button" class="enlace" id="colocar-osm">ponlo donde lo marca el mapa</button>`
+        : `o <button type="button" class="enlace" id="colocar-aqui">usa tu ubicación</button> si estás ahí`}. <button type="button" class="enlace" id="cancelar-colocar">Cancelar</button>`
       : "Toca un lugar del mapa para editarlo o arrástralo para moverlo. Para agregar uno, elígelo en «Por colocar».");
   };
 
@@ -137,7 +137,9 @@ async function editor() {
   };
 
   const colocar = async ({ lat, lng }) => {
-    const datos = colocando;
+    const datos = { ...colocando };
+    delete datos.lat; // la sugerencia puede traer dónde está; se guarda donde se tocó
+    delete datos.lng;
     colocando = null;
     const { data, error } = await db.from("puntos_entrega").insert({ ...datos, lat, lng }).select().single();
     if (error) return mostrarError(error), pintar();
@@ -191,6 +193,8 @@ async function editor() {
 
   instruccion.addEventListener("click", async (e) => {
     if (e.target.id === "cancelar-colocar") return (colocando = null), pintar();
+    // Las facultades y zonas que vienen en el dibujo del mapa ya traen dónde están.
+    if (e.target.id === "colocar-osm" && colocando?.lat != null) return colocar(colocando);
     if (e.target.id !== "colocar-aqui") return;
     const pos = await miUbicacion();
     if (!pos) return alert("No pudimos leer tu ubicación. Permite el acceso e intenta de nuevo.");
