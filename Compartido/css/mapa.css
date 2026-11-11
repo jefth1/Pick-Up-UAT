@@ -3,18 +3,55 @@
    va en tonos suaves para que destaquen los puntos. */
 .mapa { position: relative; z-index: 0; isolation: isolate; height: 240px; border: 1px solid var(--borde); border-radius: var(--radio-grande); overflow: hidden; background: var(--gris); }
 .mapa.sin-mapa { display: grid; place-items: center; padding: 24px; text-align: center; color: var(--tinta-suave); font-size: 13px; }
-.mapa.leaflet-container { font: inherit; font-size: 12px; background: #F3F1EA; }
-.campus-terreno { fill: #E9EEE2; fill-opacity: 1; stroke: #D3DCC8; stroke-width: 1.5; }
-.campus-verde { fill: #D5E3C6; fill-opacity: 1; stroke: none; }
-.campus-estacionamiento { fill: #E4E2DA; fill-opacity: 1; stroke: #D6D3C8; stroke-width: 1; }
-.campus-calle-borde { stroke: #DCD8CC; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-.campus-calle { stroke: #FFFFFF; stroke-width: 7.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-.campus-andador { stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: .9; }
-.campus-edificio { fill: #FFFFFF; fill-opacity: 1; stroke: #BDB6A6; stroke-width: 1.2; }
-.etiqueta-calle, .etiqueta-edificio { padding: 0; border: 0; background: none; box-shadow: none; color: var(--tinta-tenue); font-size: 10px; font-weight: 500; white-space: nowrap; }
-.etiqueta-calle::before, .etiqueta-edificio::before { display: none; }
-.etiqueta-edificio { color: var(--tinta-suave); font-size: 11px; }
-.mapa .leaflet-control-attribution { font-size: 10px; }
+.mapa.leaflet-container { font: inherit; font-size: 12px; background: #F2F0EA; }
+
+/* Alrededores, apagados para que destaque el campus */
+.afuera-manzana { fill: #EBE8E0; fill-opacity: 1; stroke: none; }
+.afuera-verde { fill: #E0E8D6; fill-opacity: 1; stroke: none; }
+.afuera-agua { fill: #D3E3EF; fill-opacity: 1; stroke: #BDD3E4; stroke-width: 1; }
+.afuera-rio { fill: none; stroke: #BDD3E4; stroke-width: 3; stroke-linecap: round; }
+.afuera-edificio { fill: #E2DDD2; fill-opacity: 1; stroke: #D8D2C5; stroke-width: .6; }
+.afuera-calle-borde { fill: none; stroke: #DDD8CC; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.afuera-calle { fill: none; stroke: #FFFFFF; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.afuera-calle-borde.grande { stroke-width: 10; }
+.afuera-calle.grande { stroke-width: 7.5; stroke: #FFFCF5; }
+.afuera-tapa { fill: #F2F0EA; fill-opacity: .4; stroke: none; }
+
+/* El campus (datos de OpenStreetMap): verde suave, facultades en azul claro */
+.campus-terreno { fill: #EDF1E4; fill-opacity: 1; stroke: #B9C7A3; stroke-width: 2; }
+.campus-verde { fill: #D6E6C3; fill-opacity: 1; stroke: none; }
+.campus-cancha { fill: #C4DEAE; fill-opacity: 1; stroke: #FFFFFF; stroke-width: 1.5; }
+.campus-pista { fill: #E9C9A0; fill-opacity: 1; stroke: #D9B183; stroke-width: 1; }
+.campus-estacionamiento { fill: #E6E3DA; fill-opacity: 1; stroke: #D6D2C6; stroke-width: 1; }
+.campus-facultad { fill: #DCE4F1; fill-opacity: .55; stroke: #1B3A6B; stroke-opacity: .35; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.campus-plaza { fill: #F6F3EB; fill-opacity: 1; stroke: #E4DFD3; stroke-width: 1; }
+.campus-calle-borde { fill: none; stroke: #D9D4C7; stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round; }
+.campus-calle { fill: none; stroke: #FFFFFF; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+.campus-andador { fill: none; stroke: #FFFFFF; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 4; }
+.campus-edificio { fill: #FFFFFF; fill-opacity: 1; stroke: #BDB4A3; stroke-width: 1; }
+.campus-edificio.de-facultad { fill: #E4EAF4; stroke: #9FB0CC; }
+.campus-arbol { fill: #B5D19B; fill-opacity: 1; stroke: #9FBF86; stroke-width: 1; }
+.zoom-cerca .campus-calle-borde { stroke-width: 10; }
+.zoom-cerca .campus-calle { stroke-width: 7.5; }
+.zoom-cerca .campus-andador { stroke-width: 3; stroke-dasharray: 1 6; }
+.zoom-muy-cerca .campus-calle-borde { stroke-width: 16; }
+.zoom-muy-cerca .campus-calle { stroke-width: 13; }
+
+/* Nombres de calles y lugares (no se pueden tocar; los marcadores van encima) */
+.nombre-mapa { width: 0; height: 0; }
+.nombre-mapa > span { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%) rotate(var(--giro, 0deg)); white-space: nowrap; pointer-events: none;
+  font-size: 10px; font-weight: 500; color: var(--tinta-tenue); text-shadow: 0 0 2px #fff, 0 0 3px #fff; }
+.nombre-calle > span { letter-spacing: .02em; }
+.nombre-lugar > span { transform: translate(-50%, 15px); width: max-content; max-width: 110px; white-space: normal; text-align: center; line-height: 1.15; font-size: 11px; font-weight: 600; color: var(--tinta-suave); }
+.nombre-lugar.facultad > span { color: var(--azul); }
+.mapa:not(.zoom-cerca) .nombre-lugar > span { max-width: 84px; font-size: 9.5px; transform: translate(-50%, 13px); }
+.nombre-lugar.deporte > span, .nombre-lugar.clinica > span { display: none; }
+.zoom-cerca .nombre-lugar.deporte > span, .zoom-cerca .nombre-lugar.clinica > span { display: block; }
+.nombre-afuera > span { font-size: 10px; font-style: italic; color: var(--tinta-tenue); }
+.mapa:not(.zoom-cerca) .nombre-calle > span, .mapa:not(.zoom-cerca) .nombre-afuera > span { display: none; }
+.mapa:not(.zoom-cerca) .etiqueta-mapa.solo-cerca { display: none; }
+.mapa .leaflet-control-attribution { padding: 0 5px; border-top-right-radius: 6px; background: rgba(255, 255, 255, .75); font-size: 9px; line-height: 15px; color: var(--tinta-tenue); }
+.mapa .leaflet-control-attribution a { color: inherit; }
 .mapa .leaflet-bar { border: 1px solid var(--borde); border-radius: 10px; box-shadow: none; overflow: hidden; }
 .mapa .leaflet-bar a { width: 34px; height: 34px; line-height: 34px; color: var(--tinta); }
 .mapa.colocando, .mapa.colocando .leaflet-interactive { cursor: crosshair; }
@@ -27,6 +64,8 @@
 .marcador-local > span { background: var(--oro); color: var(--tinta); }
 .marcador-local.cerrado > span { background: var(--superficie); color: var(--tinta-tenue); }
 .marcador.chico > span { transform: scale(.7); opacity: .85; }
+/* Con todo el campus a la vista los marcadores van un poco más chicos para no tapar los nombres. */
+.mapa:not(.zoom-cerca) .marcador:not(.chico):not(.elegido) > span { transform: scale(.8); }
 .marcador.elegido { z-index: 1000 !important; }
 .marcador.elegido > span { transform: scale(1.25); box-shadow: 0 0 0 5px rgba(27, 58, 107, .25); }
 .marcador.arrastrable { cursor: grab; }

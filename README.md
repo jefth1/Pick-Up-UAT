@@ -57,11 +57,14 @@ Los datos viven en Supabase. Ver [docs/supabase.md](docs/supabase.md).
 - **Hora de llegada:** mientras alguien lleva un favor, su celular manda su posición a la base,
   que solo guarda la hora estimada. Quien pidió ve "Llega en ~N min" y nunca ve dónde va.
 
-El mapa es un dibujo propio del Centro Universitario Tampico-Madero (Campus Sur), con la
-paleta de la app y sin mapas de afuera: terreno, calles, estacionamientos, áreas verdes y
-edificios están en `CAMPUS`, al inicio de `Compartido/js/mapa.js`, con coordenadas reales
-(se calcó de una captura de Google Maps). [Leaflet](https://leafletjs.com/) solo lo dibuja y
-permite acercar y mover. Sin conexión, las páginas siguen funcionando sin el mapa.
+El mapa es un dibujo propio del Campus Tampico (Centro Universitario Tampico-Madero), con la
+paleta de la app y sin mapas de afuera. Sale de los datos de OpenStreetMap del campus
+(facultades, edificios, canchas, estacionamientos, calles, andadores y las manzanas de
+junto), guardados en `Compartido/datos/` (ver su `LEEME.md`). [Leaflet](https://leafletjs.com/)
+solo lo dibuja: el mapa enseña el campus y unos 150 m alrededor, y no deja alejarse ni
+salirse de ahí. Los locales que caen dentro de una facultad dicen en cuál están ("En
+Ingeniería"), y el mapa de los alumnos tiene buscador. Sin conexión, las páginas siguen
+funcionando sin el mapa.
 
 ## Cómo verlo
 

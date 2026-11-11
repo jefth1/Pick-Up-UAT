@@ -1,4 +1,4 @@
--- Mapa de la UAT (Centro Universitario Tampico-Madero, Campus Sur).
+-- Mapa de la UAT (Campus Tampico: Centro Universitario Tampico-Madero).
 -- 1. puntos_entrega pasa a ser los lugares del mapa: facultades y zonas. Todos sirven
 --    como punto de entrega de los favores. Los coloca un administrador desde
 --    PerfilAdmin/mapa.html, tocando el mapa (solo se guardan lugares con coordenadas reales).
@@ -19,18 +19,22 @@ alter table public.puntos_entrega
 -- existen los siguen usando).
 update public.puntos_entrega set activo = false where nombre like 'Prueba · %';
 
--- Lugares del campus que ya se ven en el mapa (calcados de Google Maps). Las demás
--- facultades (Ingeniería, Comercio, Odontología, Enfermería) las coloca el administrador.
+-- Facultades y zonas con nombre en el dibujo del mapa (OpenStreetMap, ver
+-- Compartido/datos/LEEME.md), en el centro de su terreno. Los mismos nombres que sugiere
+-- el editor del administrador, que puede moverlos, renombrarlos o quitarlos.
 insert into public.puntos_entrega (nombre, abreviatura, tipo, icono, lat, lng) values
-  ('Facultad de Música y Artes', 'Música', 'facultad', 'birrete', 22.278545, -97.862404),
-  ('Facultad de Medicina Dr. Alberto Romo Caballero', 'Medicina', 'facultad', 'birrete', 22.277696, -97.861018),
-  ('Facultad de Derecho y Ciencias Sociales', 'FADYCS', 'facultad', 'birrete', 22.276508, -97.864595),
-  ('Facultad de Arquitectura, Diseño y Urbanismo', 'FADU', 'facultad', 'birrete', 22.275319, -97.863576),
-  ('Edificio central UAT CU Sur', null, 'zona', 'edificio', 22.2768, -97.8622),
-  ('CELLAP Tampico (idiomas)', null, 'zona', 'edificio', 22.276404, -97.862903),
-  ('Estadio Olímpico UAT CU Sur', null, 'zona', 'deportes', 22.275112, -97.859183),
-  ('Gimnasio Multidisciplinario UAT', null, 'zona', 'deportes', 22.275715, -97.858011),
-  ('Lago Lain', null, 'zona', 'arbol', 22.277215, -97.866022);
+  ('Facultad de Ingeniería Arturo Narro Siller', 'FIANS', 'facultad', 'birrete', 22.2767041, -97.8643157),
+  ('Facultad de Derecho y Ciencias Sociales', 'FADYCS', 'facultad', 'birrete', 22.2756944, -97.8646432),
+  ('Facultad de Comercio y Administración Tampico', 'FCAT', 'facultad', 'birrete', 22.2748209, -97.8619641),
+  ('Facultad de Arquitectura, Diseño y Urbanismo', 'FADU', 'facultad', 'birrete', 22.2742137, -97.8641401),
+  ('Facultad de Medicina Dr. Alberto Romo Caballero', 'Medicina', 'facultad', 'birrete', 22.277154, -97.8615878),
+  ('Facultad de Odontología', 'Odontología', 'facultad', 'birrete', 22.2774206, -97.8603006),
+  ('Facultad de Enfermería Tampico', 'Enfermería', 'facultad', 'birrete', 22.2785538, -97.861668),
+  ('Facultad de Música y Artes', 'Música', 'facultad', 'birrete', 22.2782288, -97.8631979),
+  ('Biblioteca', null, 'zona', 'libro', 22.2761477, -97.8611594),
+  ('Clínica Dental', null, 'zona', 'edificio', 22.2776341, -97.8604611),
+  ('Pista de atletismo', null, 'zona', 'deportes', 22.274278, -97.8598592),
+  ('Cancha de fútbol', null, 'zona', 'deportes', 22.2753349, -97.8637384);
 
 -- Los locales de prueba tenían coordenadas aproximadas de Cd. Victoria: se borran para que
 -- cada local se coloque en el mapa del campus Tampico desde su perfil.

@@ -597,19 +597,31 @@ async function mapaUat() {
   const [lugares, { data: locales, error }] = await Promise.all([
     lugaresUat(),
     db.from("locales").select("*, horarios(*)").not("lat", "is", null).order("nombre"),
+    cargarDatosCampus(), // para saber en qué facultad queda cada local
   ]);
   if (error) return mostrarError(error);
-  const todos = [...lugares, ...locales.map((l) => ({ ...l, tipo: "local", abiertoYa: abiertoAhora(l) }))];
+  const todos = [...lugares, ...locales.map((l) => {
+    const facultad = facultadDe(l);
+    return { ...l, tipo: "local", abiertoYa: abiertoAhora(l), facultad: facultad && nombreFacultad(facultad) };
+  })];
   const lista = document.getElementById("lista-lugares");
   const tarjeta = document.getElementById("lugar-elegido");
+  const buscador = document.getElementById("buscar-lugar");
   const ORDEN = { facultad: 0, zona: 1, local: 2 };
   let filtro = "todo";
   let elegido = null;
   let yo = null;
   let marcadorTu = null;
-  const visibles = () => todos.filter((l) => filtro === "todo" || l.tipo === filtro);
+  // Se busca por nombre, abreviatura o facultad: "medicina" también encuentra los locales de Medicina.
+  const coincide = (l, texto) => !texto || sinAcentos([l.nombre, l.abreviatura, l.facultad, TIPOS_LUGAR[l.tipo]].join(" ")).includes(texto);
+  const visibles = () => {
+    const texto = sinAcentos(buscador?.value);
+    return todos.filter((l) => (filtro === "todo" || l.tipo === filtro) && coincide(l, texto));
+  };
   const claseDe = (l) => (l.tipo === "local" && !l.abiertoYa ? "cerrado" : "");
-  const detalle = (l) => (l.tipo === "local" ? `${l.abiertoYa ? "Abierto" : "Cerrado"} · ${textoHoy(l)}` : TIPOS_LUGAR[l.tipo]);
+  const detalle = (l) => (l.tipo === "local"
+    ? `${l.facultad ? `En ${esc(l.facultad)} · ` : ""}${l.abiertoYa ? "Abierto" : "Cerrado"} · ${textoHoy(l)}`
+    : TIPOS_LUGAR[l.tipo]);
 
   const capa = mapa && L.layerGroup().addTo(mapa);
   const marcadores = new Map();
@@ -617,13 +629,11 @@ async function mapaUat() {
     todos.forEach((l) => {
       // Dónde comer queda encima si se enciman con una facultad o zona.
       const m = marcadorLugar(l, { clase: claseDe(l), zIndexOffset: l.tipo === "local" ? 500 : 0 }).on("click", () => elegir(l));
-      if (l.tipo === "facultad") etiquetar(m, nombreCorto(l));
+      if (l.tipo === "facultad") etiquetarFacultad(m, l);
+      if (l.tipo === "local") etiquetar(m, l.nombre, "solo-cerca"); // su nombre, al acercar el mapa
       marcadores.set(l, m.addTo(capa));
     });
-    // Encuadra lo que esté cerca de la UAT (un local con coordenadas raras no aleja el mapa).
-    const centro = { lat: CENTRO_UAT[0], lng: CENTRO_UAT[1] };
-    const cerca = todos.filter((l) => distanciaM(centro, l) < 5000);
-    if (cerca.length > 1) mapa.fitBounds(cerca.map((l) => [l.lat, l.lng]), ENCUADRE);
+    // El mapa abre con todo el campus a la vista (crearMapa) y no deja salir de él.
     mapa.on("click", () => elegir(null));
   }
 
@@ -635,7 +645,7 @@ async function mapaUat() {
     if (l.tipo === "local") {
       tarjeta.innerHTML = `<div class="fila-titulo"><strong>${esc(l.nombre)}</strong>
           <span class="estado ${l.abiertoYa ? "abierto" : ""}">${l.abiertoYa ? "Abierto" : "Cerrado"}</span></div>
-        <p class="meta texto-suave"><span>${icono("ubicacion")}${esc(textoUbicacion(l))}</span><span>${icono("reloj")}${textoHoy(l)}</span>${deTi}</p>
+        <p class="meta texto-suave">${l.facultad ? `<span>${icono("birrete")}En la Facultad de ${esc(l.facultad)}</span>` : ""}<span>${icono("ubicacion")}${esc(textoUbicacion(l))}</span><span>${icono("reloj")}${textoHoy(l)}</span>${deTi}</p>
         <a class="boton boton-primario" href="menu-local.html?local=${l.id}">Ver menú</a>`;
       return;
     }
@@ -647,13 +657,17 @@ async function mapaUat() {
         `<a href="menu-local.html?local=${x.id}"><b>${esc(x.nombre)}</b><span>${textoDistancia(d)} · ${x.abiertoYa ? "Abierto" : "Cerrado"}</span></a>`).join("")}</div>` : ""}`;
   };
 
+  // Lo que se ve en la lista, en orden: lo más cerca de ti primero, o por tipo y nombre.
+  const filasVisibles = () => visibles().map((l) => ({ l, d: yo ? distanciaM(yo, l) : null }))
+    .sort((a, b) => (yo ? a.d - b.d : ORDEN[a.l.tipo] - ORDEN[b.l.tipo] || a.l.nombre.localeCompare(b.l.nombre)));
+
   const pintarLista = () => {
-    const filas = visibles().map((l) => ({ l, d: yo ? distanciaM(yo, l) : null }))
-      .sort((a, b) => (yo ? a.d - b.d : ORDEN[a.l.tipo] - ORDEN[b.l.tipo] || a.l.nombre.localeCompare(b.l.nombre)));
-    lista.innerHTML = filas.map(({ l, d }) => `<li><button class="fila-lugar" data-lugar="${todos.indexOf(l)}">
+    lista.innerHTML = filasVisibles().map(({ l, d }) => `<li><button class="fila-lugar" data-lugar="${todos.indexOf(l)}">
         <span class="marcador marcador-${l.tipo} ${claseDe(l)}"><span>${iconoDeLugar(l)}</span></span>
         <span class="info"><strong>${esc(l.nombre)}</strong><span>${detalle(l)}</span></span>
         ${d == null ? "" : `<span class="distancia">${textoDistancia(d)}</span>`}</button></li>`).join("")
+      || (sinAcentos(buscador?.value) ? `<li class="tarjeta vacio"><strong>No encontramos «${esc(buscador.value.trim())}»</strong>
+        <span>Prueba con otro nombre, o busca una facultad para ver qué hay en ella.</span></li>` : "")
       || `<li class="tarjeta vacio"><strong>${filtro === "local" ? "Ningún local en el mapa todavía" : "Todavía no hay lugares aquí"}</strong>
         <span>${filtro === "local" ? "Los locales aparecen cuando su dueño los coloca desde su perfil." : "Las facultades y zonas aparecen cuando se colocan en el mapa."}</span></li>`;
   };
@@ -674,9 +688,25 @@ async function mapaUat() {
     if (!chip) return;
     document.querySelectorAll("#filtros-mapa .chip").forEach((c) => c.classList.toggle("activo", c === chip));
     filtro = chip.dataset.capa;
-    if (elegido && !visibles().includes(elegido)) elegir(null);
-    marcadores.forEach((m, l) => (filtro === "todo" || l.tipo === filtro ? capa.addLayer(m) : capa.removeLayer(m)));
+    filtrar();
+  });
+  // Chips y buscador: la lista y el mapa muestran lo mismo.
+  const filtrar = () => {
+    const ver = visibles();
+    if (elegido && !ver.includes(elegido)) elegir(null);
+    marcadores.forEach((m, l) => (ver.includes(l) ? capa.addLayer(m) : capa.removeLayer(m)));
     pintarLista();
+  };
+  buscador?.addEventListener("input", filtrar);
+  // Enter elige el primer resultado y lo muestra en el mapa.
+  buscador?.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const primero = filasVisibles()[0]?.l;
+    if (!primero) return;
+    buscador.blur();
+    elegir(primero);
+    if (mapa) mapa.setView([primero.lat, primero.lng], Math.max(mapa.getZoom(), 17.5));
+    contenedor.scrollIntoView({ behavior: "smooth", block: "start" });
   });
   lista.addEventListener("click", (e) => {
     const fila = e.target.closest("[data-lugar]");

@@ -513,9 +513,14 @@ async function perfil(local) {
 // en el mapa y se calcula la cuota de los favores. Solo el dueño puede moverlo (RLS).
 function colocarEnMapa(local) {
   const texto = document.getElementById("texto-ubicacion");
+  // Si cae dentro de una facultad se le dice (los alumnos lo ven así: "En Ingeniería").
+  const dondeQueda = () => {
+    const facultad = local.lat != null && facultadDe(local);
+    return facultad ? ` Queda en la Facultad de ${nombreFacultad(facultad)}.` : "";
+  };
   const pintarTexto = (guardado) => (texto.textContent = local.lat == null
     ? "Toca el mapa donde está tu local (o usa tu ubicación estando ahí). Así aparece en el mapa de los alumnos y se calcula la cuota de los favores."
-    : guardado ? "Listo, guardamos dónde está tu local." : "Tu local ya aparece en el mapa. Si no está bien, arrástralo o toca el lugar correcto para moverlo.");
+    : (guardado ? "Listo, guardamos dónde está tu local." : "Tu local ya aparece en el mapa. Si no está bien, arrástralo o toca el lugar correcto para moverlo.") + dondeQueda());
   const mapa = crearMapa(document.getElementById("mapa-local"),
     local.lat == null ? {} : { centro: [local.lat, local.lng], zoom: 17 });
   let punto = null;
@@ -545,11 +550,12 @@ function colocarEnMapa(local) {
     // Facultades y zonas de referencia para ubicarse.
     lugaresUat().then((lugares) => lugares.forEach((l) => {
       const m = marcadorLugar(l, { clase: "chico", interactive: false, keyboard: false }).addTo(mapa);
-      if (l.tipo === "facultad") etiquetar(m, nombreCorto(l));
+      if (l.tipo === "facultad") etiquetarFacultad(m, l);
     }));
   }
   ponerPunto();
   pintarTexto(false);
+  cargarDatosCampus().then(() => pintarTexto(false));
 
   const boton = document.getElementById("usar-ubicacion");
   boton.addEventListener("click", async () => {
