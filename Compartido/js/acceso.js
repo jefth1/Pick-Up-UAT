@@ -46,19 +46,21 @@ async function esperando(boton, tarea) {
   }
 }
 
-// Si este celular ya tiene la sesión guardada, entra directo a su apartado.
+// Si este celular ya tiene la sesión guardada, entra directo a su apartado (el alumno
+// primero ve con qué cuenta va a entrar, con «Continuar» y «Cerrar sesión»).
 async function bienvenida() {
   const usuario = await usuarioActual();
   if (usuario && !usuario.is_anonymous) await continuar({ primeraVez: false });
 }
 
 // Con sesión: crea el perfil que quedó pendiente al registrarse y entra al apartado de la
-// cuenta. Si la cuenta no tiene perfil, regresa el motivo para mostrarlo.
+// cuenta. El alumno pasa por la pantalla de entrada (sus datos con «Continuar» y «Cerrar
+// sesión»). Si la cuenta no tiene perfil, regresa el motivo para mostrarlo.
 async function continuar({ primeraVez = true } = {}) {
   const problema = await crearPerfilPendiente();
   if (await localActual()) return void location.replace("../PerfilLocal/pedidos.html");
   if (await alumnoActual()) {
-    return void location.replace(primeraVez ? "alumno-datos-uat.html" : "../PerfilAlumnos/explorar-locales.html");
+    return void location.replace(`alumno-datos-uat.html?entrada=${primeraVez ? "nueva" : "guardada"}`);
   }
   return problema || "Esta cuenta todavía no tiene perfil de alumno ni de local.";
 }
@@ -322,26 +324,48 @@ async function nuevaContrasena() {
   });
 }
 
+// Una sola página con dos usos. Desde la barra inferior es «Mi perfil»: los datos, la barra
+// y la puerta de arriba a la derecha para cerrar sesión. Con ?entrada=nueva (acaba de
+// iniciar sesión o de verificar su correo) o ?entrada=guardada (abrió la app con la sesión
+// guardada) es la pantalla de entrada: los mismos datos con «Continuar» y «Cerrar sesión».
 async function entradaAlumno() {
+  const entrada = param("entrada");
+  if (entrada) {
+    document.querySelectorAll("[data-entrada]").forEach((el) => (el.hidden = false));
+    document.querySelectorAll("[data-perfil]").forEach((el) => (el.hidden = true));
+    document.getElementById("pantalla-perfil").classList.remove("con-barra");
+    document.title = "Entrar · Pick Up UAT";
+  }
+  const salir = async (e) => {
+    e.preventDefault();
+    e.currentTarget.disabled = true;
+    await db.auth.signOut();
+    location.replace("bienvenida.html");
+  };
+  document.getElementById("salir").addEventListener("click", salir);
+  document.getElementById("salir-perfil").addEventListener("click", salir);
+  // «Continuar» reemplaza esta pantalla: «atrás» desde Inicio no regresa aquí.
+  document.getElementById("continuar").addEventListener("click", (e) => {
+    e.preventDefault();
+    location.replace(e.currentTarget.href);
+  });
+
   const alumno = await alumnoActual();
-  if (!alumno) return (location.href = "alumno-iniciar-sesion.html");
+  if (!alumno) return void location.replace("alumno-iniciar-sesion.html");
   // Verificado = Supabase le mandó el código y lo confirmó (sin «Confirm email» no se manda).
   const usuario = await usuarioActual();
   const verificado = !!(usuario?.email_confirmed_at && usuario?.confirmation_sent_at);
   document.getElementById("saludo").textContent = `¡Hola, ${alumno.nombre.split(" ")[0]}!`;
-  document.getElementById("aviso-datos").textContent = "Revisa que tus datos sean correctos.";
+  document.getElementById("aviso-datos").textContent = entrada === "guardada"
+    ? "Tienes la sesión abierta en este celular. ¿Quieres seguir con esta cuenta?"
+    : "Revisa que tus datos sean correctos.";
+  document.getElementById("aviso-perfil").textContent = "Tus datos de la UAT.";
   const datos = document.getElementById("datos-alumno");
   datos.innerHTML = [["Nombre", alumno.nombre], ["Matrícula", alumno.matricula], ["Correo", alumno.correo, verificado],
     ["Facultad", alumno.facultad], ["Carrera", alumno.carrera]]
     .map(([k, v, ok]) => `<div><dt>${k}</dt><dd>${esc(v || "—")}${ok ? ' <span class="estado listo">Verificado</span>' : ""}</dd></div>`)
     .join("");
   datos.hidden = false;
-  document.getElementById("continuar").hidden = false;
-  document.getElementById("salir").addEventListener("click", async (e) => {
-    e.preventDefault();
-    await db.auth.signOut();
-    location.href = "bienvenida.html";
-  });
 }
 
 // El registro guarda los datos del local en la cuenta; el local se crea al tener

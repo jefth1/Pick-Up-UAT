@@ -30,6 +30,8 @@ const ICONOS = {
   correo: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   editar: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/>',
   salir: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
+  // Puerta abierta: cerrar sesión desde «Mi perfil» del alumno.
+  "puerta-abierta": '<path d="M14 4h4a1 1 0 0 1 1 1v16M3 21h3M14 21h7"/><path d="M14 3.3v17.4a1 1 0 0 1-1.2 1L6 20.2V5.4a1 1 0 0 1 .8-1l5.2-1.1a1.6 1.6 0 0 1 2 1Z"/><path d="M11 12.5h.01"/>',
   // Mapa de la UAT
   mapa: '<path d="M9 4 3 6.5V20l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4Z"/><path d="M9 4v13.5M15 6.5V20"/>',
   mira: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
