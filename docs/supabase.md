@@ -190,8 +190,20 @@ Migración `20261108220000_mapa_uat.sql`.
   atletismo y la Cancha de fútbol. Las demás zonas (gimnasio, auditorio, entradas…) se colocan
   con el editor, que las sugiere.
 
+### Puntos de entrega
+
+Migración `20261120220000_puntos_de_entrega.sql` (va después de la del mapa).
+
+- `puntos_entrega.tipo` acepta también `entrega`: lugares concretos donde se encuentran quien
+  lleva el favor y quien lo pidió. En el mapa de los alumnos van en blanco con borde azul
+  (filtro «Entregas») y en el carrito solo se eligen esos. Si no hubiera ninguno activo, el
+  carrito vuelve a ofrecer las facultades y zonas.
+- La migración agrega 13: frente a cada una de las ocho facultades, la explanada de la
+  Biblioteca, junto al gimnasio (el edificio redondo al este de la pista), junto a la pista,
+  junto a la Cafetería de Ingeniería y la entrada norte (Av. Universidad). Se mueven, renombran o quitan desde el editor del mapa, como los demás lugares.
+
 **Cuota del favor:** `cotizar_favor` usa la distancia en línea recta entre **A** (el local,
-donde se recoge) y **B** (la facultad o zona donde se entrega): $10 + $8 por km de camino
+donde se recoge) y **B** (el punto de entrega): $10 + $8 por km de camino
 (recta × 1.3), en múltiplos de $5, entre $15 y $50. Los $10 de base cubren llegar al local.
 Dentro del campus casi todo sale en $15 (hasta unos 480 m); 850 m son $20 y 1.5 km, $30.
 
