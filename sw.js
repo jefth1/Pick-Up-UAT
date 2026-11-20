@@ -3,7 +3,7 @@
 // peticiones a otros dominios (Supabase, CDN, fuentes): esas siempre van a la red,
 // así los pedidos, menús y sesiones nunca salen de una copia vieja.
 // Cambiar VERSION borra la copia guardada en los celulares (por ejemplo, si cambia mucho el sitio).
-const VERSION = "pickup-v1";
+const VERSION = "pickup-v2";
 
 self.addEventListener("install", (evento) => {
   evento.waitUntil(
@@ -25,8 +25,11 @@ self.addEventListener("fetch", (evento) => {
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
 
   // Primero la red (para ver siempre la versión publicada); la caché solo sin conexión.
+  // cache: "no-cache" le pregunta al servidor si el archivo cambió en vez de usar la copia
+  // del navegador (GitHub Pages la deja 10 minutos): así una página nueva nunca se mezcla
+  // con estilos o scripts viejos.
   evento.respondWith(
-    fetch(request)
+    fetch(request, { cache: "no-cache" })
       .then((respuesta) => {
         if (respuesta.ok) {
           const copia = respuesta.clone();
