@@ -547,8 +547,8 @@ function colocarEnMapa(local) {
       const globo = L.popup({ closeButton: false, className: "globo-mapa" }).setLatLng(e.latlng).setContent(boton).openOn(mapa);
       boton.addEventListener("click", () => { mapa.closePopup(globo); guardar(e.latlng); });
     });
-    // Facultades y zonas de referencia para ubicarse.
-    lugaresUat().then((lugares) => lugares.forEach((l) => {
+    // Facultades y zonas de referencia para ubicarse (los puntos de entrega no hacen falta aquí).
+    lugaresUat().then((lugares) => lugares.filter((l) => l.tipo !== "entrega").forEach((l) => {
       const m = marcadorLugar(l, { clase: "chico", interactive: false, keyboard: false }).addTo(mapa);
       if (l.tipo === "facultad") etiquetarFacultad(m, l);
     }));

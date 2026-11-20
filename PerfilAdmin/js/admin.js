@@ -1,6 +1,7 @@
 // Editor de lugares del mapa (solo administradores; ver docs/supabase.md): coloca las
-// facultades y zonas de la UAT tocando el mapa, las mueve arrastrándolas, las renombra
-// y las quita. Los alumnos las ven en su mapa y las eligen como punto de entrega.
+// facultades, zonas y puntos de entrega de la UAT tocando el mapa, los mueve
+// arrastrándolos, los renombra y los quita. Los alumnos los ven en su mapa y eligen un
+// punto de entrega para sus favores.
 // Las cafeterías y comercios no van aquí: cada local se coloca desde su perfil.
 
 // Lugares del Campus Tampico (Centro Universitario Tampico-Madero) que faltan por colocar.
@@ -27,6 +28,20 @@ const LUGARES_SUGERIDOS = [
   { nombre: "Explanada", tipo: "zona", icono: "arbol" },
   { nombre: "Estacionamiento", tipo: "zona", icono: "estacionamiento" },
   { nombre: "Entrada principal", tipo: "zona", icono: "puerta" },
+  // Puntos de entrega de los favores (los mismos que agrega 20261120220000_puntos_de_entrega.sql).
+  { nombre: "Frente a Ingeniería", abreviatura: "Ingeniería", tipo: "entrega", icono: "bolsa", lat: 22.27658, lng: -97.86531 },
+  { nombre: "Frente a Derecho y Ciencias Sociales", abreviatura: "Derecho", tipo: "entrega", icono: "bolsa", lat: 22.27586, lng: -97.86542 },
+  { nombre: "Frente a Comercio", abreviatura: "Comercio", tipo: "entrega", icono: "bolsa", lat: 22.27546, lng: -97.86209 },
+  { nombre: "Frente a Arquitectura", abreviatura: "Arquitectura", tipo: "entrega", icono: "bolsa", lat: 22.27501, lng: -97.86348 },
+  { nombre: "Frente a Medicina", abreviatura: "Medicina", tipo: "entrega", icono: "bolsa", lat: 22.27685, lng: -97.86129 },
+  { nombre: "Frente a Odontología", abreviatura: "Odontología", tipo: "entrega", icono: "bolsa", lat: 22.2769, lng: -97.86037 },
+  { nombre: "Frente a Enfermería", abreviatura: "Enfermería", tipo: "entrega", icono: "bolsa", lat: 22.27846, lng: -97.86128 },
+  { nombre: "Frente a Música y Artes", abreviatura: "Música", tipo: "entrega", icono: "bolsa", lat: 22.27809, lng: -97.86263 },
+  { nombre: "Explanada de la Biblioteca", abreviatura: "Biblioteca", tipo: "entrega", icono: "bolsa", lat: 22.27645, lng: -97.86075 },
+  { nombre: "Junto al gimnasio", abreviatura: "Gimnasio", tipo: "entrega", icono: "bolsa", lat: 22.27494, lng: -97.85823 },
+  { nombre: "Junto a la pista de atletismo", abreviatura: "Pista", tipo: "entrega", icono: "bolsa", lat: 22.27511, lng: -97.85994 },
+  { nombre: "Junto a la Cafetería de Ingeniería", abreviatura: "Cafetería", tipo: "entrega", icono: "bolsa", lat: 22.2767, lng: -97.86362 },
+  { nombre: "Entrada norte (Av. Universidad)", abreviatura: "Entrada N", tipo: "entrega", icono: "bolsa", lat: 22.27912, lng: -97.8613 },
 ];
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -180,7 +195,7 @@ async function editor() {
     if (!chip) return;
     let datos = LUGARES_SUGERIDOS.find((s) => s.nombre === chip.dataset.sugerido);
     if (!datos) {
-      const nombre = prompt("Nombre de la facultad o zona:")?.trim();
+      const nombre = prompt("Nombre del lugar (facultad, zona o punto de entrega):")?.trim();
       if (!nombre) return;
       datos = { nombre: nombre.slice(0, 80), tipo: "zona", icono: "ubicacion" };
     }

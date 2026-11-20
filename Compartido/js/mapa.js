@@ -20,12 +20,12 @@ const MARGEN_UAT = 0.12;
 // Margen al encuadrar puntos: a la derecha están los botones del mapa (zoom y "mi ubicación").
 const ENCUADRE = { paddingTopLeft: [36, 36], paddingBottomRight: [72, 36], maxZoom: 18 };
 
-// Iconos que puede tener una facultad o zona (todos existen en iconos.js).
+// Iconos que puede tener un lugar de la UAT (todos existen en iconos.js).
 const ICONOS_LUGAR = {
-  birrete: "Facultad", edificio: "Edificio", libro: "Biblioteca", deportes: "Deportes",
+  bolsa: "Punto de entrega", birrete: "Facultad", edificio: "Edificio", libro: "Biblioteca", deportes: "Deportes",
   estacionamiento: "Estacionamiento", arbol: "Área verde", puerta: "Entrada", ubicacion: "Otro",
 };
-const TIPOS_LUGAR = { facultad: "Facultad", zona: "Zona de la UAT", local: "Dónde comer" };
+const TIPOS_LUGAR = { facultad: "Facultad", zona: "Zona de la UAT", entrega: "Punto de entrega", local: "Dónde comer" };
 
 // Crea el mapa en el contenedor con todo el campus a la vista (o centrado en `centro`).
 // Sin Leaflet deja un aviso y regresa null: la página sigue funcionando sin mapa.
@@ -214,13 +214,15 @@ function facultadDe({ lat, lng }) {
 // Icono de un lugar: cubiertos para dónde comer; para facultades y zonas, el suyo.
 const iconoDeLugar = (lugar) => icono(lugar.tipo === "local" ? "cubiertos" : ICONOS_LUGAR[lugar.icono] ? lugar.icono : "ubicacion");
 
-// Marcador redondo con el icono del lugar. tipo: "facultad", "zona" o "local".
+// Marcador redondo con el icono del lugar. tipo: "facultad", "zona", "entrega" o "local".
+// Los puntos de entrega van más chicos y en blanco para no tapar las facultades.
 function marcadorLugar(lugar, { tipo = lugar.tipo || "zona", clase = "", ...opciones } = {}) {
+  const lado = tipo === "entrega" ? 24 : 30;
   return L.marker([lugar.lat, lugar.lng], {
     icon: L.divIcon({
       className: `marcador marcador-${tipo} ${clase}`.trim(),
       html: `<span>${iconoDeLugar({ ...lugar, tipo })}</span>`,
-      iconSize: [30, 30], iconAnchor: [15, 15],
+      iconSize: [lado, lado], iconAnchor: [lado / 2, lado / 2],
     }),
     title: lugar.nombre, alt: lugar.nombre, riseOnHover: true, ...opciones,
   });
@@ -284,11 +286,18 @@ function textoLlegada(fecha) {
   return minutos <= 1 ? "Está por llegar" : `Llega en ~${minutos} min`;
 }
 
-// Facultades y zonas que ya están en el mapa (activas y con coordenadas).
+// Facultades, zonas y puntos de entrega que ya están en el mapa (activos y con coordenadas).
 async function lugaresUat() {
   const { data, error } = await db.from("puntos_entrega").select("*").eq("activo", true).order("nombre");
   if (error) return mostrarError(error), [];
   return data.filter((l) => l.lat != null).map((l) => ({ ...l, tipo: l.tipo || "zona" }));
+}
+
+// Dónde se pueden entregar los favores: los puntos de entrega. Si todavía no hay ninguno,
+// sirven las facultades y zonas (como antes de que existieran).
+function soloPuntosDeEntrega(lugares) {
+  const puntos = lugares.filter((l) => l.tipo === "entrega");
+  return puntos.length ? puntos : lugares;
 }
 
 // Ubicación del celular, una vez (para dibujar "Tú"). null si no hay permiso o GPS.

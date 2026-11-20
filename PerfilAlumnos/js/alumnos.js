@@ -302,7 +302,7 @@ async function verCarrito() {
   });
 }
 
-// Recoger en el local o que lo lleve otro alumno a un lugar de la UAT (facultad o zona).
+// Recoger en el local o que lo lleve otro alumno a un punto de entrega de la UAT.
 // Solo aparece con los favores encendidos y si el local ya se colocó en el mapa. El mapa
 // muestra la ruta A (el local, donde se recoge) → B (donde se entrega) y la cuota del
 // favor sale de esa distancia; la gana quien lo lleva.
@@ -315,7 +315,7 @@ async function opcionesEntrega(c, local, pintar) {
     : local.lat == null ? "Este local todavía no tiene entregas por favor." : null;
   let puntos = [];
   if (!motivo) {
-    puntos = await lugaresUat();
+    puntos = soloPuntosDeEntrega(await lugaresUat());
     if (!puntos.length) motivo = "Todavía no hay puntos de entrega para favores.";
   }
   if (motivo) {
@@ -338,7 +338,7 @@ async function opcionesEntrega(c, local, pintar) {
     const opciones = puntos.filter((p) => p.tipo === tipo).map((p) => `<option value="${p.id}">${esc(p.nombre)}</option>`);
     return opciones.length ? `<optgroup label="${titulo}">${opciones.join("")}</optgroup>` : "";
   };
-  punto.innerHTML = grupo("facultad", "Facultades") + grupo("zona", "Zonas de la UAT");
+  punto.innerHTML = grupo("entrega", "Puntos de entrega") + grupo("facultad", "Facultades") + grupo("zona", "Zonas de la UAT");
   if (c.favor && puntos.some((p) => p.id === c.favor.puntoId)) {
     seccion.querySelector('[value="favor"]').checked = true;
     punto.value = c.favor.puntoId;
@@ -349,7 +349,7 @@ async function opcionesEntrega(c, local, pintar) {
   const conFavor = () => seccion.querySelector('[value="favor"]').checked;
 
   // Mapa de la ruta: se crea la primera vez que se elige "Que me lo lleven".
-  // Tocar otra facultad o zona en el mapa la elige como punto de entrega.
+  // Tocar otro punto de entrega en el mapa lo elige.
   let ruta = null;
   const dibujarRuta = (elegido) => {
     if (!ruta) {
@@ -589,8 +589,9 @@ async function misPedidos() {
   setInterval(pintarLlegada, 15000); // "Llega en ~N min" baja solo con el tiempo
 }
 
-// Mapa de la UAT: facultades y zonas (las coloca el administrador) y dónde comer (cada
-// local se coloca a sí mismo desde su perfil). "Tú" solo se dibuja en tu pantalla.
+// Mapa de la UAT: facultades, zonas y puntos de entrega (los coloca el administrador) y
+// dónde comer (cada local se coloca a sí mismo desde su perfil). "Tú" solo se dibuja en
+// tu pantalla.
 async function mapaUat() {
   const contenedor = document.getElementById("mapa-uat");
   const mapa = crearMapa(contenedor);
@@ -607,7 +608,7 @@ async function mapaUat() {
   const lista = document.getElementById("lista-lugares");
   const tarjeta = document.getElementById("lugar-elegido");
   const buscador = document.getElementById("buscar-lugar");
-  const ORDEN = { facultad: 0, zona: 1, local: 2 };
+  const ORDEN = { facultad: 0, entrega: 1, zona: 2, local: 3 };
   let filtro = "todo";
   let elegido = null;
   let yo = null;
@@ -627,8 +628,8 @@ async function mapaUat() {
   const marcadores = new Map();
   if (mapa) {
     todos.forEach((l) => {
-      // Dónde comer queda encima si se enciman con una facultad o zona.
-      const m = marcadorLugar(l, { clase: claseDe(l), zIndexOffset: l.tipo === "local" ? 500 : 0 }).on("click", () => elegir(l));
+      // Dónde comer queda encima si se enciman con otro lugar; luego los puntos de entrega.
+      const m = marcadorLugar(l, { clase: claseDe(l), zIndexOffset: { local: 500, entrega: 250 }[l.tipo] || 0 }).on("click", () => elegir(l));
       if (l.tipo === "facultad") etiquetarFacultad(m, l);
       if (l.tipo === "local") etiquetar(m, l.nombre, "solo-cerca"); // su nombre, al acercar el mapa
       marcadores.set(l, m.addTo(capa));
@@ -651,8 +652,15 @@ async function mapaUat() {
     }
     const comer = todos.filter((x) => x.tipo === "local").map((x) => [x, distanciaM(l, x)])
       .sort((a, b) => a[1] - b[1]).slice(0, 3);
+    // Una facultad o zona dice cuál es su punto de entrega más cercano.
+    const entregas = soloPuntosDeEntrega(todos.filter((x) => x.tipo !== "local"));
+    const masCerca = entregas.includes(l) ? null
+      : entregas.map((x) => [x, distanciaM(l, x)]).sort((a, b) => a[1] - b[1])[0];
+    const entrega = masCerca
+      ? `<span>${icono("bolsa")}<span>Entrega más cerca: <b>${esc(masCerca[0].nombre)}</b> (${textoDistancia(masCerca[1])})</span></span>`
+      : `<span>${icono("bolsa")}Aquí te pueden entregar tus favores</span>`;
     tarjeta.innerHTML = `<div class="fila-titulo"><strong>${esc(l.nombre)}</strong><span class="estado">${TIPOS_LUGAR[l.tipo]}</span></div>
-      <p class="meta texto-suave"><span>${icono("bolsa")}Punto de entrega para favores</span>${deTi}</p>
+      <p class="meta texto-suave">${entrega}${deTi}</p>
       ${comer.length ? `<div class="cerca"><span class="etiqueta">Dónde comer cerca</span>${comer.map(([x, d]) =>
         `<a href="menu-local.html?local=${x.id}"><b>${esc(x.nombre)}</b><span>${textoDistancia(d)} · ${x.abiertoYa ? "Abierto" : "Cerrado"}</span></a>`).join("")}</div>` : ""}`;
   };
@@ -669,7 +677,7 @@ async function mapaUat() {
       || (sinAcentos(buscador?.value) ? `<li class="tarjeta vacio"><strong>No encontramos «${esc(buscador.value.trim())}»</strong>
         <span>Prueba con otro nombre, o busca una facultad para ver qué hay en ella.</span></li>` : "")
       || `<li class="tarjeta vacio"><strong>${filtro === "local" ? "Ningún local en el mapa todavía" : "Todavía no hay lugares aquí"}</strong>
-        <span>${filtro === "local" ? "Los locales aparecen cuando su dueño los coloca desde su perfil." : "Las facultades y zonas aparecen cuando se colocan en el mapa."}</span></li>`;
+        <span>${filtro === "local" ? "Los locales aparecen cuando su dueño los coloca desde su perfil." : "Las facultades, zonas y puntos de entrega aparecen cuando se colocan en el mapa."}</span></li>`;
   };
 
   const elegir = (l) => {
