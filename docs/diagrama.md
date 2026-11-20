@@ -42,7 +42,7 @@ flowchart TD
 | Acceso/Bienvenida | `Acceso/bienvenida.html` |
 | Acceso/Alumno · iniciar sesión (temporal) | `Acceso/alumno-iniciar-sesion.html` |
 | Acceso/Alumno · registro (temporal) | `Acceso/alumno-registro.html` |
-| Acceso/Alumno · datos de la UAT | `Acceso/alumno-datos-uat.html` |
+| Acceso/Alumno · datos de la UAT | `Acceso/alumno-datos-uat.html` (desde la barra inferior es «Mi perfil»: datos, barra y la puerta para cerrar sesión; con `?entrada=` es la pantalla de entrada con «Continuar» y «Cerrar sesión») |
 | (sin pantalla en Figma) Verificar correo | `Acceso/verificar-correo.html` (código de 6 dígitos o botón del correo; alumnos y locales) |
 | (sin pantalla en Figma) Nueva contraseña | `Acceso/nueva-contrasena.html` (se abre desde el correo de «¿Olvidaste tu contraseña?») |
 | Acceso/Local · iniciar sesión | `Acceso/local-iniciar-sesion.html` |

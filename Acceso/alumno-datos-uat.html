@@ -24,17 +24,33 @@
   <script src="../Compartido/js/acceso.js" defer></script>
 </head>
 <body>
-  <main class="pantalla">
-    <span class="icono-exito"><i data-icono="check"></i></span>
-    <header class="encabezado-pantalla">
+  <!-- Perfil del alumno (barra inferior → Perfil). Con ?entrada=… es la pantalla de entrada:
+       sus datos con «Continuar» y «Cerrar sesión», sin la barra inferior. -->
+  <main class="pantalla con-barra" id="pantalla-perfil">
+    <span class="icono-exito" data-entrada hidden><i data-icono="check"></i></span>
+    <header class="encabezado-pantalla" data-entrada hidden>
       <h1 id="saludo">¡Hola!</h1>
       <p class="texto-suave" id="aviso-datos">Cargando tus datos…</p>
     </header>
+    <header class="encabezado-perfil" data-perfil>
+      <div>
+        <h1>Mi perfil</h1>
+        <p class="texto-suave" id="aviso-perfil">Cargando tus datos…</p>
+      </div>
+      <button type="button" class="boton-salir" id="salir-perfil" aria-label="Cerrar sesión" title="Cerrar sesión"><i data-icono="puerta-abierta"></i></button>
+    </header>
     <dl class="tarjeta datos-solo-lectura" id="datos-alumno" hidden></dl>
     <p class="texto-tenue con-icono"><i data-icono="candado"></i>Estos datos no se pueden editar aquí.</p>
-    <div class="empuje"></div>
-    <a class="boton boton-primario" id="continuar" href="../PerfilAlumnos/explorar-locales.html" hidden>Continuar</a>
-    <a href="#" class="boton boton-secundario" id="salir"><i data-icono="salir"></i>Cerrar sesión</a>
+    <div class="empuje" data-entrada hidden></div>
+    <a class="boton boton-primario" id="continuar" href="../PerfilAlumnos/explorar-locales.html" data-entrada hidden>Continuar</a>
+    <a href="#" class="boton boton-secundario" id="salir" data-entrada hidden><i data-icono="salir"></i>Cerrar sesión</a>
+    <nav class="barra-inferior" data-perfil>
+      <a href="../PerfilAlumnos/explorar-locales.html"><i data-icono="inicio"></i>Inicio</a>
+      <a href="../PerfilAlumnos/mapa.html"><i data-icono="mapa"></i>Mapa</a>
+      <a href="../PerfilAlumnos/confirmacion.html"><i data-icono="bolsa"></i>Mis pedidos</a>
+      <a href="../PerfilFavores/inicio.html"><i data-icono="ubicacion"></i>Favores</a>
+      <a href="alumno-datos-uat.html" class="actual" aria-current="page"><i data-icono="usuario"></i>Perfil</a>
+    </nav>
   </main>
 </body>
 </html>

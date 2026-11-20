@@ -23,3 +23,11 @@
 .correo-destino { color: var(--tinta); font-weight: 600; overflow-wrap: anywhere; }
 #reenviar { align-self: center; font-size: 14px; }
 #reenviar:disabled { color: var(--tinta-tenue); cursor: default; }
+
+/* Mi perfil del alumno: título con la puerta para cerrar sesión arriba a la derecha */
+.encabezado-perfil { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.encabezado-perfil > div { display: flex; flex-direction: column; gap: 6px; }
+.boton-salir { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; border: 1px solid var(--borde); background: var(--superficie); color: var(--rojo); cursor: pointer; }
+.boton-salir .icono { width: 22px; height: 22px; }
+.boton-salir:active { background: var(--rojo-claro); }
+.boton-salir:disabled { opacity: .5; cursor: default; }
