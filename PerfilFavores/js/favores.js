@@ -86,7 +86,7 @@ async function inicio() {
         <div class="ruta">
           <span><i class="letra-ruta a">A</i><b>${esc(f.pedidos.locales.nombre)}</b>${f.pedidos.locales.direccion ? ` · ${esc(f.pedidos.locales.direccion)}` : ""}</span>
           <span><i class="letra-ruta">B</i><b>${esc(f.puntos_entrega.nombre)}</b></span>
-          <span class="texto-suave">${icono("reloj")}Listo a las ${hora(f.pedidos.hora_recogida)} · ${km(f.distancia_m)} de A a B (~${minutosCaminando(f.distancia_m)} min)</span>
+          <span class="texto-suave">${icono("reloj")}Listo ${hora(f.pedidos.hora_recogida)} · ${km(f.distancia_m)} a pie</span>
         </div>
         <div class="cifras">
           <span>Adelantas <b>${dinero(f.pedidos.total)}</b></span>
@@ -154,8 +154,9 @@ function compartirAvance(f, alMoverse) {
   const aviso = document.getElementById("compartiendo");
   const decir = (texto) => { aviso.innerHTML = `${icono("reloj")}<span>${texto}</span>`; aviso.hidden = false; };
   if (vigilancia !== null) return;
-  if (!navigator.geolocation) return decir("Tu navegador no comparte ubicación: el alumno verá un tiempo aproximado.");
-  decir("Activa tu ubicación para que el alumno vea en cuánto tiempo llegas. Solo se comparte el tiempo, nunca dónde estás.");
+  const sinUbicacion = "Sin ubicación: el alumno ve un tiempo aproximado.";
+  if (!navigator.geolocation) return decir(sinUbicacion);
+  decir("Activa tu ubicación: el alumno solo ve a qué hora llegas, no dónde estás.");
   let ultimoEnvio = 0;
   vigilancia = navigator.geolocation.watchPosition(async ({ coords }) => {
     const pos = { lat: coords.latitude, lng: coords.longitude };
@@ -164,10 +165,8 @@ function compartirAvance(f, alMoverse) {
     ultimoEnvio = Date.now();
     const { data, error } = await db.rpc("compartir_avance", { p_favor_id: f.id, p_lat: pos.lat, p_lng: pos.lng });
     if (error) return console.warn(error);
-    decir(`Llegas cerca de las <b>${hora(data)}</b>. Al alumno solo le compartimos ese tiempo, nunca tu ubicación.`);
-  }, (error) => decir(error.code === 1
-    ? "Sin permiso de ubicación: el alumno verá un tiempo aproximado. Nunca se comparte dónde estás."
-    : "No pudimos leer tu ubicación; el alumno verá un tiempo aproximado."),
+    decir(`Llegas cerca de las <b>${hora(data)}</b>`);
+  }, () => decir(sinUbicacion),
   { enableHighAccuracy: true, maximumAge: 10000, timeout: 30000 });
 }
 
@@ -225,7 +224,7 @@ async function miFavor() {
         <span class="numero">2</span>
         <div class="cuerpo">
           <strong>Llévalo al punto de entrega</strong>
-          <span class="con-letra"><i class="letra-ruta">B</i>${esc(f.puntos_entrega.nombre)} · ${km(f.distancia_m)} (~${minutosCaminando(f.distancia_m)} min a pie)</span>
+          <span class="con-letra"><i class="letra-ruta">B</i>${esc(f.puntos_entrega.nombre)} · ${km(f.distancia_m)} a pie</span>
           <span>Entrégalo a ${esc(f.cliente?.nombre)}</span>
           ${f.referencia ? `<span class="texto-suave">“${esc(f.referencia)}”</span>` : ""}
           <div class="fila-cifra"><span>Te paga en efectivo</span><b>${dinero(cobro(f))}</b></div>
@@ -235,7 +234,7 @@ async function miFavor() {
                 <input class="campo" name="codigo" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required></label>
               <button class="boton boton-primario">Lo entregué</button>
             </form>`
-          : `<span class="texto-suave">Cuando el local te entregue el pedido, aquí escribes el código del alumno.</span>`}
+          : ""}
         </div>
       </li>`;
     if (!recogido) pintarQr(document.getElementById("codigo-pedido"), f.pedidos.id);

@@ -384,10 +384,9 @@ async function agregarProducto(local) {
     ponerImagen(etiquetaFoto, foto ? { url: foto, dibujo: null } : { url: urlDibujo(clave), dibujo: clave });
     etiquetaFoto.classList.toggle("con-foto", !!foto);
     selector.querySelectorAll("[data-clave]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.clave === clave));
-    document.getElementById("ayuda-dibujo").textContent = foto
-      ? "En el menú se ve tu foto. Toca un dibujo si prefieres usarlo en su lugar."
-      : dibujoElegido ? "Se ve este dibujo mientras no subas una foto."
-      : "Lo elegimos por el nombre del producto; toca otro si le queda mejor.";
+    const ayuda = document.getElementById("ayuda-dibujo");
+    ayuda.textContent = foto ? "Toca un dibujo para usarlo en vez de tu foto." : "";
+    ayuda.hidden = !foto;
     const boton = selector.querySelector('[aria-pressed="true"]');
     if (boton && clave !== mostrado)
       selector.scrollTo({ left: boton.offsetLeft - (selector.clientWidth - boton.offsetWidth) / 2, behavior: mostrado ? "smooth" : "auto" });
@@ -519,8 +518,8 @@ function colocarEnMapa(local) {
     return facultad ? ` Queda en la Facultad de ${nombreFacultad(facultad)}.` : "";
   };
   const pintarTexto = (guardado) => (texto.textContent = local.lat == null
-    ? "Toca el mapa donde está tu local (o usa tu ubicación estando ahí). Así aparece en el mapa de los alumnos y se calcula la cuota de los favores."
-    : (guardado ? "Listo, guardamos dónde está tu local." : "Tu local ya aparece en el mapa. Si no está bien, arrástralo o toca el lugar correcto para moverlo.") + dondeQueda());
+    ? "Toca el mapa donde está tu local."
+    : (guardado ? "Listo, guardado." : "Arrastra el punto para moverlo.") + dondeQueda());
   const mapa = crearMapa(document.getElementById("mapa-local"),
     local.lat == null ? {} : { centro: [local.lat, local.lng], zoom: 17 });
   let punto = null;

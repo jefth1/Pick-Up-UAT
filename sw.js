@@ -3,7 +3,7 @@
 // peticiones a otros dominios (Supabase, CDN, fuentes): esas siempre van a la red,
 // así los pedidos, menús y sesiones nunca salen de una copia vieja.
 // Cambiar VERSION borra la copia guardada en los celulares (por ejemplo, si cambia mucho el sitio).
-const VERSION = "pickup-v2";
+const VERSION = "pickup-v3";
 
 self.addEventListener("install", (evento) => {
   evento.waitUntil(

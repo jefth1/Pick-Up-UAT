@@ -25,6 +25,8 @@ const ICONOS = {
   subir: '<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
   camara: '<path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/>',
   mas: '<path d="M12 5v14M5 12h14"/>',
+  abajo: '<path d="m6 9 6 6 6-6"/>',
+  basura: '<path d="M4 7h16M10 11v6M14 11v6M5 7l1 13a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/>',
   menos: '<path d="M5 12h14"/>',
   mensaje: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/>',
   correo: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
