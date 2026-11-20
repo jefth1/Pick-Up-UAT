@@ -32,6 +32,8 @@ const ICONOS = {
   salir: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
   // Puerta abierta: cerrar sesión desde «Mi perfil» del alumno.
   "puerta-abierta": '<path d="M14 4h4a1 1 0 0 1 1 1v16M3 21h3M14 21h7"/><path d="M14 3.3v17.4a1 1 0 0 1-1.2 1L6 20.2V5.4a1 1 0 0 1 .8-1l5.2-1.1a1.6 1.6 0 0 1 2 1Z"/><path d="M11 12.5h.01"/>',
+  ojo: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  "ojo-tachado": '<path d="M10.6 5.1A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.4 3.3M6.6 6.6C3.7 8.4 2 12 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/>',
   // Mapa de la UAT
   mapa: '<path d="M9 4 3 6.5V20l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4Z"/><path d="M9 4v13.5M15 6.5V20"/>',
   mira: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',

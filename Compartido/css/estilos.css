@@ -69,6 +69,13 @@ svg.icono { width: 20px; height: 20px; flex: none; fill: none; stroke: currentCo
 .campo::placeholder { color: var(--tinta-tenue); }
 .campo:focus { outline: 2px solid var(--azul-claro); border-color: var(--azul); }
 textarea.campo { min-height: 96px; resize: vertical; }
+/* Campo de contraseña con botón de ojo para verla (ver-contrasena.js) */
+.campo-contrasena { position: relative; display: block; }
+.campo-contrasena .campo { padding-right: 50px; }
+.ver-contrasena { position: absolute; top: 0; right: 0; bottom: 0; width: 48px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 0 var(--radio) var(--radio) 0; background: none; color: var(--tinta-suave); cursor: pointer; }
+.ver-contrasena:hover, .ver-contrasena[aria-pressed="true"] { color: var(--azul); }
+.campo-contrasena .campo::-ms-reveal { display: none; } /* Edge trae su propio ojo: queda solo el nuestro */
+.ver-contrasena:focus-visible { outline: 2px solid var(--azul); outline-offset: -4px; }
 .fila-campos { display: flex; gap: 12px; }
 .fila-campos > * { flex: 1; min-width: 0; }
 .ayuda { font-size: 12px; font-weight: 400; color: var(--tinta-tenue); }
