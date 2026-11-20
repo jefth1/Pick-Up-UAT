@@ -1,6 +1,8 @@
 // Botón de ojo en cada campo de contraseña: muestra lo que se escribió para
 // revisarlo y corregirlo, y lo vuelve a ocultar. Necesita iconos.js antes.
 function agregarVerContrasena(raiz = document) {
+  // Con un iconos.js viejo (sin el ojo) no se pone nada, en vez de un botón vacío.
+  if (typeof ICONOS === "undefined" || !ICONOS.ojo) return;
   raiz.querySelectorAll('input[type="password"]:not([data-con-ojo])').forEach((campo) => {
     campo.dataset.conOjo = "";
     const caja = document.createElement("span");
