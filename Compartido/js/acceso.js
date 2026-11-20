@@ -228,7 +228,7 @@ async function verificarCorreo() {
       else reenviar.disabled = false;
       return avisar(mensajeError(error), "error");
     }
-    avisar(`Te enviamos otro correo a ${correo}. Si no llega, quizá ya verificaste: inicia sesión.`);
+    avisar(`Te enviamos otro código a ${correo}. Si no llega, quizá ya verificaste: inicia sesión.`);
     cuentaRegresiva(reenviar);
   }
 }
