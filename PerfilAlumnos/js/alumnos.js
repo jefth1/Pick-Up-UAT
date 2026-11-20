@@ -211,39 +211,41 @@ function fechaDeHoy(texto, ahora) {
   return fecha.toISOString();
 }
 
+// "17:50" → "5:50 p.m.", como la muestra el reloj del celular.
+const horaLegible = (t) => new Date(2000, 0, 1, aMinutos(t) / 60, aMinutos(t) % 60)
+  .toLocaleTimeString("es-MX", { hour: "numeric", minute: "2-digit" });
+
 async function verCarrito() {
   const c = carrito.leer();
   const lista = document.getElementById("carrito");
+  const barra = document.getElementById("barra-pagar");
   const boton = document.getElementById("continuar-pago");
   const pintar = () => {
     lista.innerHTML = c.items.map((x, i) => `<li class="fila-carrito">
-      <span class="cant">${x.cantidad}×</span>
       <div><strong>${esc(x.nombre)}</strong>${x.nota ? `<span class="nota">“${esc(x.nota)}”</span>` : ""}
-        <span class="mini-cantidad"><button data-menos="${i}" aria-label="Uno menos">−</button>
-          <button data-mas="${i}" aria-label="Uno más">+</button>
-          <button class="quitar" data-quitar="${i}">Quitar</button></span></div>
-      <span>${dinero(x.precio * x.cantidad)}</span></li>`)
+        <span class="precio">${dinero(x.precio * x.cantidad)}</span></div>
+      <span class="paso-cantidad">${x.cantidad > 1
+        ? `<button data-menos="${i}" aria-label="Uno menos">${icono("menos")}</button>`
+        : `<button data-quitar="${i}" aria-label="Quitar">${icono("basura")}</button>`}
+        <b>${x.cantidad}</b>
+        <button data-mas="${i}" aria-label="Uno más" ${x.cantidad >= 20 ? "disabled" : ""}>${icono("mas")}</button></span></li>`)
       .join("") || `<li class="vacio"><strong>Tu carrito está vacío</strong>
-        <span>Elige un local y agrega lo que quieras pedir.</span>
         <a class="boton boton-secundario" href="explorar-locales.html">Ver locales</a></li>`;
-    const total = dinero(totalConFavor(c));
-    document.getElementById("subtotal-carrito").textContent = dinero(totalDe(c));
-    document.getElementById("fila-tarifa").hidden = !c.favor;
-    document.getElementById("tarifa-carrito").textContent = dinero(c.favor?.tarifa || 0);
-    document.getElementById("total-carrito").textContent = total;
-    boton.textContent = `Ir a pagar · ${total}`;
+    document.getElementById("total-carrito").textContent = dinero(totalConFavor(c));
+    document.getElementById("etiqueta-total").textContent = c.favor ? "Total con cuota" : "Total";
     const vacio = !c.items.length;
-    document.getElementById("totales").hidden = vacio;
+    barra.hidden = vacio;
+    document.querySelector(".pantalla").classList.toggle("con-barra-pagar", !vacio);
     if (vacio) {
       document.getElementById("agregar-mas").hidden = true;
       document.getElementById("seccion-hora").hidden = true;
       document.getElementById("seccion-entrega").hidden = true;
-      boton.hidden = true;
     }
   };
   lista.addEventListener("click", (e) => {
-    const { quitar, menos, mas } = e.target.dataset;
-    if (quitar === undefined && menos === undefined && mas === undefined) return;
+    const b = e.target.closest("button[data-menos], button[data-mas], button[data-quitar]");
+    if (!b) return;
+    const { quitar, menos, mas } = b.dataset;
     const i = Number(quitar ?? menos ?? mas);
     if (mas !== undefined) c.items[i].cantidad = Math.min(20, c.items[i].cantidad + 1);
     else if (menos !== undefined && c.items[i].cantidad > 1) c.items[i].cantidad--;
@@ -267,38 +269,45 @@ async function verCarrito() {
   agregarMas.hidden = !c.items.length;
   document.getElementById("seccion-hora").hidden = false;
 
+  // Solo el reloj: sin textos de ayuda. Si eligen una hora fuera de la que el local puede
+  // (de ahora + 15 min al cierre), se avisa abajo en una línea y no deja seguir.
   const rango = rangoRecogida(local);
   const campo = document.getElementById("hora");
-  const barra = document.getElementById("rango");
-  const aviso = document.getElementById("rango-hora");
-  const hoy = horarioHoy(local);
-  document.getElementById("hora-ahora").textContent = aTexto(ahoraEnTamaulipas().minutos);
-  document.getElementById("hora-cierre").textContent = hoy ? hoy.cierra.slice(0, 5) : "Cerrado";
+  const caja = document.getElementById("caja-hora");
+  const aviso = document.getElementById("aviso-hora");
   if (!rango) {
-    campo.disabled = barra.disabled = true;
+    caja.hidden = true;
     aviso.textContent = "El local ya no recibe pedidos hoy.";
-    return (boton.hidden = true);
+    aviso.hidden = false;
+    return;
   }
   campo.min = aTexto(rango.desde);
   campo.max = aTexto(rango.hasta);
-  barra.min = rango.desde;
-  barra.max = rango.hasta;
   const guardada = c.hora?.texto;
   campo.value = guardada >= campo.min && guardada <= campo.max ? guardada : campo.min;
-  barra.value = aMinutos(campo.value);
-  aviso.textContent = `Solo puedes elegir una hora entre las ${campo.min} y el cierre del local (${campo.max}).`;
+  const horaValida = () => !!campo.value && campo.value >= campo.min && campo.value <= campo.max;
+  const revisarHora = () => {
+    aviso.textContent = `Elige entre ${horaLegible(campo.min)} y ${horaLegible(campo.max)}`;
+    aviso.hidden = horaValida();
+    caja.classList.toggle("fuera", !aviso.hidden);
+  };
+  campo.addEventListener("input", revisarHora);
+  // Tocar cualquier parte de la caja (también el reloj) abre el selector de hora.
+  caja.addEventListener("click", (e) => {
+    if (e.target === campo || !("showPicker" in campo)) return;
+    try { campo.showPicker(); } catch { /* el navegador ya lo abrió */ }
+  });
   opcionesEntrega(c, local, pintar);
-  barra.addEventListener("input", () => (campo.value = aTexto(Number(barra.value))));
-  campo.addEventListener("input", () => campo.value && (barra.value = aMinutos(campo.value)));
-  boton.hidden = false;
+  boton.disabled = false;
 
-  boton.addEventListener("click", (e) => {
-    if (!campo.value || campo.value < campo.min || campo.value > campo.max) {
-      e.preventDefault();
-      return alert(`Elige una hora entre ${campo.min} y ${campo.max}.`);
+  boton.addEventListener("click", () => {
+    if (!horaValida()) {
+      revisarHora();
+      return caja.scrollIntoView({ behavior: "smooth", block: "center" });
     }
     c.hora = { texto: campo.value, fecha: fechaDeHoy(campo.value, ahoraEnTamaulipas().minutos) };
     carrito.guardar(c);
+    location.href = "pago.html";
   });
 }
 
@@ -368,16 +377,11 @@ async function opcionesEntrega(c, local, pintar) {
 
   let cotizacion = null;
   const pintarRuta = () => {
-    const { distancia_m: d, tarifa, elegido } = cotizacion;
-    const minutos = minutosCaminando(d);
-    resumen.innerHTML = `<span><i class="letra-ruta a">A</i><span><b>${esc(local.nombre)}</b> <span class="texto-tenue">· se recoge</span></span></span>
-      <span><i class="letra-ruta">B</i><span><b>${esc(elegido.nombre)}</b> <span class="texto-tenue">· te lo entregan</span></span></span>
-      <div class="cifras-ruta"><span><b>${textoDistancia(d)}</b> de A a B</span><span><b>~${minutos} min</b> a pie</span><span>Cuota <b>${dinero(tarifa)}</b></span></div>`;
-    resumen.hidden = false;
+    const { distancia_m: d, tarifa } = cotizacion;
     const hora = document.getElementById("hora").value;
-    const llega = hora ? aTexto((aMinutos(hora) + minutos) % 1440) : null;
-    aviso.textContent = "Otro alumno paga tu pedido en el local y te lo lleva. Al recibirlo le pagas en efectivo el pedido " +
-      `más la cuota, que sale de la distancia de A a B.${llega ? ` Si alguien lo toma, te llegaría cerca de las ${llega}.` : ""}`;
+    const llega = hora ? aTexto((aMinutos(hora) + minutosCaminando(d)) % 1440) : null;
+    resumen.innerHTML = `<span><b>${textoDistancia(d)}</b> a pie</span>${llega ? `<span>Llega <b>~${horaLegible(llega)}</b></span>` : ""}<span>Cuota <b>${dinero(tarifa)}</b></span>`;
+    resumen.hidden = false;
   };
 
   const cotizar = async () => {
@@ -388,9 +392,11 @@ async function opcionesEntrega(c, local, pintar) {
     // Quien hace el favor paga el pedido en efectivo: hay un tope para no adelantar mucho.
     if (totalDe(c) > tope) {
       resumen.hidden = true;
-      aviso.textContent = `Para que te lo lleven, el pedido no puede pasar de ${dinero(tope)}, porque quien te hace el favor lo paga en efectivo.`;
+      aviso.textContent = `Para que te lo lleven, el pedido debe ser de ${dinero(tope)} o menos.`;
+      aviso.hidden = false;
       return c.favor && quitarFavor();
     }
+    aviso.hidden = true;
     const { data, error } = await db.rpc("cotizar_favor", { p_local_id: local.id, p_punto_id: elegido.id });
     if (error) return mostrarError(error);
     if (!conFavor() || String(elegido.id) !== punto.value) return; // mientras, eligió otra cosa
@@ -403,10 +409,9 @@ async function opcionesEntrega(c, local, pintar) {
   };
   seccion.addEventListener("change", cotizar);
   referencia.addEventListener("input", () => c.favor && ((c.favor.referencia = referencia.value.trim()), carrito.guardar(c)));
-  // La hora de llegada estimada sigue a la hora de recogida (campo o barra).
+  // La hora de llegada estimada sigue a la hora de recogida.
   const repintar = () => c.favor && cotizacion && conFavor() && pintarRuta();
   document.getElementById("hora").addEventListener("input", repintar);
-  document.getElementById("rango").addEventListener("input", repintar);
   cotizar();
 }
 
@@ -424,9 +429,8 @@ async function pago() {
   document.getElementById("hora-pago").textContent = c.hora.texto;
   if (c.favor) {
     const favor = document.getElementById("favor-pago");
-    favor.textContent = `Incluye ${dinero(c.favor.tarifa)} de cuota del favor: te lo lleva otro alumno`;
+    favor.textContent = `Incluye ${dinero(c.favor.tarifa)} de cuota`;
     favor.hidden = false;
-    document.getElementById("texto-pago").textContent = "Le pagas todo en efectivo a quien te lo lleve.";
     document.getElementById("pago-local").hidden = true;
     document.getElementById("pago-favor").hidden = false;
     document.querySelector("#pago-favor input").checked = true;

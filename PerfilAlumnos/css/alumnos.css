@@ -32,28 +32,44 @@
 .selector-cantidad input { width: 32px; border: 0; text-align: center; font: inherit; font-weight: 600; background: none; -moz-appearance: textfield; }
 .selector-cantidad input::-webkit-inner-spin-button { display: none; }
 
-/* Carrito */
+/* Carrito: productos con su contador, hora, entrega y el total fijo abajo. */
 .lista-carrito { list-style: none; margin: 0; display: flex; flex-direction: column; gap: 14px; }
-.fila-carrito { display: flex; gap: 10px; align-items: flex-start; }
-.fila-carrito .cant { color: var(--azul); font-weight: 600; }
-.fila-carrito > div { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.fila-carrito { display: flex; gap: 12px; align-items: center; }
+.fila-carrito > div { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .fila-carrito .nota { font-size: 13px; color: var(--tinta-suave); }
-.quitar { align-self: flex-start; border: 0; background: none; padding: 0; color: var(--rojo); font: inherit; font-size: 13px; cursor: pointer; }
 .lista-carrito .vacio { padding: 16px; }
+/* Contador [− 2 +]: con 1, el "−" es un bote de basura y lo quita. */
+.paso-cantidad { flex: none; display: inline-flex; align-items: center; border: 1px solid var(--borde); border-radius: 999px; background: var(--superficie); }
+.paso-cantidad button { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 999px; background: none; color: var(--tinta); cursor: pointer; }
+.paso-cantidad button:disabled { color: var(--tinta-tenue); cursor: default; }
+.paso-cantidad button[data-quitar] { color: var(--rojo); }
+.paso-cantidad .icono { width: 16px; height: 16px; }
+.paso-cantidad b { min-width: 18px; text-align: center; font-weight: 600; }
 
-.seccion-hora { display: flex; flex-direction: column; gap: 14px; }
-.campo-hora { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--azul); border-radius: var(--radio); background: var(--superficie); cursor: pointer; }
-.campo-hora > span { display: flex; flex-direction: column; gap: 2px; font-size: 14px; }
-.campo-hora input { border: 0; background: none; font: inherit; font-size: 24px; font-weight: 700; color: var(--azul); text-align: right; min-width: 0; }
-.rango { width: 100%; margin: 0; accent-color: var(--azul); height: 22px; }
-.limites { display: flex; justify-content: space-between; font-size: 12px; }
-.limites > span { display: flex; flex-direction: column; gap: 2px; color: var(--tinta-suave); }
-.limites > span:last-child { text-align: right; }
-.limites strong { color: var(--tinta); font-weight: 500; }
+.seccion-hora { display: flex; flex-direction: column; gap: 10px; }
+/* Toda la caja abre el reloj del celular. */
+.campo-hora { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--azul); border-radius: var(--radio); background: var(--superficie); color: var(--azul); cursor: pointer; }
+.campo-hora .icono { width: 26px; height: 26px; }
+.campo-hora .flecha { width: 20px; height: 20px; color: var(--tinta-suave); }
+.campo-hora input { flex: 1; min-width: 0; border: 0; background: none; font: inherit; font-size: 26px; font-weight: 700; color: var(--azul); cursor: pointer; }
+.campo-hora input:focus { outline: 0; }
+.campo-hora:focus-within { box-shadow: 0 0 0 3px var(--azul-claro); }
+.campo-hora.fuera { border-color: var(--rojo); }
+.campo-hora input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; margin: 0; opacity: 0; cursor: pointer; }
+.aviso-hora { font-size: 13px; color: var(--rojo); }
+.aviso-hora.normal { color: var(--tinta-suave); }
 
-.totales { display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--tinta-suave); }
-.totales div { display: flex; justify-content: space-between; }
-.totales .total { padding-top: 10px; border-top: 1px solid var(--borde); color: var(--tinta); font-size: 16px; font-weight: 700; }
+.datos-favor { display: flex; flex-direction: column; gap: 12px; }
+.campo-punto { position: relative; display: block; color: var(--azul); }
+.campo-punto .icono { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; pointer-events: none; }
+.campo-punto select { padding-left: 42px; }
+
+.pantalla.con-barra-pagar { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
+.barra-pagar { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 16px; padding: 12px max(24px, calc((100% - 432px) / 2)) calc(12px + env(safe-area-inset-bottom)); background: var(--superficie); border-top: 1px solid var(--borde); }
+.total-barra { display: flex; flex-direction: column; line-height: 1.15; }
+.total-barra span { font-size: 12px; color: var(--tinta-suave); white-space: nowrap; }
+.total-barra strong { font-size: 22px; }
+.barra-pagar .boton { flex: 1; width: auto; }
 
 /* Pago */
 .tarjeta-total { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: var(--radio-grande); background: var(--azul-claro); color: var(--azul); font-size: 13px; }
@@ -91,8 +107,6 @@
 .agregar-rapido { position: absolute; right: 10px; bottom: 10px; display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: 999px; background: var(--azul); color: #fff; box-shadow: 0 0 0 3px var(--superficie); cursor: pointer; }
 .agregar-rapido .icono { width: 18px; height: 18px; }
 .agregar-rapido.agregado { background: var(--verde); }
-.mini-cantidad { display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; }
-.mini-cantidad button:not(.quitar) { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--borde); border-radius: 999px; background: var(--superficie); color: var(--tinta); font: inherit; font-weight: 600; cursor: pointer; }
 .agregar-mas { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; font-size: 14px; }
 .agregar-mas .icono { width: 16px; height: 16px; }
 .segmentado label.deshabilitada { opacity: .5; cursor: not-allowed; }

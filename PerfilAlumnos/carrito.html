@@ -36,20 +36,13 @@
     <ul id="carrito" class="tarjeta lista-carrito"></ul>
     <a class="enlace agregar-mas" id="agregar-mas" href="explorar-locales.html" hidden><i data-icono="mas"></i>Agregar más productos</a>
     <section class="seccion-hora" id="seccion-hora" hidden>
-      <div>
-        <h2>Hora de recogida</h2>
-        <p class="texto-tenue">Hoy · elige a qué hora pasas por tu pedido</p>
-      </div>
-      <label class="campo-hora">
-        <span><span class="etiqueta">Hora de recogida</span><span>Toca para elegir</span></span>
-        <input type="time" id="hora" step="300" required>
+      <h2>Hora de recogida</h2>
+      <label class="campo-hora" id="caja-hora">
+        <i data-icono="reloj"></i>
+        <input type="time" id="hora" step="300" required aria-label="Hora de recogida">
+        <i data-icono="abajo" class="flecha"></i>
       </label>
-      <input type="range" class="rango" id="rango" step="5" aria-label="Hora de recogida">
-      <div class="limites">
-        <span><strong>Ahora</strong><span id="hora-ahora">--:--</span></span>
-        <span><strong>Cierre</strong><span id="hora-cierre">--:--</span></span>
-      </div>
-      <p class="aviso-azul" id="rango-hora">Solo puedes elegir una hora entre la actual y la de cierre del local.</p>
+      <p class="aviso-hora" id="aviso-hora" role="status" hidden></p>
     </section>
     <section class="seccion-entrega" id="seccion-entrega" hidden>
       <h2>¿Cómo lo recibes?</h2>
@@ -58,22 +51,18 @@
         <label><input type="radio" name="entrega" value="favor">Que me lo lleven</label>
       </div>
       <p class="texto-tenue" id="motivo-sin-favor" hidden></p>
-      <div class="formulario" id="datos-favor" hidden>
-        <label class="campo-grupo">Punto de entrega <select class="campo" id="punto-entrega"></select>
-          <span class="ayuda">También puedes tocarlo en el mapa.</span></label>
+      <div class="datos-favor" id="datos-favor" hidden>
+        <label class="campo-punto"><i data-icono="ubicacion"></i><select class="campo" id="punto-entrega" aria-label="Punto de entrega"></select></label>
         <div class="mapa mapa-ruta" id="mapa-favor"></div>
-        <div class="ruta-favor" id="ruta-favor" hidden></div>
-        <label class="campo-grupo">Referencia <input class="campo" id="referencia" maxlength="120" placeholder="Ej. entrada principal, mochila roja"></label>
-        <p class="aviso-azul" id="aviso-favor">Otro alumno lo recoge y te lo lleva.</p>
+        <p class="cifras-ruta" id="ruta-favor" hidden></p>
+        <p class="aviso-hora" id="aviso-favor" hidden></p>
+        <input class="campo" id="referencia" maxlength="120" placeholder="Referencia, ej. mochila roja" aria-label="Referencia para encontrarte">
       </div>
     </section>
-    <div class="empuje"></div>
-    <div class="totales" id="totales" hidden>
-      <div><span>Subtotal</span><span id="subtotal-carrito">$0</span></div>
-      <div id="fila-tarifa" hidden><span>Cuota del favor</span><span id="tarifa-carrito">$0</span></div>
-      <div class="total"><span>Total</span><span id="total-carrito">$0</span></div>
+    <div class="barra-pagar" id="barra-pagar" hidden>
+      <div class="total-barra"><span id="etiqueta-total">Total</span><strong id="total-carrito">$0</strong></div>
+      <button class="boton boton-primario" id="continuar-pago" disabled>Ir a pagar</button>
     </div>
-    <a class="boton boton-primario" id="continuar-pago" href="pago.html" hidden>Ir a pagar</a>
   </main>
 </body>
 </html>
