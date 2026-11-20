@@ -20,6 +20,7 @@ Pick-Up-UAT/
 │   └── js/local.js
 ├── PerfilFavores/        → favores entre alumnos: favores libres, el favor en curso, ganancias
 ├── PerfilAdmin/mapa.html → editor de facultades y zonas del mapa (solo administradores)
+├── PerfilAdmin/aprobar-local.html → aceptar un local nuevo desde el correo de aviso
 ├── Compartido/           → lo que usan los dos perfiles
 │   ├── css/estilos.css   → paleta y componentes del diseño
 │   ├── css/mapa.css      → mapa de la UAT: marcadores, ruta A → B, hora de llegada

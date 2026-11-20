@@ -9,3 +9,14 @@
 .quitados summary { cursor: pointer; color: var(--tinta-suave); font-size: 14px; }
 .quitados .lista { margin-top: 10px; gap: 8px; }
 .fila-quitado { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--tinta-suave); }
+
+/* Aceptar un local nuevo (aprobar-local.html, enlace del correo de aviso). */
+.pantalla-aprobar { max-width: 480px; }
+.pantalla-aprobar #local { display: flex; flex-direction: column; gap: 14px; }
+.encabezado-local { display: flex; align-items: center; gap: 12px; }
+.encabezado-local h2 { margin: 0 0 4px; font-size: 18px; }
+.logo-local { flex: none; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 14px; background: var(--azul-claro); color: var(--azul); overflow: hidden; }
+.logo-local img { width: 100%; height: 100%; object-fit: cover; }
+.logo-local .icono { width: 26px; height: 26px; }
+.datos-solo-lectura dd a { font-weight: 600; margin-left: 4px; }
+.pantalla-aprobar .acciones-abajo { margin-top: auto; padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }

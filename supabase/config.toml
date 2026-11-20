@@ -1,0 +1,4 @@
+# La función la llaman la base (al registrarse un local) y la página de aprobar sin iniciar
+# sesión; ella misma revisa la firma del enlace antes de mostrar o aceptar un local.
+[functions.locales-nuevos]
+verify_jwt = false

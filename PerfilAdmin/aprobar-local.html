@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://gdexcnbivhxqkfryoygf.supabase.co; connect-src 'self' https://gdexcnbivhxqkfryoygf.supabase.co wss://gdexcnbivhxqkfryoygf.supabase.co; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aprobar local · Pick Up UAT</title>
+  <meta name="theme-color" content="#1B3A6B">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Compartido/img/iconos/favicon-32.png">
+  <link rel="apple-touch-icon" href="../Compartido/img/iconos/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../Compartido/css/estilos.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="../Compartido/vendor/supabase-js-2.117.0/supabase.js" defer></script>
+  <script src="../Compartido/js/supabase.js" defer></script>
+  <script src="../Compartido/js/iconos.js" defer></script>
+  <script src="js/aprobar-local.js" defer></script>
+</head>
+<body>
+  <main class="pantalla pantalla-aprobar">
+    <header class="encabezado-pantalla">
+      <h1>Local nuevo</h1>
+      <p class="texto-suave">Revisa sus datos. Mientras no lo aceptes, los alumnos no lo ven ni le pueden pedir.</p>
+    </header>
+    <p class="texto-suave" id="cargando">Cargando el local…</p>
+    <section id="local" hidden>
+      <div class="encabezado-local">
+        <span class="logo-local" id="logo"><i data-icono="tienda"></i></span>
+        <div>
+          <h2 id="nombre"></h2>
+          <span class="estado" id="estado"></span>
+        </div>
+      </div>
+      <dl class="tarjeta datos-solo-lectura" id="datos"></dl>
+    </section>
+    <p class="mensaje" id="mensaje" hidden></p>
+    <div class="acciones-abajo">
+      <button type="button" class="boton boton-primario" id="aprobar" hidden>Aceptar local</button>
+    </div>
+  </main>
+</body>
+</html>
