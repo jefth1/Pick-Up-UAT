@@ -65,6 +65,7 @@ flowchart TD
 | Barra del local · Ventas | `PerfilLocal/ventas.html` |
 | Barra del local · Perfil | `PerfilLocal/perfil.html` (datos, logo, horario, su lugar en el mapa, cerrar sesión) |
 | (sin pantalla en Figma) Lugares del mapa | `PerfilAdmin/mapa.html` (solo administradores: colocar, mover, renombrar y quitar facultades y zonas) |
+| (sin pantalla en Figma) Aceptar local nuevo | `PerfilAdmin/aprobar-local.html` (se abre desde el correo de aviso cuando se registra un local; botón «Aceptar local») |
 
 La versión de escritorio del local (secundaria) usa las mismas páginas de `PerfilLocal/`: desde 900 px de ancho la barra inferior pasa a barra lateral y los pedidos se ven en tres columnas (Nuevos, En preparación, Listos).
 

@@ -225,7 +225,8 @@ Migración `20261110233000_seguridad_lanzamiento.sql` (10 de noviembre de 2026):
 - **Locales nuevos esperan aprobación.** Al registrarse, `locales.aprobado` queda en `false`:
   el local entra a su panel (con un aviso de que está en revisión) y puede armar su menú, pero
   los alumnos no lo ven ni le pueden pedir. Para aprobarlo, en **Table Editor → locales** pon
-  `aprobado` en `true`, o en el **SQL Editor**:
+  `aprobado` en `true`, o en el **SQL Editor** (desde el 20 de noviembre también llega un correo
+  con un botón para aceptarlo: ver «Aviso por correo de locales nuevos»):
 
   ```sql
   update public.locales set aprobado = true where nombre = 'Nombre del local';
@@ -252,6 +253,38 @@ Revisado también: RLS activo en todas las tablas, en el navegador solo va la an
 service_role, tampoco en el historial del repo), todo lo que viene de la base pasa por `esc()`
 antes de entrar a la página y el bucket de fotos solo acepta JPG, PNG y WebP de hasta 5 MB en
 la carpeta del propio local.
+
+## Aviso por correo de locales nuevos
+
+Migración `20261120230000_aviso_locales_nuevos.sql` y Edge Function
+`supabase/functions/locales-nuevos/` (20 de noviembre de 2026).
+
+1. Cuando un local termina su registro (verifica su correo y se crea su fila en `locales`), un
+   trigger llama a la función con `pg_net`. Si eso falla, el registro sigue igual.
+2. La función espera unos segundos a que se guarde el horario y le manda al administrador un
+   correo con nombre, encargado, dentro/fuera de la UAT, dirección, horario, correo del local y
+   un botón **Revisar y aceptar**. Se manda una sola vez por local (`locales.aviso_enviado_en`);
+   si el correo falla, la marca se quita.
+3. El botón abre `PerfilAdmin/aprobar-local.html?local=<id>&firma=<firma>`. Abrir la página no
+   acepta nada (Outlook abre solo los enlaces de los correos): se acepta con el botón
+   **Aceptar local**. La firma es un HMAC del id con la clave `service_role`, así que el enlace
+   solo sirve para ese local y no hace falta iniciar sesión.
+
+Las funciones de la base que usa (`tomar_aviso_local`, `soltar_aviso_local`,
+`ver_local_para_aprobar`, `aprobar_local`) solo las puede llamar `service_role`.
+
+**Para activarlo** (una sola vez):
+
+- Aplicar la migración y subir la función con `verify_jwt = false` (`supabase/config.toml`):
+  `supabase functions deploy locales-nuevos --no-verify-jwt`.
+- En el panel, **Edge Functions → Secrets**, agregar:
+  - `CORREO_AVISOS`: a quién le llega el aviso (varios, separados por comas).
+  - `GMAIL_USUARIO`: el Gmail que lo manda.
+  - `GMAIL_CONTRASENA`: la [contraseña de aplicación](https://myaccount.google.com/apppasswords)
+    de ese Gmail (puede ser la misma del SMTP de Auth).
+
+Si un local se registró antes de poner los secretos, no se le avisa: se ve en Table Editor
+(`aprobado = false`). Para cambiar a quién le llega, basta cambiar `CORREO_AVISOS`.
 
 ## Pendiente
 
