@@ -3,7 +3,7 @@
 // peticiones a otros dominios (Supabase, CDN, fuentes): esas siempre van a la red,
 // así los pedidos, menús y sesiones nunca salen de una copia vieja.
 // Cambiar VERSION borra la copia guardada en los celulares (por ejemplo, si cambia mucho el sitio).
-const VERSION = "pickup-v3";
+const VERSION = "pickup-v4";
 
 self.addEventListener("install", (evento) => {
   evento.waitUntil(
@@ -23,6 +23,25 @@ self.addEventListener("fetch", (evento) => {
   const { request } = evento;
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
+
+  // Las bibliotecas de Compartido/vendor/ llevan la versión en el nombre de su carpeta
+  // (supabase-js-2.117.0, leaflet-1.9.4…) y nunca cambian: salen de la copia guardada sin
+  // esperar a la red. Son lo más pesado del sitio.
+  if (url.pathname.includes("/Compartido/vendor/")) {
+    evento.respondWith(caches.match(request).then((guardada) => guardada || deLaRed(request)));
+    return;
+  }
+  // Dibujos, íconos y datos del mapa casi nunca cambian: se muestra la copia guardada al
+  // instante y se actualiza por detrás para la próxima vez.
+  if (/\/Compartido\/(img|datos)\//.test(url.pathname)) {
+    evento.respondWith(caches.match(request).then((guardada) => {
+      const nueva = deLaRed(request);
+      if (!guardada) return nueva;
+      evento.waitUntil(nueva.catch(() => {}));
+      return guardada;
+    }));
+    return;
+  }
 
   // Primero la red (para ver siempre la versión publicada); la caché solo sin conexión.
   // cache: "no-cache" le pregunta al servidor si el archivo cambió en vez de usar la copia
@@ -45,3 +64,14 @@ self.addEventListener("fetch", (evento) => {
       })
   );
 });
+
+// Pide a la red (preguntando si cambió) y guarda la copia si salió bien.
+function deLaRed(request) {
+  return fetch(request, { cache: "no-cache" }).then((respuesta) => {
+    if (respuesta.ok) {
+      const copia = respuesta.clone();
+      caches.open(VERSION).then((cache) => cache.put(request, copia));
+    }
+    return respuesta;
+  });
+}

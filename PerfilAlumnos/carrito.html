@@ -15,6 +15,7 @@
   <link rel="apple-touch-icon" href="../Compartido/img/iconos/apple-touch-icon.png">
   <script src="../Compartido/js/pwa.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://gdexcnbivhxqkfryoygf.supabase.co" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="../Compartido/vendor/leaflet-1.9.4/leaflet.css">
   <link rel="stylesheet" href="../Compartido/css/estilos.css">
@@ -37,11 +38,12 @@
     <a class="enlace agregar-mas" id="agregar-mas" href="explorar-locales.html" hidden><i data-icono="mas"></i>Agregar más productos</a>
     <section class="seccion-hora" id="seccion-hora" hidden>
       <h2>Hora de recogida</h2>
-      <label class="campo-hora" id="caja-hora">
+      <button type="button" class="campo-hora" id="caja-hora" aria-haspopup="dialog">
         <i data-icono="reloj"></i>
-        <input type="time" id="hora" step="300" required aria-label="Hora de recogida">
+        <span id="hora-texto">--:--</span>
         <i data-icono="abajo" class="flecha"></i>
-      </label>
+      </button>
+      <input type="hidden" id="hora">
       <p class="aviso-hora" id="aviso-hora" role="status" hidden></p>
     </section>
     <section class="seccion-entrega" id="seccion-entrega" hidden>
@@ -64,5 +66,14 @@
       <button class="boton boton-primario" id="continuar-pago" disabled>Ir a pagar</button>
     </div>
   </main>
+  <div class="hoja" id="hoja-hora" hidden>
+    <div class="hoja-fondo" data-cerrar></div>
+    <div class="hoja-panel" role="dialog" aria-modal="true" aria-labelledby="titulo-hoja-hora">
+      <div class="hoja-cabeza"><h2 id="titulo-hoja-hora">Hora de recogida</h2>
+        <button type="button" class="cerrar-hoja" data-cerrar aria-label="Cerrar"><i data-icono="cerrar"></i></button></div>
+      <div class="horas-hoja" id="horas-hoja"></div>
+      <div class="minutos-hoja" id="minutos-hoja"></div>
+    </div>
+  </div>
 </body>
 </html>

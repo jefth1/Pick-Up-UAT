@@ -139,13 +139,15 @@ async function pedidos(local) {
     }
   };
   const cargar = async () => {
+    // Los pedidos abiertos y lo vendido hoy se piden a la vez.
+    const vendidosListos = Promise.resolve(db.from("pedidos").select("total")
+      .eq("local_id", local.id).eq("estado", "entregado").gte("actualizado_en", inicioDeHoy()));
     const { data, error } = await db.from("pedidos").select("*, alumnos(nombre), pedido_productos(*)")
       .eq("local_id", local.id).in("estado", ["nuevo", "aceptado", "preparando", "listo"]).order("hora_recogida");
     if (error) return mostrarError(error);
     ultimos = data;
     pintarListas();
-    const { data: vendidos } = await db.from("pedidos").select("total")
-      .eq("local_id", local.id).eq("estado", "entregado").gte("actualizado_en", inicioDeHoy());
+    const { data: vendidos } = await vendidosListos;
     document.getElementById("ventas-hoy").textContent = dinero((vendidos || []).reduce((s, p) => s + Number(p.total), 0));
   };
 

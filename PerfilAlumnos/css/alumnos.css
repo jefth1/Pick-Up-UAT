@@ -47,17 +47,31 @@
 .paso-cantidad b { min-width: 18px; text-align: center; font-weight: 600; }
 
 .seccion-hora { display: flex; flex-direction: column; gap: 10px; }
-/* Toda la caja abre el reloj del celular. */
-.campo-hora { position: relative; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--azul); border-radius: var(--radio); background: var(--superficie); color: var(--azul); cursor: pointer; }
+/* La caja abre la hoja con las horas disponibles. */
+.campo-hora { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 16px; border: 1.5px solid var(--azul); border-radius: var(--radio); background: var(--superficie); color: var(--azul); font: inherit; text-align: left; cursor: pointer; }
 .campo-hora .icono { width: 26px; height: 26px; }
+.campo-hora #hora-texto { flex: 1; font-size: 26px; font-weight: 700; line-height: 1.1; }
 .campo-hora .flecha { width: 20px; height: 20px; color: var(--tinta-suave); }
-.campo-hora input { flex: 1; min-width: 0; border: 0; background: none; font: inherit; font-size: 26px; font-weight: 700; color: var(--azul); cursor: pointer; }
-.campo-hora input:focus { outline: 0; }
-.campo-hora:focus-within { box-shadow: 0 0 0 3px var(--azul-claro); }
+.campo-hora:focus-visible { outline: 0; box-shadow: 0 0 0 3px var(--azul-claro); }
 .campo-hora.fuera { border-color: var(--rojo); }
-.campo-hora input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: auto; height: auto; margin: 0; opacity: 0; cursor: pointer; }
 .aviso-hora { font-size: 13px; color: var(--rojo); }
 .aviso-hora.normal { color: var(--tinta-suave); }
+
+/* Hoja de abajo (celular): horas y luego minutos, solo los que se pueden. */
+.hoja { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+.hoja-fondo { position: absolute; inset: 0; background: rgba(20, 20, 20, .45); animation: aparecer .18s ease-out; }
+.hoja-panel { position: relative; width: 100%; max-width: 480px; max-height: 85dvh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 20px 24px calc(24px + env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0; background: var(--superficie); animation: subir .22s ease-out; }
+.hoja-cabeza { display: flex; justify-content: space-between; align-items: center; }
+.cerrar-hoja { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 999px; background: var(--gris); color: var(--tinta); cursor: pointer; }
+.horas-hoja, .minutos-hoja { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.minutos-hoja { padding-top: 16px; border-top: 1px solid var(--borde); }
+.horas-hoja button, .minutos-hoja button { min-height: 46px; border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); color: var(--tinta); font: inherit; font-weight: 600; cursor: pointer; }
+.horas-hoja button[aria-pressed="true"] { border-color: var(--azul); background: var(--azul-claro); color: var(--azul); }
+.minutos-hoja button { font-size: 17px; }
+.minutos-hoja button[aria-pressed="true"] { border-color: var(--azul); background: var(--azul); color: #fff; }
+@keyframes subir { from { transform: translateY(100%); } }
+@keyframes aparecer { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hoja-fondo, .hoja-panel { animation: none; } }
 
 .datos-favor { display: flex; flex-direction: column; gap: 12px; }
 .campo-punto { position: relative; display: block; color: var(--azul); }
