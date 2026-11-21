@@ -128,8 +128,8 @@ Con `foto_url` vacío la app elige el dibujo por el nombre del producto; no hace
 ## Favores
 
 Un alumno puede pedir que otro le lleve su pedido a un punto de la UAT, por una tarifa
-según la distancia entre el local y el punto ($10 + $8 por km de camino, en múltiplos de $5,
-entre $15 y $50). Se pagan en **efectivo**: quien hace el favor paga el pedido en el local y quien lo pidió le
+según la distancia entre el local y el punto ($10 + $1 por cada 50 m en línea recta,
+entre $12 y $50). Se pagan en **efectivo**: quien hace el favor paga el pedido en el local y quien lo pidió le
 paga todo (pedido + tarifa) al recibirlo, y entonces le da su código. Para que nadie adelante
 mucho dinero, el pedido no puede pasar de `ajustes.tope_efectivo` ($250). Se
 encienden y apagan con `ajustes.favores_activos` (migraciones `20261028200000_favores.sql` y
@@ -203,9 +203,10 @@ Migración `20261120220000_puntos_de_entrega.sql` (va después de la del mapa).
   junto a la Cafetería de Ingeniería y la entrada norte (Av. Universidad). Se mueven, renombran o quitan desde el editor del mapa, como los demás lugares.
 
 **Cuota del favor:** `cotizar_favor` usa la distancia en línea recta entre **A** (el local,
-donde se recoge) y **B** (el punto de entrega): $10 + $8 por km de camino
-(recta × 1.3), en múltiplos de $5, entre $15 y $50. Los $10 de base cubren llegar al local.
-Dentro del campus casi todo sale en $15 (hasta unos 480 m); 850 m son $20 y 1.5 km, $30.
+donde se recoge) y **B** (el punto de entrega): $10 + $1 por cada 50 m, entre $12 y $50
+(migración `20261121000000_cuota_por_distancia.sql`). Los $10 de base cubren llegar al local.
+Así sube con cada punto más lejano: 210 m son $15, 350 m $17, 600 m $22 y 1 km $30. El carrito
+no ofrece los puntos a menos de 200 m del local (`DISTANCIA_MINIMA_FAVOR` en `alumnos.js`).
 
 **Hora estimada de llegada** (`favores.llegada_estimada`):
 

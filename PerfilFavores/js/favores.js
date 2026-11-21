@@ -34,10 +34,17 @@ async function misFavores(alumno) {
 }
 
 async function inicio() {
-  const alumno = await alumnoOSalir();
+  // Todo se pide a la vez con la sesión guardada: los datos del alumno, si hay favores,
+  // sus favores y los libres. Así la pantalla espera una sola respuesta.
+  const usuario = await usuarioActual();
+  if (!usuario) return alumnoOSalir();
+  const libresDe = () => Promise.resolve(db.from("favores")
+    .select("id, tarifa, distancia_m, puntos_entrega(nombre), pedidos(total, hora_recogida, locales(nombre, direccion))")
+    .eq("estado", "buscando").neq("cliente_id", usuario.id).order("creado_en"));
+  let precargados = { mios: misFavores({ id: usuario.id }), libres: libresDe() };
+  const [alumno, activos] = await Promise.all([alumnoOSalir(), favoresActivos()]);
   if (!alumno) return;
   const lista = document.getElementById("lista-favores");
-  const activos = await favoresActivos();
   const disponible = document.getElementById("disponible");
   disponible.checked = alumno.disponible_favores;
   document.getElementById("caja-disponible").hidden = !activos;
@@ -50,7 +57,11 @@ async function inicio() {
 
   const estados = new Map(); // estado de cada favor que se ve en esta pantalla
   const cargar = async () => {
-    const mios = await misFavores(alumno);
+    // Mis favores y los libres se piden a la vez (la primera vez ya vienen pedidos).
+    const { mios: miosListos, libres: libresListos } = precargados
+      || { mios: misFavores(alumno), libres: activos && alumno.disponible_favores ? libresDe() : null };
+    precargados = null;
+    const mios = await miosListos;
     estados.clear();
     mios.forEach((f) => estados.set(f.id, f.estado));
     const entregados = mios.filter((f) => f.estado === "entregado");
@@ -77,9 +88,7 @@ async function inicio() {
         <span>Así verás los pedidos que alguien quiere que le lleven.</span></li>`;
       return;
     }
-    const { data: libres, error } = await db.from("favores")
-      .select("id, tarifa, distancia_m, puntos_entrega(nombre), pedidos(total, hora_recogida, locales(nombre, direccion))")
-      .eq("estado", "buscando").neq("cliente_id", alumno.id).order("creado_en");
+    const { data: libres, error } = await libresListos;
     if (error) return mostrarError(error);
     libres.forEach((f) => estados.set(f.id, "buscando"));
     lista.innerHTML = libres.map((f) => `<li class="tarjeta favor-libre">

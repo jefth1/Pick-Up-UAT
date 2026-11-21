@@ -66,8 +66,10 @@ function barraCarrito() {
 }
 
 async function explorarLocales() {
-  const alumno = await alumnoActual();
-  if (alumno) document.getElementById("hola").textContent = `Hola, ${alumno.nombre.split(" ")[0]}`;
+  // El saludo y los locales se piden a la vez.
+  alumnoActual().then((alumno) => {
+    if (alumno) document.getElementById("hola").textContent = `Hola, ${alumno.nombre.split(" ")[0]}`;
+  });
 
   const lista = document.getElementById("lista-locales");
   const { data: locales, error } = await db.from("locales").select("*, horarios(*), productos(nombre)").order("nombre");
@@ -260,6 +262,8 @@ async function verCarrito() {
   pintar();
   if (!c.localId) return;
 
+  // El local, los ajustes y los puntos de entrega se piden a la vez (una sola espera).
+  const datosFavor = cargarDatosFavor();
   const { data: local, error } = await db.from("locales").select("*, horarios(*)").eq("id", c.localId).single();
   if (error) return mostrarError(error);
   document.getElementById("local-carrito").textContent = local.nombre;
@@ -269,41 +273,41 @@ async function verCarrito() {
   agregarMas.hidden = !c.items.length;
   document.getElementById("seccion-hora").hidden = false;
 
-  // Solo el reloj: sin textos de ayuda. Si eligen una hora fuera de la que el local puede
-  // (de ahora + 15 min al cierre), se avisa abajo en una línea y no deja seguir.
-  const rango = rangoRecogida(local);
+  // Solo el reloj: la caja abre una hoja con las horas que el local sí puede (de ahora
+  // + 15 min al cierre), así no hay forma de elegir una hora que no se pueda.
   const campo = document.getElementById("hora");
   const caja = document.getElementById("caja-hora");
   const aviso = document.getElementById("aviso-hora");
+  const rango = rangoRecogida(local);
   if (!rango) {
     caja.hidden = true;
     aviso.textContent = "El local ya no recibe pedidos hoy.";
     aviso.hidden = false;
     return;
   }
-  campo.min = aTexto(rango.desde);
-  campo.max = aTexto(rango.hasta);
-  const guardada = c.hora?.texto;
-  campo.value = guardada >= campo.min && guardada <= campo.max ? guardada : campo.min;
-  const horaValida = () => !!campo.value && campo.value >= campo.min && campo.value <= campo.max;
-  const revisarHora = () => {
-    aviso.textContent = `Elige entre ${horaLegible(campo.min)} y ${horaLegible(campo.max)}`;
-    aviso.hidden = horaValida();
-    caja.classList.toggle("fuera", !aviso.hidden);
+  const elegir = (texto) => {
+    campo.value = texto;
+    document.getElementById("hora-texto").textContent = horaLegible(texto);
+    aviso.hidden = true;
+    caja.classList.remove("fuera");
+    campo.dispatchEvent(new Event("input"));
   };
-  campo.addEventListener("input", revisarHora);
-  // Tocar cualquier parte de la caja (también el reloj) abre el selector de hora.
-  caja.addEventListener("click", (e) => {
-    if (e.target === campo || !("showPicker" in campo)) return;
-    try { campo.showPicker(); } catch { /* el navegador ya lo abrió */ }
-  });
-  opcionesEntrega(c, local, pintar);
+  const guardada = c.hora?.texto;
+  elegir(guardada >= aTexto(rango.desde) && guardada <= aTexto(rango.hasta) ? guardada : aTexto(rango.desde));
+  const horaValida = () => {
+    const ahora = rangoRecogida(local); // el tiempo avanza mientras la página está abierta
+    return !!ahora && campo.value >= aTexto(ahora.desde) && campo.value <= aTexto(ahora.hasta);
+  };
+  caja.addEventListener("click", () => abrirHojaHora(local, campo.value, elegir, caja));
+  opcionesEntrega(c, local, pintar, datosFavor);
   boton.disabled = false;
 
   boton.addEventListener("click", () => {
     if (!horaValida()) {
-      revisarHora();
-      return caja.scrollIntoView({ behavior: "smooth", block: "center" });
+      aviso.textContent = "Esa hora ya pasó. Elige otra.";
+      aviso.hidden = false;
+      caja.classList.add("fuera");
+      return abrirHojaHora(local, campo.value, elegir, caja);
     }
     c.hora = { texto: campo.value, fecha: fechaDeHoy(campo.value, ahoraEnTamaulipas().minutos) };
     carrito.guardar(c);
@@ -311,21 +315,75 @@ async function verCarrito() {
   });
 }
 
+// Hoja de abajo para elegir la hora: primero la hora (solo las que se pueden) y luego los
+// minutos de esa hora, de 5 en 5. Al tocar los minutos se elige y se cierra.
+function abrirHojaHora(local, actual, elegir, origen) {
+  const rango = rangoRecogida(local);
+  const hoja = document.getElementById("hoja-hora");
+  if (!rango || !hoja) return;
+  const opciones = [];
+  for (let m = rango.desde; m <= rango.hasta; m += 5) opciones.push(aTexto(m));
+  const horas = [...new Set(opciones.map((t) => t.slice(0, 2)))];
+  let hora = horas.includes(actual?.slice(0, 2)) ? actual.slice(0, 2) : horas[0];
+  const nombreHora = (h) => horaLegible(`${h}:00`).replace(":00", "");
+  const cajaHoras = document.getElementById("horas-hoja");
+  const cajaMinutos = document.getElementById("minutos-hoja");
+  const pintarHoja = () => {
+    cajaHoras.innerHTML = horas.map((h) =>
+      `<button type="button" data-hora="${h}" aria-pressed="${h === hora}">${nombreHora(h)}</button>`).join("");
+    cajaMinutos.innerHTML = opciones.filter((t) => t.startsWith(hora)).map((t) =>
+      `<button type="button" data-elegir="${t}" aria-pressed="${t === actual}">${horaLegible(t).replace(/\s?[ap]\.\s?m\.$/i, "")}</button>`).join("");
+  };
+  const cerrar = () => {
+    hoja.hidden = true;
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", tecla);
+    hoja.onclick = null;
+    origen?.focus();
+  };
+  const tecla = (e) => e.key === "Escape" && cerrar();
+  hoja.onclick = (e) => {
+    const b = e.target.closest("button, [data-cerrar]");
+    if (!b) return;
+    if (b.dataset.hora) { hora = b.dataset.hora; pintarHoja(); cajaMinutos.querySelector("button")?.focus(); }
+    else if (b.dataset.elegir) { elegir(b.dataset.elegir); cerrar(); }
+    else if (b.hasAttribute("data-cerrar")) cerrar();
+  };
+  document.addEventListener("keydown", tecla);
+  pintarHoja();
+  hoja.hidden = false;
+  document.body.style.overflow = "hidden";
+  (cajaMinutos.querySelector('[aria-pressed="true"]') || cajaHoras.querySelector('[aria-pressed="true"]'))?.focus();
+}
+
+// Ajustes y puntos de entrega del favor, en paralelo con el resto del carrito.
+async function cargarDatosFavor() {
+  const [{ data: ajustes }, lugares] = await Promise.all([
+    db.from("ajustes").select("favores_activos, tope_efectivo").maybeSingle(),
+    lugaresUat(),
+  ]);
+  return { activos: !!ajustes?.favores_activos, tope: Number(ajustes?.tope_efectivo ?? 250), lugares };
+}
+
+// Los puntos de entrega a menos de esto del local no se ofrecen: ahí mejor pasa uno mismo.
+const DISTANCIA_MINIMA_FAVOR = 200;
+
 // Recoger en el local o que lo lleve otro alumno a un punto de entrega de la UAT.
 // Solo aparece con los favores encendidos y si el local ya se colocó en el mapa. El mapa
 // muestra la ruta A (el local, donde se recoge) → B (donde se entrega) y la cuota del
 // favor sale de esa distancia; la gana quien lo lleva.
-async function opcionesEntrega(c, local, pintar) {
+async function opcionesEntrega(c, local, pintar, datosFavor = cargarDatosFavor()) {
   const quitarFavor = () => { delete c.favor; carrito.guardar(c); pintar(); };
   const seccion = document.getElementById("seccion-entrega");
   seccion.hidden = false;
   // Las dos opciones siempre se ven; si el favor no se puede, se dice por qué.
-  let motivo = !(await favoresActivos()) ? "Pronto podrás pedir que otro alumno te lo lleve."
+  const { activos, tope, lugares } = await datosFavor;
+  let motivo = !activos ? "Pronto podrás pedir que otro alumno te lo lleve."
     : local.lat == null ? "Este local todavía no tiene entregas por favor." : null;
   let puntos = [];
   if (!motivo) {
-    puntos = soloPuntosDeEntrega(await lugaresUat());
-    if (!puntos.length) motivo = "Todavía no hay puntos de entrega para favores.";
+    puntos = soloPuntosDeEntrega(lugares).filter((p) => distanciaM(p, local) >= DISTANCIA_MINIMA_FAVOR);
+    if (!puntos.length) motivo = "No hay puntos de entrega lejos de este local.";
   }
   if (motivo) {
     const opcion = seccion.querySelector('[value="favor"]');
@@ -353,8 +411,6 @@ async function opcionesEntrega(c, local, pintar) {
     punto.value = c.favor.puntoId;
     referencia.value = c.favor.referencia || "";
   }
-  const { data: ajustes } = await db.from("ajustes").select("tope_efectivo").maybeSingle();
-  const tope = Number(ajustes?.tope_efectivo ?? 250);
   const conFavor = () => seccion.querySelector('[value="favor"]').checked;
 
   // Mapa de la ruta: se crea la primera vez que se elige "Que me lo lleven".
@@ -543,8 +599,12 @@ function pintarQr(id) {
 }
 
 async function misPedidos() {
-  const alumno = await exigirAlumno();
-  if (!alumno) return;
+  // Los pedidos se piden con la sesión guardada, sin esperar a leer los datos del alumno;
+  // si la cuenta no es de alumno, exigirAlumno() lo manda a iniciar sesión.
+  const usuario = await usuarioActual();
+  if (!usuario) return exigirAlumno();
+  exigirAlumno();
+  const alumno = { id: usuario.id };
   const lista = document.getElementById("mis-pedidos");
   const elegido = param("pedido");
   const cargar = async () => {
